@@ -47,5 +47,7 @@ func (s *InitCohorts) Initialize(w *ecs.World) {
 	}
 	ecs.AddResource(w, &s.inHive)
 }
-func (s *InitCohorts) Update(w *ecs.World)   {}
+
+func (s *InitCohorts) Update(w *ecs.World) {}
+
 func (s *InitCohorts) Finalize(w *ecs.World) {}

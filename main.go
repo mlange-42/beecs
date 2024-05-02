@@ -21,6 +21,8 @@ func main() {
 		LifespanDrone:   37,
 	})
 
+	m.AddSystem(&sys.AgeCohorts{})
+
 	m.AddSystem(&system.FixedTermination{Steps: 1000})
 
 	m.Run()

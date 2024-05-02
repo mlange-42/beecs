@@ -21,6 +21,18 @@ func main() {
 		LifespanDrone:   37,
 	})
 
+	m.AddSystem(&sys.MortalityCohorts{
+		EggMortalityWorker:    0.03,
+		LarvaeMortalityWorker: 0.01,
+		PupaeMortalityWorker:  0.001,
+		InHiveMortalityWorker: 0.004,
+
+		EggMortalityDrone:    0.064,
+		LarvaeMortalityDrone: 0.044,
+		PupaeMortalityDrone:  0.005,
+		InHiveMortalityDrone: 0.05,
+	})
+
 	m.AddSystem(&sys.AgeCohorts{})
 
 	m.AddSystem(&system.FixedTermination{Steps: 1000})

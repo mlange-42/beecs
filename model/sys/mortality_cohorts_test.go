@@ -14,6 +14,9 @@ func TestMortalityCohorts(t *testing.T) {
 	rng := resource.Rand{Source: rand.NewSource(0)}
 	ecs.AddResource(&world, &rng)
 
+	time := Time{TicksPerDay: 1}
+	time.Initialize(&world)
+
 	init := InitCohorts{
 		EggTimeWorker:       2,
 		LarvaeTimeWorker:    3,

@@ -35,6 +35,14 @@ func main() {
 
 	m.AddSystem(&sys.AgeCohorts{})
 
+	m.AddSystem(&sys.EggLaying{
+		MaxEggsPerDay: 1600,
+	})
+
+	m.AddSystem(&sys.Time{
+		TicksPerDay: 6 * 24,
+	})
+
 	m.AddSystem(&system.FixedTermination{Steps: 1000})
 
 	m.Run()

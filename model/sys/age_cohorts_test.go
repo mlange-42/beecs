@@ -10,6 +10,9 @@ import (
 func TestAgeCohorts(t *testing.T) {
 	world := ecs.NewWorld()
 
+	time := Time{TicksPerDay: 1}
+	time.Initialize(&world)
+
 	init := InitCohorts{
 		EggTimeWorker:       2,
 		LarvaeTimeWorker:    3,

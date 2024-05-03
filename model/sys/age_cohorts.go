@@ -10,6 +10,7 @@ type AgeCohorts struct {
 	larvae *res.Larvae
 	pupae  *res.Pupae
 	inHive *res.InHive
+	time   *res.Time
 }
 
 func (s *AgeCohorts) Initialize(w *ecs.World) {
@@ -17,9 +18,14 @@ func (s *AgeCohorts) Initialize(w *ecs.World) {
 	s.larvae = ecs.GetResource[res.Larvae](w)
 	s.pupae = ecs.GetResource[res.Pupae](w)
 	s.inHive = ecs.GetResource[res.InHive](w)
+	s.time = ecs.GetResource[res.Time](w)
 }
 
 func (s *AgeCohorts) Update(w *ecs.World) {
+	if !s.time.IsDayTick {
+		return
+	}
+
 	shiftCohorts(s.inHive.Workers, s.pupae.Workers[len(s.pupae.Workers)-1])
 	shiftCohorts(s.inHive.Drones, s.pupae.Drones[len(s.pupae.Drones)-1])
 

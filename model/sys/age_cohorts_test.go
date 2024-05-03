@@ -31,6 +31,8 @@ func TestAgeCohorts(t *testing.T) {
 	init.eggs.Workers[0] = 10
 	init.eggs.Drones[0] = 20
 
+	time.Update(&world)
+
 	for i := 0; i < 13; i++ {
 		age.Update(&world)
 	}

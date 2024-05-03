@@ -54,6 +54,7 @@ func TestMortalityCohorts(t *testing.T) {
 	fillCohorts(init.inHive.Workers, 10000)
 	fillCohorts(init.inHive.Drones, 10000)
 
+	time.Update(&world)
 	mort.Update(&world)
 
 	checkCohorts(t, init.eggs.Workers, 0, 10000)

@@ -9,7 +9,8 @@ type EggLaying struct {
 	eggs *res.Eggs
 	time *res.Time
 
-	MaxEggsPerDay int
+	MaxEggsPerDay       int
+	DroneEggsProportion float64
 }
 
 func (s *EggLaying) Initialize(w *ecs.World) {
@@ -21,6 +22,13 @@ func (s *EggLaying) Update(w *ecs.World) {
 	if !s.time.IsDayTick {
 		return
 	}
+
+	// TODO: limit number of eggs
+	eggs := s.MaxEggsPerDay
+	// TODO: limit to drone eggs period
+	droneEggs := int(s.DroneEggsProportion * float64(eggs))
+	s.eggs.Workers[0] = eggs
+	s.eggs.Drones[0] = droneEggs
 }
 
 func (s *EggLaying) Finalize(w *ecs.World) {}

@@ -13,7 +13,7 @@ type Time struct {
 
 func (s *Time) Initialize(w *ecs.World) {
 	s.time = res.Time{
-		IsDayTick: true,
+		Tick: -1,
 	}
 	ecs.AddResource(w, &s.time)
 }

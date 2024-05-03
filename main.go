@@ -3,11 +3,16 @@ package main
 import (
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/system"
+	"github.com/mlange-42/arche-pixel/plot"
+	"github.com/mlange-42/arche-pixel/window"
+	"github.com/mlange-42/beecs/model/obs"
 	"github.com/mlange-42/beecs/model/sys"
 )
 
 func main() {
 	m := model.New()
+	m.TPS = 30
+	m.FPS = 30
 
 	m.AddSystem(&sys.InitCohorts{
 		EggTimeWorker:       3,
@@ -19,6 +24,10 @@ func main() {
 		LarvaeTimeDrone: 7,
 		PupaeTimeDrone:  14,
 		LifespanDrone:   37,
+	})
+
+	m.AddSystem(&sys.Time{
+		TicksPerDay: 1, //6 * 24,
 	})
 
 	m.AddSystem(&sys.MortalityCohorts{
@@ -35,7 +44,19 @@ func main() {
 
 	m.AddSystem(&sys.AgeCohorts{})
 
-	m.AddSystem(&system.FixedTermination{Steps: 1000})
+	m.AddSystem(&sys.EggLaying{
+		MaxEggsPerDay: 1600,
+	})
 
-	m.Run()
+	m.AddSystem(&system.FixedTermination{Steps: 100000})
+
+	m.AddUISystem((&window.Window{
+		DrawInterval: 1,
+	}).
+		With(&plot.Lines{
+			Observer: &obs.Cohorts{},
+			YLim:     [...]float64{0, 4}, // Optional Y axis limits.
+		}))
+
+	window.Run(m)
 }

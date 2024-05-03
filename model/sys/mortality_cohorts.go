@@ -14,6 +14,7 @@ type MortalityCohorts struct {
 	larvae *res.Larvae
 	pupae  *res.Pupae
 	inHive *res.InHive
+	time   *res.Time
 	rng    *resource.Rand
 
 	EggMortalityWorker    float64
@@ -32,10 +33,15 @@ func (s *MortalityCohorts) Initialize(w *ecs.World) {
 	s.larvae = ecs.GetResource[res.Larvae](w)
 	s.pupae = ecs.GetResource[res.Pupae](w)
 	s.inHive = ecs.GetResource[res.InHive](w)
+	s.time = ecs.GetResource[res.Time](w)
 	s.rng = ecs.GetResource[resource.Rand](w)
 }
 
 func (s *MortalityCohorts) Update(w *ecs.World) {
+	if !s.time.IsDayTick {
+		return
+	}
+
 	applyMortality(s.eggs.Workers, s.EggMortalityWorker, s.rng)
 	applyMortality(s.eggs.Drones, s.EggMortalityDrone, s.rng)
 

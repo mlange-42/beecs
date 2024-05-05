@@ -28,6 +28,9 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &aff)
 
+	factory := res.NewForagerFactory(&m.World)
+	ecs.AddResource(&m.World, &factory)
+
 	m.AddSystem(&sys.InitCohorts{
 		EggTimeWorker:    3,
 		LarvaeTimeWorker: 6,

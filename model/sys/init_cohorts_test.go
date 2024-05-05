@@ -26,7 +26,7 @@ func TestInitCohorts(t *testing.T) {
 	assert.Equal(t, []int{0, 0}, s.eggs.Workers)
 	assert.Equal(t, []int{0, 0, 0}, s.larvae.Workers)
 	assert.Equal(t, []int{0, 0, 0, 0}, s.pupae.Workers)
-	assert.Equal(t, []int{0, 0, 0, 0, 0}, s.inHive.Workers)
+	assert.Equal(t, []int{0, 0, 0, 0, 0, 0}, s.inHive.Workers)
 
 	assert.Equal(t, []int{0, 0, 0}, s.eggs.Drones)
 	assert.Equal(t, []int{0, 0, 0, 0}, s.larvae.Drones)

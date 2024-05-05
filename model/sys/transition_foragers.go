@@ -6,10 +6,11 @@ import (
 )
 
 type TransitionForagers struct {
-	inHive *res.InHive
-	params *res.Params
-	aff    *res.AgeFirstForaging
-	time   *res.Time
+	inHive  *res.InHive
+	params  *res.Params
+	aff     *res.AgeFirstForaging
+	time    *res.Time
+	factory *res.ForagerFactory
 }
 
 func (s *TransitionForagers) Initialize(w *ecs.World) {
@@ -17,6 +18,7 @@ func (s *TransitionForagers) Initialize(w *ecs.World) {
 	s.params = ecs.GetResource[res.Params](w)
 	s.aff = ecs.GetResource[res.AgeFirstForaging](w)
 	s.time = ecs.GetResource[res.Time](w)
+	s.factory = ecs.GetResource[res.ForagerFactory](w)
 }
 
 func (s *TransitionForagers) Update(w *ecs.World) {
@@ -36,6 +38,9 @@ func (s *TransitionForagers) Update(w *ecs.World) {
 
 	s.inHive.Workers[aff-1] += remainder
 
+	if squadrons > 0 {
+		s.factory.CreateSquadrons(squadrons)
+	}
 }
 
 func (s *TransitionForagers) Finalize(w *ecs.World) {}

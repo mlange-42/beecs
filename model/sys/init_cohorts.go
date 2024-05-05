@@ -11,10 +11,9 @@ type InitCohorts struct {
 	pupae  res.Pupae
 	inHive res.InHive
 
-	EggTimeWorker       int
-	LarvaeTimeWorker    int
-	PupaeTimeWorker     int
-	MaxInHiveTimeWorker int
+	EggTimeWorker    int
+	LarvaeTimeWorker int
+	PupaeTimeWorker  int
 
 	EggTimeDrone    int
 	LarvaeTimeDrone int
@@ -23,6 +22,8 @@ type InitCohorts struct {
 }
 
 func (s *InitCohorts) Initialize(w *ecs.World) {
+	aff := ecs.GetResource[res.AgeFirstForaging](w)
+
 	s.eggs = res.Eggs{
 		Workers: make([]int, s.EggTimeWorker),
 		Drones:  make([]int, s.EggTimeDrone),
@@ -42,7 +43,7 @@ func (s *InitCohorts) Initialize(w *ecs.World) {
 	ecs.AddResource(w, &s.pupae)
 
 	s.inHive = res.InHive{
-		Workers: make([]int, s.MaxInHiveTimeWorker),
+		Workers: make([]int, aff.Max+1),
 		Drones:  make([]int, s.LifespanDrone),
 	}
 	ecs.AddResource(w, &s.inHive)

@@ -5,7 +5,9 @@ import (
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
+	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/beecs/model/obs"
+	"github.com/mlange-42/beecs/model/res"
 	"github.com/mlange-42/beecs/model/sys"
 )
 
@@ -14,11 +16,25 @@ func main() {
 	m.TPS = 30
 	m.FPS = 30
 
+	params := res.Params{
+		SquadronSize: 100,
+	}
+	ecs.AddResource(&m.World, &params)
+
+	aff := res.AgeFirstForaging{
+		Base: 21,
+		Min:  7,
+		Max:  50,
+	}
+	ecs.AddResource(&m.World, &aff)
+
+	factory := res.NewForagerFactory(&m.World)
+	ecs.AddResource(&m.World, &factory)
+
 	m.AddSystem(&sys.InitCohorts{
-		EggTimeWorker:       3,
-		LarvaeTimeWorker:    6,
-		PupaeTimeWorker:     12,
-		MaxInHiveTimeWorker: 50,
+		EggTimeWorker:    3,
+		LarvaeTimeWorker: 6,
+		PupaeTimeWorker:  12,
 
 		EggTimeDrone:    3,
 		LarvaeTimeDrone: 7,
@@ -29,6 +45,8 @@ func main() {
 	m.AddSystem(&sys.Time{
 		TicksPerDay: 1, //6 * 24,
 	})
+
+	m.AddSystem(&sys.CalcAff{})
 
 	m.AddSystem(&sys.MortalityCohorts{
 		EggMortalityWorker:    0.03,
@@ -43,6 +61,7 @@ func main() {
 	})
 
 	m.AddSystem(&sys.AgeCohorts{})
+	m.AddSystem(&sys.TransitionForagers{})
 
 	m.AddSystem(&sys.EggLaying{
 		MaxEggsPerDay: 1600,

@@ -5,6 +5,7 @@ import (
 
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model/res"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/rand"
 )
@@ -13,19 +14,19 @@ func TestMortalityCohorts(t *testing.T) {
 	world := ecs.NewWorld()
 	rng := resource.Rand{Source: rand.NewSource(0)}
 	ecs.AddResource(&world, &rng)
+	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 5})
 
 	time := Time{TicksPerDay: 1}
 	time.Initialize(&world)
 
 	init := InitCohorts{
-		EggTimeWorker:       2,
-		LarvaeTimeWorker:    3,
-		PupaeTimeWorker:     4,
-		MaxInHiveTimeWorker: 5,
-		EggTimeDrone:        3,
-		LarvaeTimeDrone:     4,
-		PupaeTimeDrone:      5,
-		LifespanDrone:       6,
+		EggTimeWorker:    2,
+		LarvaeTimeWorker: 3,
+		PupaeTimeWorker:  4,
+		EggTimeDrone:     3,
+		LarvaeTimeDrone:  4,
+		PupaeTimeDrone:   5,
+		LifespanDrone:    6,
 	}
 	init.Initialize(&world)
 

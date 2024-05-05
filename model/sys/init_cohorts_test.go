@@ -4,21 +4,22 @@ import (
 	"testing"
 
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model/res"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestInitCohorts(t *testing.T) {
 	world := ecs.NewWorld()
+	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 5})
 
 	s := InitCohorts{
-		EggTimeWorker:       2,
-		LarvaeTimeWorker:    3,
-		PupaeTimeWorker:     4,
-		MaxInHiveTimeWorker: 5,
-		EggTimeDrone:        3,
-		LarvaeTimeDrone:     4,
-		PupaeTimeDrone:      5,
-		LifespanDrone:       6,
+		EggTimeWorker:    2,
+		LarvaeTimeWorker: 3,
+		PupaeTimeWorker:  4,
+		EggTimeDrone:     3,
+		LarvaeTimeDrone:  4,
+		PupaeTimeDrone:   5,
+		LifespanDrone:    6,
 	}
 	s.Initialize(&world)
 

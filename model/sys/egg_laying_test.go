@@ -4,11 +4,14 @@ import (
 	"testing"
 
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model/res"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEggLaying(t *testing.T) {
 	world := ecs.NewWorld()
+
+	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 1})
 
 	time := Time{TicksPerDay: 1}
 	time.Initialize(&world)

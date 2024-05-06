@@ -3,6 +3,8 @@ package sys
 import (
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/res"
 	"github.com/mlange-42/beecs/model/util"
 	"golang.org/x/exp/rand"
@@ -16,6 +18,9 @@ type MortalityCohorts struct {
 	inHive *res.InHive
 	time   *res.Time
 	rng    *resource.Rand
+
+	toRemove      []ecs.Entity
+	foragerFilter generic.Filter0
 
 	EggMortalityWorker    float64
 	LarvaeMortalityWorker float64
@@ -35,6 +40,8 @@ func (s *MortalityCohorts) Initialize(w *ecs.World) {
 	s.inHive = ecs.GetResource[res.InHive](w)
 	s.time = ecs.GetResource[res.Time](w)
 	s.rng = ecs.GetResource[resource.Rand](w)
+
+	s.foragerFilter = *generic.NewFilter0().With(generic.T[comp.Milage]())
 }
 
 func (s *MortalityCohorts) Update(w *ecs.World) {
@@ -53,6 +60,18 @@ func (s *MortalityCohorts) Update(w *ecs.World) {
 
 	applyMortality(s.inHive.Workers, s.InHiveMortalityWorker, s.rng)
 	applyMortality(s.inHive.Drones, s.InHiveMortalityDrone, s.rng)
+
+	r := rand.New(s.rng)
+	query := s.foragerFilter.Query(w)
+	for query.Next() {
+		if r.Float64() < s.InHiveMortalityWorker {
+			s.toRemove = append(s.toRemove, query.Entity())
+		}
+	}
+	for _, e := range s.toRemove {
+		w.RemoveEntity(e)
+	}
+	s.toRemove = s.toRemove[:0]
 }
 
 func (s *MortalityCohorts) Finalize(w *ecs.World) {}

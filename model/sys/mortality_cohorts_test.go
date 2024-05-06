@@ -5,6 +5,8 @@ import (
 
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/res"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/rand"
@@ -12,6 +14,9 @@ import (
 
 func TestMortalityCohorts(t *testing.T) {
 	world := ecs.NewWorld()
+
+	fac := res.NewForagerFactory(&world)
+
 	rng := resource.Rand{Source: rand.NewSource(0)}
 	ecs.AddResource(&world, &rng)
 	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 5})
@@ -43,6 +48,8 @@ func TestMortalityCohorts(t *testing.T) {
 	}
 	mort.Initialize(&world)
 
+	fac.CreateSquadrons(100)
+
 	fillCohorts(init.eggs.Workers, 10000)
 	fillCohorts(init.eggs.Drones, 10000)
 
@@ -69,6 +76,14 @@ func TestMortalityCohorts(t *testing.T) {
 
 	checkCohorts(t, init.inHive.Workers, 0, 10000)
 	checkCohorts(t, init.inHive.Drones, 0, 10000)
+
+	f := generic.NewFilter1[comp.Milage]()
+	q := f.Query(&world)
+	cnt := q.Count()
+	q.Close()
+
+	assert.Greater(t, cnt, 0)
+	assert.Less(t, cnt, 100)
 }
 
 func fillCohorts(coh []int, count int) {

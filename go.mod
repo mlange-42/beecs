@@ -3,12 +3,14 @@ module github.com/mlange-42/beecs
 go 1.22.0
 
 require (
+	github.com/gopxl/pixel/v2 v2.1.0
 	github.com/mlange-42/arche v0.12.0
 	github.com/mlange-42/arche-model v0.7.0
 	github.com/mlange-42/arche-pixel v0.8.0
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 	gonum.org/v1/gonum v0.15.0
+	gonum.org/v1/plot v0.14.0
 )
 
 require (
@@ -25,7 +27,6 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/gopxl/glhf/v2 v2.0.0 // indirect
 	github.com/gopxl/mainthread/v2 v2.0.0 // indirect
-	github.com/gopxl/pixel/v2 v2.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mazznoer/colorgrad v0.9.1 // indirect
 	github.com/mazznoer/csscolorparser v0.1.2 // indirect
@@ -33,6 +34,5 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/image v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	gonum.org/v1/plot v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

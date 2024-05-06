@@ -1,6 +1,8 @@
 package obs
 
 import (
+	"math"
+
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/comp"
@@ -16,9 +18,9 @@ type Cohorts struct {
 	time   *res.Time
 	params *res.Params
 
-	filter generic.Filter1[comp.Age]
-
 	data [][]float64
+
+	filter generic.Filter1[comp.Age]
 }
 
 func (o *Cohorts) Initialize(w *ecs.World) {
@@ -46,7 +48,10 @@ func (o *Cohorts) Header() []string {
 }
 func (o *Cohorts) Values(w *ecs.World) [][]float64 {
 	for i := 0; i < len(o.data); i++ {
-		o.data[i][3] = 0
+		o.data[i][0] = math.NaN()
+		o.data[i][1] = math.NaN()
+		o.data[i][2] = math.NaN()
+		o.data[i][3] = math.NaN()
 		o.data[i][4] = 0
 	}
 
@@ -75,6 +80,10 @@ func (o *Cohorts) Values(w *ecs.World) [][]float64 {
 	for i := 0; i < aff; i++ {
 		o.data[idx][3] = float64(o.inHive.Workers[i])
 		idx++
+	}
+
+	for i := 0; i < offset+aff; i++ {
+		o.data[i][4] = math.NaN()
 	}
 
 	query := o.filter.Query(w)

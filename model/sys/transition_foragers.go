@@ -39,7 +39,7 @@ func (s *TransitionForagers) Update(w *ecs.World) {
 	s.inHive.Workers[aff-1] += remainder
 
 	if squadrons > 0 {
-		s.factory.CreateSquadrons(squadrons)
+		s.factory.CreateSquadrons(squadrons, s.time.Day-aff)
 	}
 }
 

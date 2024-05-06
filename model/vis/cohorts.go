@@ -28,8 +28,10 @@ func (c *Cohorts) UpdateInputs(w *ecs.World, win *opengl.Window) {}
 
 // Draw the drawer.
 func (c *Cohorts) Draw(w *ecs.World, win *opengl.Window) {
-	//width := win.Canvas().Bounds().W()
-	//height := win.Canvas().Bounds().H()
+	/*width := win.Canvas().Bounds().W()
+	height := win.Canvas().Bounds().H()
+
+	bins := 100*/
 }
 
 func calcScaleCorrection() float64 {

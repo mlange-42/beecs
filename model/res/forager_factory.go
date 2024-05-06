@@ -7,15 +7,19 @@ import (
 )
 
 type ForagerFactory struct {
-	builder generic.Map1[comp.Milage]
+	builder generic.Map2[comp.Milage, comp.Age]
 }
 
 func NewForagerFactory(world *ecs.World) ForagerFactory {
 	return ForagerFactory{
-		builder: generic.NewMap1[comp.Milage](world),
+		builder: generic.NewMap2[comp.Milage, comp.Age](world),
 	}
 }
 
-func (f *ForagerFactory) CreateSquadrons(count int) {
-	f.builder.NewBatch(count)
+func (f *ForagerFactory) CreateSquadrons(count int, dayOfBirth int) {
+	q := f.builder.NewBatchQ(count)
+	for q.Next() {
+		_, a := q.Get()
+		a.DayOfBirth = dayOfBirth
+	}
 }

@@ -50,7 +50,7 @@ func TestMortalityCohorts(t *testing.T) {
 	mort := MortalityCohorts{}
 	mort.Initialize(&world)
 
-	fac.CreateSquadrons(100)
+	fac.CreateSquadrons(100, 0)
 
 	fillCohorts(init.eggs.Workers, 10000)
 	fillCohorts(init.eggs.Drones, 10000)

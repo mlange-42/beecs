@@ -19,18 +19,11 @@ type MortalityCohorts struct {
 	time   *res.Time
 	rng    *resource.Rand
 
+	workerMort *res.WorkerMortality
+	droneMort  *res.DroneMortality
+
 	toRemove      []ecs.Entity
 	foragerFilter generic.Filter0
-
-	EggMortalityWorker    float64
-	LarvaeMortalityWorker float64
-	PupaeMortalityWorker  float64
-	InHiveMortalityWorker float64
-
-	EggMortalityDrone    float64
-	LarvaeMortalityDrone float64
-	PupaeMortalityDrone  float64
-	InHiveMortalityDrone float64
 }
 
 func (s *MortalityCohorts) Initialize(w *ecs.World) {
@@ -41,6 +34,9 @@ func (s *MortalityCohorts) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[res.Time](w)
 	s.rng = ecs.GetResource[resource.Rand](w)
 
+	s.workerMort = ecs.GetResource[res.WorkerMortality](w)
+	s.droneMort = ecs.GetResource[res.DroneMortality](w)
+
 	s.foragerFilter = *generic.NewFilter0().With(generic.T[comp.Milage]())
 }
 
@@ -49,22 +45,22 @@ func (s *MortalityCohorts) Update(w *ecs.World) {
 		return
 	}
 
-	applyMortality(s.eggs.Workers, s.EggMortalityWorker, s.rng)
-	applyMortality(s.eggs.Drones, s.EggMortalityDrone, s.rng)
+	applyMortality(s.eggs.Workers, s.workerMort.Eggs, s.rng)
+	applyMortality(s.eggs.Drones, s.droneMort.Eggs, s.rng)
 
-	applyMortality(s.larvae.Workers, s.LarvaeMortalityWorker, s.rng)
-	applyMortality(s.larvae.Drones, s.LarvaeMortalityDrone, s.rng)
+	applyMortality(s.larvae.Workers, s.workerMort.Larvae, s.rng)
+	applyMortality(s.larvae.Drones, s.droneMort.Larvae, s.rng)
 
-	applyMortality(s.pupae.Workers, s.PupaeMortalityWorker, s.rng)
-	applyMortality(s.pupae.Drones, s.PupaeMortalityDrone, s.rng)
+	applyMortality(s.pupae.Workers, s.workerMort.Pupae, s.rng)
+	applyMortality(s.pupae.Drones, s.droneMort.Pupae, s.rng)
 
-	applyMortality(s.inHive.Workers, s.InHiveMortalityWorker, s.rng)
-	applyMortality(s.inHive.Drones, s.InHiveMortalityDrone, s.rng)
+	applyMortality(s.inHive.Workers, s.workerMort.InHive, s.rng)
+	applyMortality(s.inHive.Drones, s.droneMort.InHive, s.rng)
 
 	r := rand.New(s.rng)
 	query := s.foragerFilter.Query(w)
 	for query.Next() {
-		if r.Float64() < s.InHiveMortalityWorker {
+		if r.Float64() < s.workerMort.InHive {
 			s.toRemove = append(s.toRemove, query.Entity())
 		}
 	}

@@ -21,6 +21,22 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &params)
 
+	workerMort := res.WorkerMortality{
+		Eggs:   0.03,
+		Larvae: 0.01,
+		Pupae:  0.001,
+		InHive: 0.004,
+	}
+	ecs.AddResource(&m.World, &workerMort)
+
+	droneMort := res.DroneMortality{
+		Eggs:   0.064,
+		Larvae: 0.044,
+		Pupae:  0.005,
+		InHive: 0.05,
+	}
+	ecs.AddResource(&m.World, &droneMort)
+
 	aff := res.AgeFirstForaging{
 		Base: 21,
 		Min:  7,
@@ -48,17 +64,7 @@ func main() {
 
 	m.AddSystem(&sys.CalcAff{})
 
-	m.AddSystem(&sys.MortalityCohorts{
-		EggMortalityWorker:    0.03,
-		LarvaeMortalityWorker: 0.01,
-		PupaeMortalityWorker:  0.001,
-		InHiveMortalityWorker: 0.004,
-
-		EggMortalityDrone:    0.064,
-		LarvaeMortalityDrone: 0.044,
-		PupaeMortalityDrone:  0.005,
-		InHiveMortalityDrone: 0.05,
-	})
+	m.AddSystem(&sys.MortalityCohorts{})
 
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})

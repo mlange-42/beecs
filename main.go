@@ -149,13 +149,26 @@ func main() {
 	// Graphics
 
 	m.AddUISystem((&window.Window{
-		Title: "Age distribution",
+		Title:        "Cohorts",
+		Bounds:       window.B(1, 30, 600, 400),
+		DrawInterval: 15,
+	}).
+		With(&plot.TimeSeries{
+			Observer:       &obs.WorkerCohorts{},
+			UpdateInterval: 1,
+			Labels:         plot.Labels{Title: "Cohorts", X: "Time [days]", Y: "Count"},
+		}))
+
+	m.AddUISystem((&window.Window{
+		Title:  "Age distribution",
+		Bounds: window.B(1, 460, 600, 400),
 	}).
 		With(&plot.Lines{
-			Observer: &obs.Cohorts{
+			Observer: &obs.AgeStructure{
 				MaxAge: 400,
 			},
-			YLim: [...]float64{0, 1600},
+			YLim:   [...]float64{0, 1600},
+			Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
 		}))
 
 	// Run

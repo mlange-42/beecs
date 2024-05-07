@@ -22,7 +22,7 @@ type InitCohorts struct {
 }
 
 func (s *InitCohorts) Initialize(w *ecs.World) {
-	aff := ecs.GetResource[res.AgeFirstForaging](w)
+	aff := ecs.GetResource[res.AgeFirstForagingParams](w)
 
 	s.eggs = res.Eggs{
 		Workers: make([]int, s.EggTimeWorker),

@@ -23,7 +23,7 @@ func (s *TransitionForagers) Initialize(w *ecs.World) {
 }
 
 func (s *TransitionForagers) Update(w *ecs.World) {
-	aff := s.aff.Current
+	aff := s.aff.Aff
 	newForagers := 0
 	for i := aff; i < len(s.inHive.Workers); i++ {
 		newForagers += s.inHive.Workers[i]

@@ -42,7 +42,7 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &droneMort)
 
-	aff := res.AgeFirstForaging{
+	aff := res.AgeFirstForagingParams{
 		Base: 21,
 		Min:  7,
 		Max:  50,

@@ -4,11 +4,10 @@ type Params struct {
 	SquadronSize int
 }
 
-type AgeFirstForaging struct {
-	Base    int
-	Min     int
-	Max     int
-	Current int
+type AgeFirstForagingParams struct {
+	Base int
+	Min  int
+	Max  int
 }
 
 type WorkerMortality struct {

@@ -28,12 +28,13 @@ var foragingHoursBerlin2000 = []float64{
 
 type CalcForagingPeriod struct {
 	time   *resource.Tick
-	period *res.ForagingPeriod
+	period res.ForagingPeriod
 }
 
 func (s *CalcForagingPeriod) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
-	s.period = ecs.GetResource[res.ForagingPeriod](w)
+	s.period = res.ForagingPeriod{}
+	ecs.AddResource(w, &s.period)
 }
 
 func (s *CalcForagingPeriod) Update(w *ecs.World) {

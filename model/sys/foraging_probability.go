@@ -6,11 +6,12 @@ import (
 )
 
 type CalcForagingProbability struct {
-	prob *res.ForagingProbability
+	prob res.ForagingProbability
 }
 
 func (s *CalcForagingProbability) Initialize(w *ecs.World) {
-	s.prob = ecs.GetResource[res.ForagingProbability](w)
+	s.prob = res.ForagingProbability{}
+	ecs.AddResource(w, &s.prob)
 }
 
 func (s *CalcForagingProbability) Update(w *ecs.World) {

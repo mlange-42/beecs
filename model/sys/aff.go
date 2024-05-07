@@ -6,13 +6,16 @@ import (
 )
 
 type CalcAff struct {
-	aff *res.AgeFirstForaging
+	affParams *res.AgeFirstForagingParams
+	aff       res.AgeFirstForaging
 }
 
 func (s *CalcAff) Initialize(w *ecs.World) {
-	s.aff = ecs.GetResource[res.AgeFirstForaging](w)
+	s.affParams = ecs.GetResource[res.AgeFirstForagingParams](w)
+	s.aff = res.AgeFirstForaging{}
+	ecs.AddResource(w, &s.aff)
 
-	s.aff.Current = s.aff.Base
+	s.aff.Aff = s.affParams.Base
 }
 
 func (s *CalcAff) Update(w *ecs.World) {
@@ -23,7 +26,7 @@ func (s *CalcAff) Update(w *ecs.World) {
 	foragerToWorkerTH := 0.3
 
 	lastAff := s.aff.Current*/
-	s.aff.Current = s.aff.Base
+	s.aff.Aff = s.affParams.Base
 }
 
 func (s *CalcAff) Finalize(w *ecs.World) {}

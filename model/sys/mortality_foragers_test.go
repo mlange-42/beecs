@@ -20,7 +20,7 @@ func TestMortalityForagers(t *testing.T) {
 	time := resource.Tick{}
 	ecs.AddResource(&world, &time)
 	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
-	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 5})
+	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
 	ecs.AddResource(&world, &res.WorkerMortality{
 		Eggs:        0.5,
 		Larvae:      0.5,

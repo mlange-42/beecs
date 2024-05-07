@@ -10,7 +10,7 @@ import (
 
 func TestInitCohorts(t *testing.T) {
 	world := ecs.NewWorld()
-	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 5})
+	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
 
 	s := InitCohorts{
 		EggTimeWorker:    2,

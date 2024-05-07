@@ -78,6 +78,7 @@ func main() {
 	m.AddSystem(&sys.CalcAff{})
 
 	m.AddSystem(&sys.MortalityCohorts{})
+	m.AddSystem(&sys.MortalityForagers{})
 
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})

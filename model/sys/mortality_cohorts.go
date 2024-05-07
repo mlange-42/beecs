@@ -17,12 +17,13 @@ type MortalityCohorts struct {
 	pupae  *res.Pupae
 	inHive *res.InHive
 	rng    *resource.Rand
+	time   *resource.Tick
 
 	workerMort *res.WorkerMortality
 	droneMort  *res.DroneMortality
 
 	toRemove      []ecs.Entity
-	foragerFilter generic.Filter0
+	foragerFilter generic.Filter2[comp.Age, comp.Milage]
 }
 
 func (s *MortalityCohorts) Initialize(w *ecs.World) {
@@ -31,11 +32,12 @@ func (s *MortalityCohorts) Initialize(w *ecs.World) {
 	s.pupae = ecs.GetResource[res.Pupae](w)
 	s.inHive = ecs.GetResource[res.InHive](w)
 	s.rng = ecs.GetResource[resource.Rand](w)
+	s.time = ecs.GetResource[resource.Tick](w)
 
 	s.workerMort = ecs.GetResource[res.WorkerMortality](w)
 	s.droneMort = ecs.GetResource[res.DroneMortality](w)
 
-	s.foragerFilter = *generic.NewFilter0().With(generic.T[comp.Milage]())
+	s.foragerFilter = *generic.NewFilter2[comp.Age, comp.Milage]()
 }
 
 func (s *MortalityCohorts) Update(w *ecs.World) {
@@ -54,7 +56,11 @@ func (s *MortalityCohorts) Update(w *ecs.World) {
 	r := rand.New(s.rng)
 	query := s.foragerFilter.Query(w)
 	for query.Next() {
-		if r.Float64() < s.workerMort.InHive {
+		a, m := query.Get()
+
+		if int(s.time.Tick)-a.DayOfBirth >= s.workerMort.MaxLifespan ||
+			m.Today >= s.workerMort.MaxMilage ||
+			r.Float64() < s.workerMort.InHive {
 			s.toRemove = append(s.toRemove, query.Entity())
 		}
 	}

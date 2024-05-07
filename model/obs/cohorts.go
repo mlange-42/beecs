@@ -11,7 +11,6 @@ import (
 )
 
 type Cohorts struct {
-	MaxAge int
 	eggs   *res.Eggs
 	larvae *res.Larvae
 	pupae  *res.Pupae
@@ -20,9 +19,10 @@ type Cohorts struct {
 	time   *resource.Tick
 	params *res.Params
 
-	data [][]float64
-
+	data   [][]float64
 	filter generic.Filter1[comp.Age]
+
+	MaxAge int
 }
 
 func (o *Cohorts) Initialize(w *ecs.World) {

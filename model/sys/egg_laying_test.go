@@ -11,12 +11,16 @@ import (
 func TestEggLaying(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 1})
+	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 1})
 
-	init := InitCohorts{
-		EggTimeWorker: 1,
-		EggTimeDrone:  1,
-	}
+	ecs.AddResource(&world, &res.WorkerDevelopment{
+		EggTime: 1,
+	})
+	ecs.AddResource(&world, &res.DroneDevelopment{
+		EggTime: 1,
+	})
+
+	init := InitCohorts{}
 	init.Initialize(&world)
 
 	lay := EggLaying{

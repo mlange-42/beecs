@@ -23,14 +23,28 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &params)
 
-	workerMort := res.WorkerMortality{
-		Eggs:   0.03,
-		Larvae: 0.01,
-		Pupae:  0.001,
-		InHive: 0.004,
-
+	workerDev := res.WorkerDevelopment{
+		EggTime:     3,
+		LarvaeTime:  6,
+		PupaeTime:   12,
 		MaxLifespan: 390,
-		MaxMilage:   200,
+	}
+	ecs.AddResource(&m.World, &workerDev)
+
+	droneDev := res.DroneDevelopment{
+		EggTime:     3,
+		LarvaeTime:  7,
+		PupaeTime:   14,
+		MaxLifespan: 37,
+	}
+	ecs.AddResource(&m.World, &droneDev)
+
+	workerMort := res.WorkerMortality{
+		Eggs:      0.03,
+		Larvae:    0.01,
+		Pupae:     0.001,
+		InHive:    0.004,
+		MaxMilage: 200,
 	}
 	ecs.AddResource(&m.World, &workerMort)
 
@@ -42,28 +56,64 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &droneMort)
 
-	aff := res.AgeFirstForaging{
+	aff := res.AgeFirstForagingParams{
 		Base: 21,
 		Min:  7,
 		Max:  50,
 	}
 	ecs.AddResource(&m.World, &aff)
 
+	forageProb := res.ForagingProbabilityParams{
+		Base:      0.01,
+		High:      0.05,
+		Emergency: 0.2,
+	}
+	ecs.AddResource(&m.World, &forageProb)
+
+	energy := res.EnergyParams{
+		EnergyHoney:   12.78,
+		EnergyScurose: 0.00582,
+	}
+	ecs.AddResource(&m.World, &energy)
+
+	honeyNeeds := res.HoneyNeeds{
+		WorkerResting:    11.0,
+		WorkerNurse:      53.42,
+		WorkerLarvaTotal: 65.4,
+		DroneLarva:       19.2,
+		Drone:            10.0,
+	}
+	ecs.AddResource(&m.World, &honeyNeeds)
+
+	pollenNeeds := res.PollenNeeds{
+		WorkerLarvaTotal: 142.0,
+		DroneLarva:       50.0,
+		Worker:           1.5,
+		Drone:            2.0,
+
+		IdealStoreDays: 7,
+		MinIdealStore:  250.0,
+	}
+	ecs.AddResource(&m.World, &pollenNeeds)
+
+	nurseParams := res.NurseParams{
+		MaxBroodNurseRatio:         3.0,
+		ForagerNursingContribution: 0.2,
+	}
+	ecs.AddResource(&m.World, &nurseParams)
+
 	factory := res.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
 
+	stores := res.Stores{}
+	ecs.AddResource(&m.World, &stores)
+
+	stats := res.PopulationStats{}
+	ecs.AddResource(&m.World, &stats)
+
 	// Initialization
 
-	m.AddSystem(&sys.InitCohorts{
-		EggTimeWorker:    3,
-		LarvaeTimeWorker: 6,
-		PupaeTimeWorker:  12,
-
-		EggTimeDrone:    3,
-		LarvaeTimeDrone: 7,
-		PupaeTimeDrone:  14,
-		LifespanDrone:   37,
-	})
+	m.AddSystem(&sys.InitCohorts{})
 
 	m.AddSystem(&sys.InitPopulation{
 		InitialCount: 10_000,
@@ -76,6 +126,7 @@ func main() {
 	// Sub-models
 
 	m.AddSystem(&sys.CalcAff{})
+	m.AddSystem(&sys.CalcForagingPeriod{})
 
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})
@@ -86,6 +137,12 @@ func main() {
 	m.AddSystem(&sys.EggLaying{
 		MaxEggsPerDay: 1600,
 	})
+
+	m.AddSystem(&sys.Foraging{})
+	m.AddSystem(&sys.HoneyConsumption{})
+	m.AddSystem(&sys.PollenConsumption{})
+
+	m.AddSystem(&sys.CountPopulation{})
 
 	m.AddSystem(&system.FixedTermination{Steps: 100000})
 

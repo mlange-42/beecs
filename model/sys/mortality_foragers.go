@@ -13,6 +13,7 @@ type MortalityForagers struct {
 	rng           *resource.Rand
 	time          *resource.Tick
 	workerMort    *res.WorkerMortality
+	workerDev     *res.WorkerDevelopment
 	toRemove      []ecs.Entity
 	foragerFilter generic.Filter2[comp.Age, comp.Milage]
 }
@@ -21,6 +22,7 @@ func (s *MortalityForagers) Initialize(w *ecs.World) {
 	s.rng = ecs.GetResource[resource.Rand](w)
 	s.time = ecs.GetResource[resource.Tick](w)
 	s.workerMort = ecs.GetResource[res.WorkerMortality](w)
+	s.workerDev = ecs.GetResource[res.WorkerDevelopment](w)
 	s.foragerFilter = *generic.NewFilter2[comp.Age, comp.Milage]()
 }
 
@@ -29,7 +31,7 @@ func (s *MortalityForagers) Update(w *ecs.World) {
 	query := s.foragerFilter.Query(w)
 	for query.Next() {
 		a, m := query.Get()
-		if int(s.time.Tick)-a.DayOfBirth >= s.workerMort.MaxLifespan ||
+		if int(s.time.Tick)-a.DayOfBirth >= s.workerDev.MaxLifespan ||
 			m.Total >= s.workerMort.MaxMilage ||
 			r.Float64() < s.workerMort.InHive {
 			s.toRemove = append(s.toRemove, query.Entity())

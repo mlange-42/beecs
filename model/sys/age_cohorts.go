@@ -10,7 +10,7 @@ type AgeCohorts struct {
 	larvae *res.Larvae
 	pupae  *res.Pupae
 	inHive *res.InHive
-	aff    *res.AgeFirstForaging
+	aff    *res.AgeFirstForagingParams
 }
 
 func (s *AgeCohorts) Initialize(w *ecs.World) {
@@ -18,7 +18,7 @@ func (s *AgeCohorts) Initialize(w *ecs.World) {
 	s.larvae = ecs.GetResource[res.Larvae](w)
 	s.pupae = ecs.GetResource[res.Pupae](w)
 	s.inHive = ecs.GetResource[res.InHive](w)
-	s.aff = ecs.GetResource[res.AgeFirstForaging](w)
+	s.aff = ecs.GetResource[res.AgeFirstForagingParams](w)
 }
 
 func (s *AgeCohorts) Update(w *ecs.World) {

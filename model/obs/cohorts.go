@@ -78,7 +78,7 @@ func (o *Cohorts) Values(w *ecs.World) [][]float64 {
 
 	offset := idx
 
-	aff := o.aff.Current
+	aff := o.aff.Aff
 	for i := 0; i < aff; i++ {
 		o.data[idx][3] = float64(o.inHive.Workers[i])
 		idx++

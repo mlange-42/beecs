@@ -93,5 +93,6 @@ func (s *Foraging) foragingRound(forageProb float64) (duration float64, foragers
 		probCollectPollen *= s.stores.Honey / s.stores.DecentHoney
 	}
 
+	_ = forageProb
 	return 17 * 60, 1 // TODO!
 }

@@ -62,3 +62,19 @@ type HoneyNeeds struct {
 
 	Drone float64
 }
+
+type PollenNeeds struct {
+	WorkerLarvaTotal float64
+	DroneLarva       float64
+
+	Worker float64
+	Drone  float64
+
+	IdealStoreDays int
+	MinIdealStore  float64
+}
+
+type NurseParams struct {
+	MaxBroodNurseRatio         float64
+	ForagerNursingContribution float64
+}

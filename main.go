@@ -85,14 +85,31 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &honeyNeeds)
 
+	pollenNeeds := res.PollenNeeds{
+		WorkerLarvaTotal: 142.0,
+		DroneLarva:       50.0,
+		Worker:           1.5,
+		Drone:            2.0,
+
+		IdealStoreDays: 7,
+		MinIdealStore:  250.0,
+	}
+	ecs.AddResource(&m.World, &pollenNeeds)
+
+	nurseParams := res.NurseParams{
+		MaxBroodNurseRatio:         3.0,
+		ForagerNursingContribution: 0.2,
+	}
+	ecs.AddResource(&m.World, &nurseParams)
+
 	factory := res.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
 
-	stores := res.Stores{
-		Honey:  0,
-		Pollen: 0,
-	}
+	stores := res.Stores{}
 	ecs.AddResource(&m.World, &stores)
+
+	stats := res.PopulationStats{}
+	ecs.AddResource(&m.World, &stats)
 
 	// Initialization
 
@@ -122,6 +139,10 @@ func main() {
 	})
 
 	m.AddSystem(&sys.Foraging{})
+	m.AddSystem(&sys.HoneyConsumption{})
+	m.AddSystem(&sys.PollenConsumption{})
+
+	m.AddSystem(&sys.CountPopulation{})
 
 	m.AddSystem(&system.FixedTermination{Steps: 100000})
 

@@ -16,6 +16,8 @@ func main() {
 	m.TPS = 30
 	m.FPS = 30
 
+	// Resources
+
 	params := res.Params{
 		SquadronSize: 100,
 	}
@@ -47,6 +49,8 @@ func main() {
 	factory := res.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
 
+	// Initialization
+
 	m.AddSystem(&sys.InitCohorts{
 		EggTimeWorker:    3,
 		LarvaeTimeWorker: 6,
@@ -57,6 +61,16 @@ func main() {
 		PupaeTimeDrone:  14,
 		LifespanDrone:   37,
 	})
+
+	m.AddSystem(&sys.InitPopulation{
+		InitialCount: 10_000,
+		MinAge:       100,
+		MaxAge:       160,
+		MinMilage:    0,
+		MaxMilage:    200,
+	})
+
+	// Sub-models
 
 	m.AddSystem(&sys.CalcAff{})
 
@@ -71,13 +85,19 @@ func main() {
 
 	m.AddSystem(&system.FixedTermination{Steps: 100000})
 
+	// Graphics
+
 	m.AddUISystem((&window.Window{
-		DrawInterval: 1,
+		Title: "Age distribution",
 	}).
 		With(&plot.Lines{
-			Observer: &obs.Cohorts{},
-			YLim:     [...]float64{0, 4}, // Optional Y axis limits.
+			Observer: &obs.Cohorts{
+				MaxAge: 300,
+			},
+			YLim: [...]float64{0, 1600},
 		}))
+
+	// Run
 
 	window.Run(m)
 }

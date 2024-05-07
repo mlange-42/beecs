@@ -4,6 +4,7 @@ import (
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/comp"
+	"golang.org/x/exp/rand"
 )
 
 type ForagerFactory struct {
@@ -21,5 +22,15 @@ func (f *ForagerFactory) CreateSquadrons(count int, dayOfBirth int) {
 	for q.Next() {
 		_, a := q.Get()
 		a.DayOfBirth = dayOfBirth
+	}
+}
+
+func (f *ForagerFactory) CreateInitialSquadrons(count int, minDayOfBirth, maxDayOfBirth int, minMilage, maxMilage float32, rnd rand.Source) {
+	q := f.builder.NewBatchQ(count)
+	rng := rand.New(rnd)
+	for q.Next() {
+		m, a := q.Get()
+		a.DayOfBirth = rng.Intn(maxDayOfBirth-minDayOfBirth) + minDayOfBirth
+		m.Today = rng.Float32()*(maxMilage-minMilage) + minMilage
 	}
 }

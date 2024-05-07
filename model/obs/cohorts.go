@@ -11,6 +11,7 @@ import (
 )
 
 type Cohorts struct {
+	MaxAge int
 	eggs   *res.Eggs
 	larvae *res.Larvae
 	pupae  *res.Pupae
@@ -36,7 +37,7 @@ func (o *Cohorts) Initialize(w *ecs.World) {
 	o.filter = *generic.NewFilter1[comp.Age]()
 
 	// TODO: make x limits depend on parameters
-	ln := len(o.eggs.Workers) + len(o.larvae.Workers) + len(o.pupae.Workers) + len(o.inHive.Workers) + 50
+	ln := len(o.eggs.Workers) + len(o.larvae.Workers) + len(o.pupae.Workers) + o.MaxAge
 
 	o.data = make([][]float64, ln)
 	for i := range o.data {

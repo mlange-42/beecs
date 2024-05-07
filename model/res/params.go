@@ -10,10 +10,14 @@ type AgeFirstForagingParams struct {
 	Max  int
 }
 
-type ForagingProbabilityParams struct {
-	Base      float64
-	High      float64
-	Emergency float64
+type ForagingParams struct {
+	ProbBase      float64
+	ProbHigh      float64
+	ProbEmergency float64
+
+	FlightVelocity              float64
+	SearchLength                float64
+	MaxProportionPollenForagers float64
 }
 
 type WorkerDevelopment struct {
@@ -79,4 +83,5 @@ type NurseParams struct {
 type StoreParams struct {
 	IdealPollenStoreDays int
 	MinIdealPollenStore  float64
+	MaxHoneyStoreKg      float64
 }

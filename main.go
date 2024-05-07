@@ -63,10 +63,14 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &aff)
 
-	forageProb := res.ForagingProbabilityParams{
-		Base:      0.01,
-		High:      0.05,
-		Emergency: 0.2,
+	forageProb := res.ForagingParams{
+		ProbBase:      0.01,
+		ProbHigh:      0.05,
+		ProbEmergency: 0.2,
+
+		FlightVelocity:              6.5,
+		SearchLength:                6.5 * 60 * 17,
+		MaxProportionPollenForagers: 0.8,
 	}
 	ecs.AddResource(&m.World, &forageProb)
 
@@ -79,6 +83,7 @@ func main() {
 	storeParams := res.StoreParams{
 		IdealPollenStoreDays: 7,
 		MinIdealPollenStore:  250.0,
+		MaxHoneyStoreKg:      50.0,
 	}
 	ecs.AddResource(&m.World, &storeParams)
 

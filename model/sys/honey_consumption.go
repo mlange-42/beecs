@@ -33,7 +33,7 @@ func (s *HoneyConsumption) Update(w *ecs.World) {
 	consumption := needAdult + needLarvae + float64(s.pop.TotalBrood)*thermoRegBrood
 
 	s.stores.Honey = math.Max(s.stores.Honey-consumption, 0)
-	s.stores.DecentHoney = float64(s.pop.WorkersInHive+s.pop.WorkersForagers) * 1.5 * s.energyParams.EnergyHoney
+	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * 1.5 * s.energyParams.EnergyHoney
 }
 
 func (s *HoneyConsumption) Finalize(w *ecs.World) {}

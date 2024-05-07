@@ -76,6 +76,7 @@ func main() {
 	// Sub-models
 
 	m.AddSystem(&sys.CalcAff{})
+	m.AddSystem(&sys.CalcForagingPeriod{})
 
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})

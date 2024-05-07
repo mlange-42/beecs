@@ -58,10 +58,6 @@ func main() {
 		LifespanDrone:   37,
 	})
 
-	m.AddSystem(&sys.Time{
-		TicksPerDay: 1, //6 * 24,
-	})
-
 	m.AddSystem(&sys.CalcAff{})
 
 	m.AddSystem(&sys.MortalityCohorts{})

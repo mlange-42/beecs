@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/beecs/model/res"
 )
@@ -9,7 +10,7 @@ type TransitionForagers struct {
 	inHive  *res.InHive
 	params  *res.Params
 	aff     *res.AgeFirstForaging
-	time    *res.Time
+	time    *resource.Tick
 	factory *res.ForagerFactory
 }
 
@@ -17,15 +18,11 @@ func (s *TransitionForagers) Initialize(w *ecs.World) {
 	s.inHive = ecs.GetResource[res.InHive](w)
 	s.params = ecs.GetResource[res.Params](w)
 	s.aff = ecs.GetResource[res.AgeFirstForaging](w)
-	s.time = ecs.GetResource[res.Time](w)
+	s.time = ecs.GetResource[resource.Tick](w)
 	s.factory = ecs.GetResource[res.ForagerFactory](w)
 }
 
 func (s *TransitionForagers) Update(w *ecs.World) {
-	if !s.time.IsDayTick {
-		return
-	}
-
 	aff := s.aff.Current
 	newForagers := 0
 	for i := aff; i < len(s.inHive.Workers); i++ {
@@ -39,7 +36,7 @@ func (s *TransitionForagers) Update(w *ecs.World) {
 	s.inHive.Workers[aff-1] += remainder
 
 	if squadrons > 0 {
-		s.factory.CreateSquadrons(squadrons, s.time.Day-aff)
+		s.factory.CreateSquadrons(squadrons, int(s.time.Tick)-aff)
 	}
 }
 

@@ -3,8 +3,6 @@ package sys
 import (
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
-	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/res"
 	"github.com/mlange-42/beecs/model/util"
 	"golang.org/x/exp/rand"
@@ -17,13 +15,9 @@ type MortalityCohorts struct {
 	pupae  *res.Pupae
 	inHive *res.InHive
 	rng    *resource.Rand
-	time   *resource.Tick
 
 	workerMort *res.WorkerMortality
 	droneMort  *res.DroneMortality
-
-	toRemove      []ecs.Entity
-	foragerFilter generic.Filter2[comp.Age, comp.Milage]
 }
 
 func (s *MortalityCohorts) Initialize(w *ecs.World) {
@@ -32,12 +26,9 @@ func (s *MortalityCohorts) Initialize(w *ecs.World) {
 	s.pupae = ecs.GetResource[res.Pupae](w)
 	s.inHive = ecs.GetResource[res.InHive](w)
 	s.rng = ecs.GetResource[resource.Rand](w)
-	s.time = ecs.GetResource[resource.Tick](w)
 
 	s.workerMort = ecs.GetResource[res.WorkerMortality](w)
 	s.droneMort = ecs.GetResource[res.DroneMortality](w)
-
-	s.foragerFilter = *generic.NewFilter2[comp.Age, comp.Milage]()
 }
 
 func (s *MortalityCohorts) Update(w *ecs.World) {
@@ -52,22 +43,6 @@ func (s *MortalityCohorts) Update(w *ecs.World) {
 
 	applyMortality(s.inHive.Workers, s.workerMort.InHive, s.rng)
 	applyMortality(s.inHive.Drones, s.droneMort.InHive, s.rng)
-
-	r := rand.New(s.rng)
-	query := s.foragerFilter.Query(w)
-	for query.Next() {
-		a, m := query.Get()
-
-		if int(s.time.Tick)-a.DayOfBirth >= s.workerMort.MaxLifespan ||
-			m.Today >= s.workerMort.MaxMilage ||
-			r.Float64() < s.workerMort.InHive {
-			s.toRemove = append(s.toRemove, query.Entity())
-		}
-	}
-	for _, e := range s.toRemove {
-		w.RemoveEntity(e)
-	}
-	s.toRemove = s.toRemove[:0]
 }
 
 func (s *MortalityCohorts) Finalize(w *ecs.World) {}

@@ -28,6 +28,9 @@ func main() {
 		Larvae: 0.01,
 		Pupae:  0.001,
 		InHive: 0.004,
+
+		MaxLifespan: 390,
+		MaxMilage:   200,
 	}
 	ecs.AddResource(&m.World, &workerMort)
 
@@ -92,7 +95,7 @@ func main() {
 	}).
 		With(&plot.Lines{
 			Observer: &obs.Cohorts{
-				MaxAge: 300,
+				MaxAge: 400,
 			},
 			YLim: [...]float64{0, 1600},
 		}))

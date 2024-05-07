@@ -16,6 +16,9 @@ type WorkerMortality struct {
 	Larvae float64
 	Pupae  float64
 	InHive float64
+
+	MaxLifespan int
+	MaxMilage   float32
 }
 
 type DroneMortality struct {

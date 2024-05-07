@@ -31,6 +31,6 @@ func (f *ForagerFactory) CreateInitialSquadrons(count int, minDayOfBirth, maxDay
 	for q.Next() {
 		m, a := q.Get()
 		a.DayOfBirth = rng.Intn(maxDayOfBirth-minDayOfBirth) + minDayOfBirth
-		m.Today = rng.Float32()*(maxMilage-minMilage) + minMilage
+		m.Total = rng.Float32()*(maxMilage-minMilage) + minMilage
 	}
 }

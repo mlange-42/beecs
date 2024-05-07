@@ -30,7 +30,7 @@ func (s *MortalityForagers) Update(w *ecs.World) {
 	for query.Next() {
 		a, m := query.Get()
 		if int(s.time.Tick)-a.DayOfBirth >= s.workerMort.MaxLifespan ||
-			m.Today >= s.workerMort.MaxMilage ||
+			m.Total >= s.workerMort.MaxMilage ||
 			r.Float64() < s.workerMort.InHive {
 			s.toRemove = append(s.toRemove, query.Entity())
 		}

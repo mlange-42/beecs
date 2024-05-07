@@ -13,7 +13,6 @@ type CountPopulation struct {
 	pupae          *res.Pupae
 	inHive         *res.InHive
 	params         *res.Params
-	workerDev      *res.WorkerDevelopment
 	stats          *res.PopulationStats
 	foragersFilter *generic.Filter0
 }
@@ -24,7 +23,6 @@ func (s *CountPopulation) Initialize(w *ecs.World) {
 	s.pupae = ecs.GetResource[res.Pupae](w)
 	s.inHive = ecs.GetResource[res.InHive](w)
 	s.params = ecs.GetResource[res.Params](w)
-	s.workerDev = ecs.GetResource[res.WorkerDevelopment](w)
 	s.stats = ecs.GetResource[res.PopulationStats](w)
 	s.foragersFilter = generic.NewFilter0().With(generic.T[comp.Age]())
 

@@ -17,7 +17,8 @@ func TestMortalityCohorts(t *testing.T) {
 
 	fac := res.NewForagerFactory(&world)
 
-	ecs.AddResource(&world, &resource.Tick{})
+	time := resource.Tick{}
+	ecs.AddResource(&world, &time)
 	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
 	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 5})
 	ecs.AddResource(&world, &res.WorkerMortality{
@@ -84,6 +85,15 @@ func TestMortalityCohorts(t *testing.T) {
 
 	assert.Greater(t, cnt, 0)
 	assert.Less(t, cnt, 100)
+
+	time.Tick = 400
+	mort.Update(&world)
+
+	q = f.Query(&world)
+	cnt = q.Count()
+	q.Close()
+
+	assert.Equal(t, 0, cnt)
 }
 
 func fillCohorts(coh []int, count int) {

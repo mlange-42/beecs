@@ -13,9 +13,6 @@ func TestEggLaying(t *testing.T) {
 
 	ecs.AddResource(&world, &res.AgeFirstForaging{Max: 1})
 
-	time := Time{TicksPerDay: 1}
-	time.Initialize(&world)
-
 	init := InitCohorts{
 		EggTimeWorker: 1,
 		EggTimeDrone:  1,
@@ -28,7 +25,6 @@ func TestEggLaying(t *testing.T) {
 	}
 	lay.Initialize(&world)
 
-	time.Update(&world)
 	lay.Update(&world)
 
 	assert.Equal(t, []int{100}, init.eggs.Workers)

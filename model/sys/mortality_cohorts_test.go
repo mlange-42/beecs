@@ -33,9 +33,6 @@ func TestMortalityCohorts(t *testing.T) {
 		InHive: 0.5,
 	})
 
-	time := Time{TicksPerDay: 1}
-	time.Initialize(&world)
-
 	init := InitCohorts{
 		EggTimeWorker:    2,
 		LarvaeTimeWorker: 3,
@@ -64,7 +61,6 @@ func TestMortalityCohorts(t *testing.T) {
 	fillCohorts(init.inHive.Workers, 10000)
 	fillCohorts(init.inHive.Drones, 10000)
 
-	time.Update(&world)
 	mort.Update(&world)
 
 	checkCohorts(t, init.eggs.Workers, 0, 10000)

@@ -76,6 +76,12 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &energy)
 
+	storeParams := res.StoreParams{
+		IdealPollenStoreDays: 7,
+		MinIdealPollenStore:  250.0,
+	}
+	ecs.AddResource(&m.World, &storeParams)
+
 	honeyNeeds := res.HoneyNeeds{
 		WorkerResting:    11.0,
 		WorkerNurse:      53.42,
@@ -90,9 +96,6 @@ func main() {
 		DroneLarva:       50.0,
 		Worker:           1.5,
 		Drone:            2.0,
-
-		IdealStoreDays: 7,
-		MinIdealStore:  250.0,
 	}
 	ecs.AddResource(&m.World, &pollenNeeds)
 

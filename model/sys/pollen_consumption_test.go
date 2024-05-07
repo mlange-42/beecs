@@ -26,14 +26,16 @@ func TestPollenConsumption(t *testing.T) {
 		MaxLifespan: 6,
 	})
 
+	ecs.AddResource(&world, &res.StoreParams{
+		IdealPollenStoreDays: 7,
+		MinIdealPollenStore:  250,
+	})
+
 	ecs.AddResource(&world, &res.PollenNeeds{
 		Worker:           3,
 		WorkerLarvaTotal: 21, // -> 7/d
 		DroneLarva:       7,
 		Drone:            9,
-
-		IdealStoreDays: 7,
-		MinIdealStore:  250,
 	})
 
 	stores := res.Stores{

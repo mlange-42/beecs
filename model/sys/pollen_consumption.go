@@ -8,14 +8,16 @@ import (
 )
 
 type PollenConsumption struct {
-	needs     *res.PollenNeeds
-	stores    *res.Stores
-	pop       *res.PopulationStats
-	workerDev *res.WorkerDevelopment
+	needs       *res.PollenNeeds
+	storeParams *res.StoreParams
+	stores      *res.Stores
+	pop         *res.PopulationStats
+	workerDev   *res.WorkerDevelopment
 }
 
 func (s *PollenConsumption) Initialize(w *ecs.World) {
 	s.needs = ecs.GetResource[res.PollenNeeds](w)
+	s.storeParams = ecs.GetResource[res.StoreParams](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 	s.pop = ecs.GetResource[res.PopulationStats](w)
 	s.workerDev = ecs.GetResource[res.WorkerDevelopment](w)
@@ -30,7 +32,7 @@ func (s *PollenConsumption) Update(w *ecs.World) {
 	consumption := (needAdult + needLarvae) / 1000.0
 	s.stores.Pollen = math.Max(s.stores.Pollen-consumption, 0)
 
-	s.stores.IdealPollen = math.Max(consumption*float64(s.needs.IdealStoreDays), s.needs.MinIdealStore)
+	s.stores.IdealPollen = math.Max(consumption*float64(s.storeParams.IdealPollenStoreDays), s.storeParams.MinIdealPollenStore)
 }
 
 func (s *PollenConsumption) Finalize(w *ecs.World) {}

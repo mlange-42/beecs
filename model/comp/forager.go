@@ -1,10 +1,6 @@
 package comp
 
-type ForagerActivity uint8
-
-const (
-	ActivityLazy ForagerActivity = iota
-)
+import "github.com/mlange-42/beecs/model/activity"
 
 type Milage struct {
 	Today float32
@@ -16,5 +12,5 @@ type Age struct {
 }
 
 type Activity struct {
-	Current ForagerActivity
+	Current activity.ForagerActivity
 }

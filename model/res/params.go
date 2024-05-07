@@ -69,12 +69,14 @@ type PollenNeeds struct {
 
 	Worker float64
 	Drone  float64
-
-	IdealStoreDays int
-	MinIdealStore  float64
 }
 
 type NurseParams struct {
 	MaxBroodNurseRatio         float64
 	ForagerNursingContribution float64
+}
+
+type StoreParams struct {
+	IdealPollenStoreDays int
+	MinIdealPollenStore  float64
 }

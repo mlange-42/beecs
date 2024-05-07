@@ -77,6 +77,7 @@ func main() {
 
 	m.AddSystem(&sys.CalcAff{})
 	m.AddSystem(&sys.CalcForagingPeriod{})
+	m.AddSystem(&sys.CalcForagingProbability{})
 
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})

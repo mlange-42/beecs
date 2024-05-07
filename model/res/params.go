@@ -27,3 +27,8 @@ type DroneMortality struct {
 	Pupae  float64
 	InHive float64
 }
+
+type StoreThresholds struct {
+	IdealPollenStore float64
+	DecentHoneyStore float64
+}

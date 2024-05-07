@@ -10,7 +10,7 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
-type Cohorts struct {
+type AgeStructure struct {
 	eggs   *res.Eggs
 	larvae *res.Larvae
 	pupae  *res.Pupae
@@ -25,7 +25,7 @@ type Cohorts struct {
 	MaxAge int
 }
 
-func (o *Cohorts) Initialize(w *ecs.World) {
+func (o *AgeStructure) Initialize(w *ecs.World) {
 	o.eggs = ecs.GetResource[res.Eggs](w)
 	o.larvae = ecs.GetResource[res.Larvae](w)
 	o.pupae = ecs.GetResource[res.Pupae](w)
@@ -44,11 +44,11 @@ func (o *Cohorts) Initialize(w *ecs.World) {
 		o.data[i] = []float64{0, 0, 0, 0, 0}
 	}
 }
-func (o *Cohorts) Update(w *ecs.World) {}
-func (o *Cohorts) Header() []string {
+func (o *AgeStructure) Update(w *ecs.World) {}
+func (o *AgeStructure) Header() []string {
 	return []string{"Eggs", "Larvae", "Pupae", "InHive", "Foragers"}
 }
-func (o *Cohorts) Values(w *ecs.World) [][]float64 {
+func (o *AgeStructure) Values(w *ecs.World) [][]float64 {
 	for i := 0; i < len(o.data); i++ {
 		o.data[i][0] = math.NaN()
 		o.data[i][1] = math.NaN()

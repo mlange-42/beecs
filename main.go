@@ -152,7 +152,7 @@ func main() {
 		Title: "Age distribution",
 	}).
 		With(&plot.Lines{
-			Observer: &obs.Cohorts{
+			Observer: &obs.AgeStructure{
 				MaxAge: 400,
 			},
 			YLim: [...]float64{0, 1600},

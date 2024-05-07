@@ -15,13 +15,24 @@ func TestMortalityCohorts(t *testing.T) {
 
 	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
 	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
-	ecs.AddResource(&world, &res.WorkerMortality{
-		Eggs:        0.5,
-		Larvae:      0.5,
-		Pupae:       0.5,
-		InHive:      0.5,
+	ecs.AddResource(&world, &res.WorkerDevelopment{
+		EggTime:     2,
+		LarvaeTime:  3,
+		PupaeTime:   4,
 		MaxLifespan: 390,
-		MaxMilage:   200,
+	})
+	ecs.AddResource(&world, &res.DroneDevelopment{
+		EggTime:     3,
+		LarvaeTime:  4,
+		PupaeTime:   5,
+		MaxLifespan: 6,
+	})
+	ecs.AddResource(&world, &res.WorkerMortality{
+		Eggs:      0.5,
+		Larvae:    0.5,
+		Pupae:     0.5,
+		InHive:    0.5,
+		MaxMilage: 200,
 	})
 	ecs.AddResource(&world, &res.DroneMortality{
 		Eggs:   0.5,
@@ -30,15 +41,7 @@ func TestMortalityCohorts(t *testing.T) {
 		InHive: 0.5,
 	})
 
-	init := InitCohorts{
-		EggTimeWorker:    2,
-		LarvaeTimeWorker: 3,
-		PupaeTimeWorker:  4,
-		EggTimeDrone:     3,
-		LarvaeTimeDrone:  4,
-		PupaeTimeDrone:   5,
-		LifespanDrone:    6,
-	}
+	init := InitCohorts{}
 	init.Initialize(&world)
 
 	mort := MortalityCohorts{}

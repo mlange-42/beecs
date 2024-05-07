@@ -10,14 +10,33 @@ type AgeFirstForagingParams struct {
 	Max  int
 }
 
+type ForagingProbabilityParams struct {
+	Base      float64
+	High      float64
+	Emergency float64
+}
+
+type WorkerDevelopment struct {
+	EggTime     int
+	LarvaeTime  int
+	PupaeTime   int
+	MaxLifespan int
+}
+
+type DroneDevelopment struct {
+	EggTime     int
+	LarvaeTime  int
+	PupaeTime   int
+	MaxLifespan int
+}
+
 type WorkerMortality struct {
 	Eggs   float64
 	Larvae float64
 	Pupae  float64
 	InHive float64
 
-	MaxLifespan int
-	MaxMilage   float32
+	MaxMilage float32
 }
 
 type DroneMortality struct {
@@ -25,9 +44,21 @@ type DroneMortality struct {
 	Larvae float64
 	Pupae  float64
 	InHive float64
+
+	MaxLifespan int
 }
 
-type StoreThresholds struct {
-	IdealPollenStore float64
-	DecentHoneyStore float64
+type EnergyParams struct {
+	EnergyHoney   float64
+	EnergyScurose float64
+}
+
+type HoneyNeeds struct {
+	WorkerResting float64
+	WorkerNurse   float64
+
+	WorkerLarvaTotal float64
+	DroneLarva       float64
+
+	Drone float64
 }

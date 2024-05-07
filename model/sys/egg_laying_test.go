@@ -13,10 +13,14 @@ func TestEggLaying(t *testing.T) {
 
 	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 1})
 
-	init := InitCohorts{
-		EggTimeWorker: 1,
-		EggTimeDrone:  1,
-	}
+	ecs.AddResource(&world, &res.WorkerDevelopment{
+		EggTime: 1,
+	})
+	ecs.AddResource(&world, &res.DroneDevelopment{
+		EggTime: 1,
+	})
+
+	init := InitCohorts{}
 	init.Initialize(&world)
 
 	lay := EggLaying{

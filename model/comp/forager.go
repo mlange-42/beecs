@@ -3,7 +3,7 @@ package comp
 type ForagerActivity uint8
 
 const (
-	ActivityIdle ForagerActivity = iota
+	ActivityLazy ForagerActivity = iota
 )
 
 type Milage struct {

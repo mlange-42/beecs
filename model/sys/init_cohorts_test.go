@@ -11,16 +11,20 @@ import (
 func TestInitCohorts(t *testing.T) {
 	world := ecs.NewWorld()
 	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
+	ecs.AddResource(&world, &res.WorkerDevelopment{
+		EggTime:     2,
+		LarvaeTime:  3,
+		PupaeTime:   4,
+		MaxLifespan: 100,
+	})
+	ecs.AddResource(&world, &res.DroneDevelopment{
+		EggTime:     3,
+		LarvaeTime:  4,
+		PupaeTime:   5,
+		MaxLifespan: 6,
+	})
 
-	s := InitCohorts{
-		EggTimeWorker:    2,
-		LarvaeTimeWorker: 3,
-		PupaeTimeWorker:  4,
-		EggTimeDrone:     3,
-		LarvaeTimeDrone:  4,
-		PupaeTimeDrone:   5,
-		LifespanDrone:    6,
-	}
+	s := InitCohorts{}
 	s.Initialize(&world)
 
 	assert.Equal(t, []int{0, 0}, s.eggs.Workers)

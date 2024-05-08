@@ -13,8 +13,9 @@ type InitStore struct {
 func (s *InitStore) Initialize(w *ecs.World) {
 	energyParams := ecs.GetResource[res.EnergyParams](w)
 	stores := res.Stores{
-		Pollen: s.InitialPollen,
-		Honey:  s.InitialHoney * 1000.0 * energyParams.EnergyHoney,
+		Pollen:              s.InitialPollen,
+		Honey:               s.InitialHoney * 1000.0 * energyParams.EnergyHoney,
+		ProteinFactorNurses: 1.0,
 	}
 
 	ecs.AddResource(w, &stores)

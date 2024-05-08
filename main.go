@@ -110,6 +110,7 @@ func main() {
 		IdealPollenStoreDays: 7,
 		MinIdealPollenStore:  250.0,
 		MaxHoneyStoreKg:      50.0,
+		ProteinStoreNurse:    7, // [d]
 	}
 	ecs.AddResource(&m.World, &storeParams)
 
@@ -193,6 +194,7 @@ func main() {
 
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})
+	m.AddSystem(&sys.BroodCare{})
 
 	m.AddSystem(&sys.EggLaying{})
 

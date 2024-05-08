@@ -112,4 +112,5 @@ type StoreParams struct {
 	IdealPollenStoreDays int
 	MinIdealPollenStore  float64
 	MaxHoneyStoreKg      float64
+	ProteinStoreNurse    float64 // [d]
 }

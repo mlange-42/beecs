@@ -7,26 +7,29 @@ import (
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/util"
 )
 
 type UpdatePatchesForaging struct {
 	params       *res.ForagingParams
 	energyParams *res.EnergyParams
+	danceParams  *res.DanceParams
 
-	filter generic.Filter5[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality]
+	filter generic.Filter6[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
 }
 
 func (s *UpdatePatchesForaging) Initialize(w *ecs.World) {
 	s.params = ecs.GetResource[res.ForagingParams](w)
 	s.energyParams = ecs.GetResource[res.EnergyParams](w)
+	s.danceParams = ecs.GetResource[res.DanceParams](w)
 
-	s.filter = *generic.NewFilter5[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality]()
+	s.filter = *generic.NewFilter6[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]()
 }
 
 func (s *UpdatePatchesForaging) Update(w *ecs.World) {
 	query := s.filter.Query(w)
 	for query.Next() {
-		conf, r, ht, trip, mort := query.Get()
+		conf, r, ht, trip, mort, dance := query.Get()
 
 		if s.params.ConstantHandlingTime {
 			ht.Pollen = s.params.TimePollenGathering
@@ -51,6 +54,9 @@ func (s *UpdatePatchesForaging) Update(w *ecs.World) {
 
 		mort.Nectar = 1.0 - (math.Pow(1.0-s.params.MortalityPerSec, trip.DurationNectar))
 		mort.Pollen = 1.0 - (math.Pow(1.0-s.params.MortalityPerSec, trip.DurationPollen))
+
+		circ := r.EnergyEfficiency*s.danceParams.Slope + s.danceParams.Intercept
+		dance.Circuits = util.Clamp(circ, 0, float64(s.danceParams.MaxCircuits))
 	}
 }
 

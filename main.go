@@ -64,7 +64,7 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &aff)
 
-	forageProb := res.ForagingParams{
+	forageParams := res.ForagingParams{
 		ProbBase:      0.01,
 		ProbHigh:      0.05,
 		ProbEmergency: 0.2,
@@ -82,7 +82,14 @@ func main() {
 		TimePollenGathering:  600,
 		ConstantHandlingTime: false,
 	}
-	ecs.AddResource(&m.World, &forageProb)
+	ecs.AddResource(&m.World, &forageParams)
+
+	danceParams := res.DanceParams{
+		Slope:       1.16,
+		Intercept:   0.0,
+		MaxCircuits: 117,
+	}
+	ecs.AddResource(&m.World, &danceParams)
 
 	energy := res.EnergyParams{
 		EnergyHoney:   12.78,

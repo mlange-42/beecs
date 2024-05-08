@@ -29,6 +29,12 @@ type ForagingParams struct {
 	ConstantHandlingTime bool
 }
 
+type DanceParams struct {
+	Slope       float64
+	Intercept   float64
+	MaxCircuits int
+}
+
 type WorkerDevelopment struct {
 	EggTime     int
 	LarvaeTime  int

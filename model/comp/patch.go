@@ -32,3 +32,7 @@ type PatchConfig struct {
 	DistToColony         float64 // [m]
 	DetectionProbability float64
 }
+
+type Dance struct {
+	Circuits float64
+}

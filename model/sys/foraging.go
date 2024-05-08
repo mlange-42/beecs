@@ -11,6 +11,7 @@ import (
 	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/res"
 	"golang.org/x/exp/rand"
+	"gonum.org/v1/gonum/stat/distuv"
 )
 
 type Foraging struct {
@@ -26,15 +27,21 @@ type Foraging struct {
 
 	patches  []PatchCandidate
 	toRemove []ecs.Entity
+	resting  []ecs.Entity
+	dances   []ecs.Entity
 
 	patchResourceMapper  generic.Map1[comp.Resource]
+	patchDanceMapper     generic.Map2[comp.Resource, comp.Dance]
 	patchTripMapper      generic.Map1[comp.Trip]
 	patchMortalityMapper generic.Map1[comp.Mortality]
 	patchConfigMapper    generic.Map2[comp.PatchConfig, comp.Trip]
-	foragerFilter        generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
-	foragerFilterLoad    generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
-	foragerFilterSimple  generic.Filter2[comp.Activity, comp.KnownPatch]
-	patchFilter          generic.Filter2[comp.Resource, comp.PatchConfig]
+	foragerMapper        generic.Map2[comp.Activity, comp.KnownPatch]
+
+	activityFilter      generic.Filter1[comp.Activity]
+	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	foragerFilterLoad   generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
+	foragerFilterSimple generic.Filter2[comp.Activity, comp.KnownPatch]
+	patchFilter         generic.Filter2[comp.Resource, comp.PatchConfig]
 
 	maxHoneyStore float64
 }
@@ -48,14 +55,18 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.energyParams = ecs.GetResource[res.EnergyParams](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 
+	s.activityFilter = *generic.NewFilter1[comp.Activity]()
 	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
 	s.foragerFilterLoad = *generic.NewFilter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]()
 	s.foragerFilterSimple = *generic.NewFilter2[comp.Activity, comp.KnownPatch]()
 	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchConfig]()
+
 	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
+	s.patchDanceMapper = generic.NewMap2[comp.Resource, comp.Dance](w)
 	s.patchTripMapper = generic.NewMap1[comp.Trip](w)
 	s.patchMortalityMapper = generic.NewMap1[comp.Mortality](w)
 	s.patchConfigMapper = generic.NewMap2[comp.PatchConfig, comp.Trip](w)
+	s.foragerMapper = generic.NewMap2[comp.Activity, comp.KnownPatch](w)
 
 	storeParams := ecs.GetResource[res.StoreParams](w)
 	energyParams := ecs.GetResource[res.EnergyParams](w)
@@ -139,6 +150,8 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 	s.collecting(w)
 	duration, foragers = s.flightCost(w)
 	s.mortality(w)
+	s.dancing(w)
+	s.unloading(w)
 	return
 }
 
@@ -431,6 +444,110 @@ func (s *Foraging) mortality(w *ecs.World) {
 		w.RemoveEntity(e)
 	}
 	s.toRemove = s.toRemove[:0]
+}
+
+func (s *Foraging) dancing(w *ecs.World) {
+	activityQuery := s.activityFilter.Query(w)
+	for activityQuery.Next() {
+		act := activityQuery.Get()
+		if act.Current == activity.Resting {
+			s.resting = append(s.resting, activityQuery.Entity())
+		} else if act.Current == activity.BringNectar || act.Current == activity.BringPollen {
+			s.dances = append(s.dances, activityQuery.Entity())
+		}
+	}
+	s.rng.Shuffle(len(s.resting), func(i, j int) { s.resting[i], s.resting[j] = s.resting[j], s.resting[i] })
+	s.rng.Shuffle(len(s.dances), func(i, j int) { s.dances[i], s.dances[j] = s.dances[j], s.dances[i] })
+
+	for _, e := range s.dances {
+		act, patch := s.foragerMapper.Get(e)
+
+		if act.Current != activity.BringNectar && act.Current != activity.BringPollen {
+			continue
+		}
+
+		if act.Current == activity.BringNectar {
+			patchRes, dance := s.patchDanceMapper.Get(patch.Nectar)
+			danceEEF := patchRes.EnergyEfficiency
+
+			rPoisson := distuv.Poisson{
+				Src:    s.rng,
+				Lambda: dance.Circuits * 0.05,
+			}
+			danceFollowers := int(rPoisson.Rand())
+
+			if danceFollowers == 0 {
+				continue
+			}
+			if len(s.resting) < danceFollowers {
+				continue
+			}
+
+			for i := 0; i < danceFollowers; i++ {
+				follower := s.resting[len(s.resting)-1]
+				fAct, fPatch := s.foragerMapper.Get(follower)
+
+				if fPatch.Nectar.IsZero() {
+					fPatch.Nectar = patch.Nectar
+					fAct.Current = activity.Recruited
+					fAct.PollenForager = false
+				} else {
+					knownRes := s.patchResourceMapper.Get(fPatch.Nectar)
+					if danceEEF > knownRes.EnergyEfficiency {
+						fPatch.Nectar = patch.Nectar
+						fAct.Current = activity.Recruited
+						fAct.PollenForager = false
+					} else {
+						// TODO: really? was resting before!
+						fAct.Current = activity.Experienced
+					}
+				}
+
+				s.resting = s.resting[:len(s.resting)-1]
+			}
+		}
+
+		if act.Current == activity.BringPollen {
+			trip := s.patchTripMapper.Get(patch.Nectar)
+			danceTripDuration := trip.DurationPollen
+
+			danceFollowers := s.danceParams.PollenDanceFollowers
+
+			if len(s.resting) < danceFollowers {
+				continue
+			}
+
+			for i := 0; i < danceFollowers; i++ {
+				follower := s.resting[len(s.resting)-1]
+				fAct, fPatch := s.foragerMapper.Get(follower)
+
+				if fPatch.Pollen.IsZero() {
+					fPatch.Pollen = patch.Pollen
+					fAct.Current = activity.Recruited
+					fAct.PollenForager = true
+				} else {
+					knownTrip := s.patchTripMapper.Get(fPatch.Pollen)
+					if danceTripDuration < knownTrip.DurationPollen {
+						fPatch.Pollen = patch.Pollen
+						fAct.Current = activity.Recruited
+						fAct.PollenForager = true
+					} else {
+						// TODO: really? was resting before!
+						fAct.Current = activity.Experienced
+					}
+				}
+
+				s.resting = s.resting[:len(s.resting)-1]
+			}
+		}
+	}
+
+	s.resting = s.resting[:0]
+	s.dances = s.dances[:0]
+}
+
+func (s *Foraging) unloading(w *ecs.World) {
+
 }
 
 type PatchCandidate struct {

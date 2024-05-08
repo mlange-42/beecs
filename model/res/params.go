@@ -37,10 +37,11 @@ type ForagingParams struct {
 }
 
 type DanceParams struct {
-	Slope           float64
-	Intercept       float64
-	MaxCircuits     int
-	FindProbability float64
+	Slope                float64
+	Intercept            float64
+	MaxCircuits          int
+	FindProbability      float64
+	PollenDanceFollowers int
 }
 
 type WorkerDevelopment struct {

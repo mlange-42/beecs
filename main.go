@@ -115,19 +115,19 @@ func main() {
 	ecs.AddResource(&m.World, &storeParams)
 
 	honeyNeeds := res.HoneyNeeds{
-		WorkerResting:    11.0,
-		WorkerNurse:      53.42,
-		WorkerLarvaTotal: 65.4,
-		DroneLarva:       19.2,
-		Drone:            10.0,
+		WorkerResting:    11.0,  // [mg/d]
+		WorkerNurse:      53.42, // [mg/d]
+		WorkerLarvaTotal: 65.4,  // [mg]
+		DroneLarva:       19.2,  // [mg/d]
+		Drone:            10.0,  // [mg/d]
 	}
 	ecs.AddResource(&m.World, &honeyNeeds)
 
 	pollenNeeds := res.PollenNeeds{
-		WorkerLarvaTotal: 142.0,
-		DroneLarva:       50.0,
-		Worker:           1.5,
-		Drone:            2.0,
+		WorkerLarvaTotal: 142.0, // [mg]
+		DroneLarva:       50.0,  // [mg/d]
+		Worker:           1.5,   // [mg/d]
+		Drone:            2.0,   // [mg/d]
 	}
 	ecs.AddResource(&m.World, &pollenNeeds)
 

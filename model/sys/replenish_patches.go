@@ -26,8 +26,9 @@ func (s *ReplenishPatches) Update(w *ecs.World) {
 
 		res.MaxNectar = conf.Nectar * 1000 * 1000
 		res.MaxPollen = conf.Pollen * 1000
+
 		res.Nectar = res.MaxNectar
-		res.Pollen = res.MaxNectar
+		res.Pollen = res.MaxPollen
 	}
 }
 

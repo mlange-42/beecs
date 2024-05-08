@@ -427,16 +427,12 @@ func (s *Foraging) mortality(w *ecs.World) {
 			if s.rng.Float64() < 1-math.Pow(1-s.forageParams.MortalityPerSec, searchDuration) {
 				s.toRemove = append(s.toRemove, foragerQuery.Entity())
 			}
-		}
-
-		if act.Current == activity.BringNectar {
+		} else if act.Current == activity.BringNectar {
 			m := s.patchMortalityMapper.Get(patch.Nectar)
 			if s.rng.Float64() < m.Nectar {
 				s.toRemove = append(s.toRemove, foragerQuery.Entity())
 			}
-		}
-
-		if act.Current == activity.BringPollen {
+		} else if act.Current == activity.BringPollen {
 			m := s.patchMortalityMapper.Get(patch.Pollen)
 			if s.rng.Float64() < m.Pollen {
 				s.toRemove = append(s.toRemove, foragerQuery.Entity())

@@ -76,6 +76,8 @@ func (s *BroodCare) killBrood(excess int, lacksNurses bool) {
 			return
 		}
 	}
+
+	panic("still brood to kill - code should not be reachable")
 }
 
 func reduceCohorts(coh []int, excess int) int {

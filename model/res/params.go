@@ -82,21 +82,21 @@ type EnergyParams struct {
 }
 
 type HoneyNeeds struct {
-	WorkerResting float64
-	WorkerNurse   float64
+	WorkerResting float64 // [mg/d]
+	WorkerNurse   float64 // [mg/d]
 
-	WorkerLarvaTotal float64
-	DroneLarva       float64
+	WorkerLarvaTotal float64 // [mg]
+	DroneLarva       float64 // [mg/d]
 
-	Drone float64
+	Drone float64 // [mg/d]
 }
 
 type PollenNeeds struct {
-	WorkerLarvaTotal float64
-	DroneLarva       float64
+	WorkerLarvaTotal float64 // [mg]
+	DroneLarva       float64 // [mg/d]
 
-	Worker float64
-	Drone  float64
+	Worker float64 // [mg/d]
+	Drone  float64 // [mg/d]
 }
 
 type NurseParams struct {

@@ -94,7 +94,7 @@ func (s *Foraging) Update(w *ecs.World) {
 	}
 
 	hangAroundDuration := s.forageParams.SearchLength / s.forageParams.FlightVelocity
-	forageProb := s.calcForagingProb(s.stores.DecentHoney, s.stores.IdealPollen)
+	forageProb := s.calcForagingProb()
 
 	round := 0
 	totalDuration := 0.0
@@ -126,15 +126,15 @@ func (s *Foraging) Finalize(w *ecs.World) {
 	s.PatchUpdater.Finalize(w)
 }
 
-func (s *Foraging) calcForagingProb(decentHoney, idealPollen float64) float64 {
-	if s.stores.Pollen/idealPollen > 0.5 && s.stores.Honey/decentHoney > 1 {
+func (s *Foraging) calcForagingProb() float64 {
+	if s.stores.Pollen/s.stores.IdealPollen > 0.5 && s.stores.Honey/s.stores.DecentHoney > 1 {
 		return 0
 	}
 	prob := s.forageParams.ProbBase
-	if s.stores.Pollen/idealPollen < 0.2 || s.stores.Honey/decentHoney < 0.5 {
+	if s.stores.Pollen/s.stores.IdealPollen < 0.2 || s.stores.Honey/s.stores.DecentHoney < 0.5 {
 		prob = s.forageParams.ProbHigh
 	}
-	if s.stores.Honey/decentHoney < 0.2 {
+	if s.stores.Honey/s.stores.DecentHoney < 0.2 {
 		prob = s.forageParams.ProbEmergency
 	}
 	return prob
@@ -395,9 +395,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 
 			duration += s.forageParams.SearchLength / s.forageParams.FlightVelocity
 			foragers += 1
-		}
-
-		if act.Current == activity.BringNectar || act.Current == activity.BringPollen {
+		} else if act.Current == activity.BringNectar || act.Current == activity.BringPollen {
 			en := 0.0
 			if act.PollenForager {
 				trip := s.patchTripMapper.Get(patch.Pollen)
@@ -552,7 +550,7 @@ func (s *Foraging) unloading(w *ecs.World) {
 		act, load := query.Get()
 		if act.Current == activity.BringNectar {
 			s.stores.Honey = math.Min(
-				load.Energy*float64(s.params.SquadronSize),
+				s.stores.Honey+load.Energy*float64(s.params.SquadronSize),
 				s.maxHoneyStore,
 			)
 			load.Energy = 0

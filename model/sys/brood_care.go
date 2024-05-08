@@ -34,7 +34,7 @@ func (s *BroodCare) Update(w *ecs.World) {
 	excessBrood := int(math.Ceil(float64(s.pop.TotalBrood) - maxBrood))
 	lacksNurses := excessBrood > 0
 
-	starved := int(math.Ceil((float64(s.pop.WorkerLarvae+s.pop.DronePupae) * (1.0 - s.stores.ProteinFactorNurses))))
+	starved := int(math.Ceil((float64(s.pop.WorkerLarvae+s.pop.DroneLarvae) * (1.0 - s.stores.ProteinFactorNurses))))
 
 	if starved > excessBrood {
 		excessBrood = starved

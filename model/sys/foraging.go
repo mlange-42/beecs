@@ -557,7 +557,7 @@ func (s *Foraging) unloading(w *ecs.World) {
 		if act.Current == activity.BringNectar {
 			s.stores.Honey = math.Min(
 				load.Energy*float64(s.params.SquadronSize),
-				s.storeParams.MaxHoneyStoreKg*1000.0*s.energyParams.EnergyHoney,
+				s.maxHoneyStore,
 			)
 			load.Energy = 0
 			act.Current = activity.Experienced

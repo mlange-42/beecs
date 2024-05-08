@@ -229,6 +229,17 @@ func main() {
 			Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
 		}))
 
+	m.AddUISystem((&window.Window{
+		Title:        "Stores",
+		Bounds:       window.B(610, 30, 600, 400),
+		DrawInterval: 15,
+	}).
+		With(&plot.TimeSeries{
+			Observer:       &obs.Stores{},
+			UpdateInterval: 1,
+			Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Amount"},
+		}))
+
 	// Run
 
 	window.Run(m)

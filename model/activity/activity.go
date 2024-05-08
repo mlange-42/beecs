@@ -8,4 +8,6 @@ const (
 	Searching
 	Recruited
 	Experienced
+	BringNectar
+	BringPollen
 )

@@ -47,7 +47,7 @@ func (s *UpdatePatchesForaging) Update(w *ecs.World) {
 			(s.params.FlightCostPerM * ht.Pollen *
 				s.params.FlightVelocity * s.params.EnergyOnFlower) // [kJ] = [m*kJ/m + kJ/m * s * m/s]
 
-		r.EnergyEfficiency = (conf.NectarConcentration*s.params.VolumeCarried*s.energyParams.EnergyScurose - trip.CostNectar) / trip.CostNectar
+		r.EnergyEfficiency = (conf.NectarConcentration*s.params.NectarLoad*s.energyParams.EnergyScurose - trip.CostNectar) / trip.CostNectar
 
 		trip.DurationNectar = 2*conf.DistToColony/s.params.FlightVelocity + ht.Nectar
 		trip.DurationPollen = 2*conf.DistToColony/s.params.FlightVelocity + ht.Pollen

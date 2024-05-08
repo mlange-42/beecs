@@ -23,7 +23,8 @@ type ForagingParams struct {
 	MortalityPerSec float64
 	FlightCostPerM  float64 // [kJ/m]
 
-	VolumeCarried        float64 // [muL]
+	NectarLoad           float64 // [muL]
+	PollenLoad           float64 // [g]
 	TimeNectarGathering  float64 // [s]
 	TimePollenGathering  float64 // [s]
 	ConstantHandlingTime bool

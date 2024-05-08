@@ -77,7 +77,8 @@ func main() {
 		MortalityPerSec: 0.00001,
 		FlightCostPerM:  0.000006, //[kJ/m]
 
-		VolumeCarried:        50, // [muL]
+		NectarLoad:           50,    // [muL]
+		PollenLoad:           0.015, // [g]
 		TimeNectarGathering:  1200,
 		TimePollenGathering:  600,
 		ConstantHandlingTime: false,

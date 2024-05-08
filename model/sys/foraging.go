@@ -15,29 +15,34 @@ import (
 
 type Foraging struct {
 	PatchUpdater model.System
-
-	pop          *res.PopulationStats
+	rng          *rand.Rand
+	params       *res.Params
 	foragePeriod *res.ForagingPeriod
 	forageParams *res.ForagingParams
 	stores       *res.Stores
+	pop          *res.PopulationStats
 
-	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	patches []PatchCandidate
+
 	patchResourceMapper generic.Map1[comp.Resource]
-	patchTrimMapper     generic.Map1[comp.Trip]
+	patchTripMapper     generic.Map1[comp.Trip]
+	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	patchFilter         generic.Filter2[comp.Resource, comp.PatchConfig]
 
 	maxHoneyStore float64
-	rng           *rand.Rand
 }
 
 func (s *Foraging) Initialize(w *ecs.World) {
 	s.pop = ecs.GetResource[res.PopulationStats](w)
+	s.params = ecs.GetResource[res.Params](w)
 	s.foragePeriod = ecs.GetResource[res.ForagingPeriod](w)
 	s.forageParams = ecs.GetResource[res.ForagingParams](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 
 	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
+	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchConfig]()
 	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
-	s.patchTrimMapper = generic.NewMap1[comp.Trip](w)
+	s.patchTripMapper = generic.NewMap1[comp.Trip](w)
 
 	storeParams := ecs.GetResource[res.StoreParams](w)
 	energyParams := ecs.GetResource[res.EnergyParams](w)
@@ -119,6 +124,7 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 	s.PatchUpdater.Update(w)
 
 	s.foragerDecisions(w, forageProb, probCollectPollen)
+	s.searching(w)
 
 	_ = forageProb
 	return 17 * 60, 1 // TODO!
@@ -154,7 +160,7 @@ func (s *Foraging) foragerDecisions(w *ecs.World, probForage, probCollectPollen 
 		}
 
 		if !patch.Pollen.IsZero() && act.PollenForager {
-			trip := s.patchTrimMapper.Get(patch.Pollen)
+			trip := s.patchTripMapper.Get(patch.Pollen)
 			if s.rng.Float64() < 1-math.Pow(1-s.forageParams.AbandonPollenPerSec, trip.DurationPollen) {
 
 				patch.Nectar = ecs.Entity{}
@@ -186,4 +192,79 @@ func (s *Foraging) foragerDecisions(w *ecs.World, probForage, probCollectPollen 
 			act.Current = activity.Resting
 		}
 	}
+}
+
+func (s *Foraging) searching(w *ecs.World) {
+	cumProb := 0.0
+	nonDetectionProb := 1.0
+
+	sz := float64(s.params.SquadronSize)
+	patchQuery := s.patchFilter.Query(w)
+	for patchQuery.Next() {
+		res, conf := patchQuery.Get()
+		hasNectar := res.Nectar >= s.forageParams.NectarLoad*sz
+		hasPollen := res.Pollen >= s.forageParams.PollenLoad*sz
+		if !hasNectar && !hasPollen {
+			continue
+		}
+		s.patches = append(s.patches, PatchCandidate{
+			Patch:       patchQuery.Entity(),
+			Probability: conf.DetectionProbability,
+			HasNectar:   hasNectar,
+			HasPollen:   hasPollen,
+		})
+
+		cumProb += conf.DetectionProbability
+		nonDetectionProb *= 1.0 - conf.DetectionProbability
+	}
+	detectionProb := 1.0 - nonDetectionProb
+
+	foragerQuery := s.foragerFilter.Query(w)
+	for foragerQuery.Next() {
+		act, patch, _ := foragerQuery.Get()
+
+		if act.Current == activity.Searching {
+			if s.rng.Float64() < detectionProb {
+				p := s.rng.Float64() * cumProb
+				cum := 0.0
+				var selected PatchCandidate
+				for _, pch := range s.patches {
+					cum += pch.Probability
+					if cum >= p {
+						selected = pch
+						break
+					}
+				}
+				if act.PollenForager {
+					if selected.HasPollen {
+						act.Current = activity.BringPollen
+						patch.Pollen = selected.Patch
+						res := s.patchResourceMapper.Get(selected.Patch)
+						res.Pollen -= s.forageParams.PollenLoad * sz
+					} else {
+						patch.Pollen = ecs.Entity{}
+					}
+				} else {
+					if selected.HasNectar {
+						act.Current = activity.BringNectar
+						patch.Nectar = selected.Patch
+						res := s.patchResourceMapper.Get(selected.Patch)
+						res.Pollen -= s.forageParams.NectarLoad * sz
+					} else {
+						patch.Nectar = ecs.Entity{}
+					}
+				}
+			}
+		}
+
+	}
+
+	s.patches = s.patches[:0]
+}
+
+type PatchCandidate struct {
+	Patch       ecs.Entity
+	Probability float64
+	HasNectar   bool
+	HasPollen   bool
 }

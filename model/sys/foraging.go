@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/activity"
@@ -9,6 +10,8 @@ import (
 )
 
 type Foraging struct {
+	PatchUpdater model.System
+
 	pop          *res.PopulationStats
 	foragePeriod *res.ForagingPeriod
 	forageParams *res.ForagingParams
@@ -31,6 +34,8 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	energyParams := ecs.GetResource[res.EnergyParams](w)
 
 	s.maxHoneyStore = storeParams.MaxHoneyStoreKg * 1000.0 * energyParams.EnergyHoney
+
+	s.PatchUpdater.Initialize(w)
 }
 
 func (s *Foraging) Update(w *ecs.World) {
@@ -45,7 +50,7 @@ func (s *Foraging) Update(w *ecs.World) {
 	round := 0
 	totalDuration := 0.0
 	for {
-		duration, foragers := s.foragingRound(forageProb)
+		duration, foragers := s.foragingRound(w, forageProb)
 		meanDuration := 0.0
 		if foragers > 0 {
 			meanDuration = duration / float64(foragers)
@@ -68,7 +73,9 @@ func (s *Foraging) Update(w *ecs.World) {
 	}
 }
 
-func (s *Foraging) Finalize(w *ecs.World) {}
+func (s *Foraging) Finalize(w *ecs.World) {
+	s.PatchUpdater.Finalize(w)
+}
 
 func (s *Foraging) calcForagingProb(decentHoney, idealPollen float64) float64 {
 	if s.stores.Pollen/idealPollen > 0.5 && s.stores.Honey/decentHoney > 1 {
@@ -84,7 +91,7 @@ func (s *Foraging) calcForagingProb(decentHoney, idealPollen float64) float64 {
 	return prob
 }
 
-func (s *Foraging) foragingRound(forageProb float64) (duration float64, foragers int) {
+func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration float64, foragers int) {
 	duration, foragers = 0.0, 0
 
 	probCollectPollen := (1.0 - s.stores.Pollen/s.stores.IdealPollen) * s.forageParams.MaxProportionPollenForagers
@@ -92,6 +99,8 @@ func (s *Foraging) foragingRound(forageProb float64) (duration float64, foragers
 	if s.stores.Honey/s.stores.DecentHoney < 0.5 {
 		probCollectPollen *= s.stores.Honey / s.stores.DecentHoney
 	}
+
+	s.PatchUpdater.Update(w)
 
 	_ = forageProb
 	return 17 * 60, 1 // TODO!

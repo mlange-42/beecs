@@ -69,9 +69,18 @@ func main() {
 		ProbHigh:      0.05,
 		ProbEmergency: 0.2,
 
-		FlightVelocity:              6.5,
-		SearchLength:                6.5 * 60 * 17,
+		FlightVelocity:              6.5,           // [m/s]
+		SearchLength:                6.5 * 60 * 17, // [s] (17 min)
 		MaxProportionPollenForagers: 0.8,
+
+		EnergyOnFlower:  0.2,
+		MortalityPerSec: 0.00001,
+		FlightCostPerM:  0.000006, //[kJ/m]
+
+		VolumeCarried:        50, // [muL]
+		TimeNectarGathering:  1200,
+		TimePollenGathering:  600,
+		ConstantHandlingTime: false,
 	}
 	ecs.AddResource(&m.World, &forageProb)
 
@@ -155,6 +164,7 @@ func main() {
 
 	m.AddSystem(&sys.CalcAff{})
 	m.AddSystem(&sys.CalcForagingPeriod{})
+	m.AddSystem(&sys.ReplenishPatches{})
 
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})
@@ -166,7 +176,9 @@ func main() {
 		MaxEggsPerDay: 1600,
 	})
 
-	m.AddSystem(&sys.Foraging{})
+	m.AddSystem(&sys.Foraging{
+		PatchUpdater: &sys.UpdatePatchesForaging{},
+	})
 	m.AddSystem(&sys.HoneyConsumption{})
 	m.AddSystem(&sys.PollenConsumption{})
 

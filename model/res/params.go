@@ -15,9 +15,18 @@ type ForagingParams struct {
 	ProbHigh      float64
 	ProbEmergency float64
 
-	FlightVelocity              float64
-	SearchLength                float64
+	FlightVelocity              float64 // [m/s]
+	SearchLength                float64 // [s]
 	MaxProportionPollenForagers float64
+
+	EnergyOnFlower  float64
+	MortalityPerSec float64
+	FlightCostPerM  float64 // [kJ/m]
+
+	VolumeCarried        float64 // [muL]
+	TimeNectarGathering  float64 // [s]
+	TimePollenGathering  float64 // [s]
+	ConstantHandlingTime bool
 }
 
 type WorkerDevelopment struct {

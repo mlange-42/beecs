@@ -22,6 +22,7 @@ type Foraging struct {
 	forageParams *res.ForagingParams
 	danceParams  *res.DanceParams
 	energyParams *res.EnergyParams
+	storeParams  *res.StoreParams
 	stores       *res.Stores
 	pop          *res.PopulationStats
 
@@ -38,6 +39,7 @@ type Foraging struct {
 	foragerMapper        generic.Map2[comp.Activity, comp.KnownPatch]
 
 	activityFilter      generic.Filter1[comp.Activity]
+	loadFilter          generic.Filter2[comp.Activity, comp.NectarLoad]
 	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
 	foragerFilterLoad   generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
 	foragerFilterSimple generic.Filter2[comp.Activity, comp.KnownPatch]
@@ -53,9 +55,11 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.forageParams = ecs.GetResource[res.ForagingParams](w)
 	s.danceParams = ecs.GetResource[res.DanceParams](w)
 	s.energyParams = ecs.GetResource[res.EnergyParams](w)
+	s.storeParams = ecs.GetResource[res.StoreParams](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 
 	s.activityFilter = *generic.NewFilter1[comp.Activity]()
+	s.loadFilter = *generic.NewFilter2[comp.Activity, comp.NectarLoad]()
 	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
 	s.foragerFilterLoad = *generic.NewFilter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]()
 	s.foragerFilterSimple = *generic.NewFilter2[comp.Activity, comp.KnownPatch]()
@@ -547,7 +551,21 @@ func (s *Foraging) dancing(w *ecs.World) {
 }
 
 func (s *Foraging) unloading(w *ecs.World) {
-
+	query := s.loadFilter.Query(w)
+	for query.Next() {
+		act, load := query.Get()
+		if act.Current == activity.BringNectar {
+			s.stores.Honey = math.Min(
+				load.Energy*float64(s.params.SquadronSize),
+				s.storeParams.MaxHoneyStoreKg*1000.0*s.energyParams.EnergyHoney,
+			)
+			load.Energy = 0
+			act.Current = activity.Experienced
+		} else if act.Current == activity.BringPollen {
+			s.stores.Pollen += s.forageParams.PollenLoad * float64(s.params.SquadronSize)
+			act.Current = activity.Experienced
+		}
+	}
 }
 
 type PatchCandidate struct {

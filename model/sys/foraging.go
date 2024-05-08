@@ -19,6 +19,7 @@ type Foraging struct {
 	params       *res.Params
 	foragePeriod *res.ForagingPeriod
 	forageParams *res.ForagingParams
+	danceParams  *res.DanceParams
 	stores       *res.Stores
 	pop          *res.PopulationStats
 
@@ -37,6 +38,7 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.params = ecs.GetResource[res.Params](w)
 	s.foragePeriod = ecs.GetResource[res.ForagingPeriod](w)
 	s.forageParams = ecs.GetResource[res.ForagingParams](w)
+	s.danceParams = ecs.GetResource[res.DanceParams](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 
 	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
@@ -237,8 +239,8 @@ func (s *Foraging) searching(w *ecs.World) {
 				}
 				if act.PollenForager {
 					if selected.HasPollen {
-						act.Current = activity.BringPollen
 						patch.Pollen = selected.Patch
+						act.Current = activity.BringPollen
 						res := s.patchResourceMapper.Get(selected.Patch)
 						res.Pollen -= s.forageParams.PollenLoad * sz
 					} else {
@@ -246,10 +248,10 @@ func (s *Foraging) searching(w *ecs.World) {
 					}
 				} else {
 					if selected.HasNectar {
-						act.Current = activity.BringNectar
 						patch.Nectar = selected.Patch
+						act.Current = activity.BringNectar
 						res := s.patchResourceMapper.Get(selected.Patch)
-						res.Pollen -= s.forageParams.NectarLoad * sz
+						res.Nectar -= s.forageParams.NectarLoad * sz
 					} else {
 						patch.Nectar = ecs.Entity{}
 					}
@@ -257,6 +259,39 @@ func (s *Foraging) searching(w *ecs.World) {
 			}
 		}
 
+		if act.Current != activity.Recruited {
+			continue
+		}
+
+		if !act.PollenForager && !patch.Nectar.IsZero() {
+			success := false
+			if s.rng.Float64() < s.danceParams.FindProbability {
+				res := s.patchResourceMapper.Get(patch.Nectar)
+				if res.Nectar >= s.forageParams.NectarLoad*sz {
+					res.Nectar -= s.forageParams.NectarLoad * sz
+					success = true
+				}
+			}
+			if !success {
+				act.Current = activity.Searching
+				patch.Nectar = ecs.Entity{}
+			}
+		}
+
+		if act.PollenForager && !patch.Pollen.IsZero() {
+			success := false
+			if s.rng.Float64() < s.danceParams.FindProbability {
+				res := s.patchResourceMapper.Get(patch.Pollen)
+				if res.Pollen >= s.forageParams.PollenLoad*sz {
+					res.Pollen -= s.forageParams.PollenLoad * sz
+					success = true
+				}
+			}
+			if !success {
+				act.Current = activity.Searching
+				patch.Pollen = ecs.Entity{}
+			}
+		}
 	}
 
 	s.patches = s.patches[:0]

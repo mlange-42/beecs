@@ -89,9 +89,10 @@ func main() {
 	ecs.AddResource(&m.World, &forageParams)
 
 	danceParams := res.DanceParams{
-		Slope:       1.16,
-		Intercept:   0.0,
-		MaxCircuits: 117,
+		Slope:           1.16,
+		Intercept:       0.0,
+		MaxCircuits:     117,
+		FindProbability: 0.5,
 	}
 	ecs.AddResource(&m.World, &danceParams)
 

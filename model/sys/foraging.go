@@ -20,6 +20,7 @@ type Foraging struct {
 	foragePeriod *res.ForagingPeriod
 	forageParams *res.ForagingParams
 	danceParams  *res.DanceParams
+	energyParams *res.EnergyParams
 	stores       *res.Stores
 	pop          *res.PopulationStats
 
@@ -27,7 +28,10 @@ type Foraging struct {
 
 	patchResourceMapper generic.Map1[comp.Resource]
 	patchTripMapper     generic.Map1[comp.Trip]
+	patchConfigMapper   generic.Map2[comp.PatchConfig, comp.Trip]
 	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	foragerFilterLoad   generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
+	foragerFilterSimple generic.Filter2[comp.Activity, comp.KnownPatch]
 	patchFilter         generic.Filter2[comp.Resource, comp.PatchConfig]
 
 	maxHoneyStore float64
@@ -39,12 +43,16 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.foragePeriod = ecs.GetResource[res.ForagingPeriod](w)
 	s.forageParams = ecs.GetResource[res.ForagingParams](w)
 	s.danceParams = ecs.GetResource[res.DanceParams](w)
+	s.energyParams = ecs.GetResource[res.EnergyParams](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 
 	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
+	s.foragerFilterLoad = *generic.NewFilter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]()
+	s.foragerFilterSimple = *generic.NewFilter2[comp.Activity, comp.KnownPatch]()
 	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchConfig]()
 	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
 	s.patchTripMapper = generic.NewMap1[comp.Trip](w)
+	s.patchConfigMapper = generic.NewMap2[comp.PatchConfig, comp.Trip](w)
 
 	storeParams := ecs.GetResource[res.StoreParams](w)
 	energyParams := ecs.GetResource[res.EnergyParams](w)
@@ -125,14 +133,15 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 
 	s.PatchUpdater.Update(w)
 
-	s.foragerDecisions(w, forageProb, probCollectPollen)
+	s.decisions(w, forageProb, probCollectPollen)
 	s.searching(w)
+	s.collecting(w)
 
 	_ = forageProb
 	return 17 * 60, 1 // TODO!
 }
 
-func (s *Foraging) foragerDecisions(w *ecs.World, probForage, probCollectPollen float64) {
+func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64) {
 	query := s.foragerFilter.Query(w)
 	for query.Next() {
 		act, patch, milage := query.Get()
@@ -221,9 +230,9 @@ func (s *Foraging) searching(w *ecs.World) {
 	}
 	detectionProb := 1.0 - nonDetectionProb
 
-	foragerQuery := s.foragerFilter.Query(w)
+	foragerQuery := s.foragerFilterSimple.Query(w)
 	for foragerQuery.Next() {
-		act, patch, _ := foragerQuery.Get()
+		act, patch := foragerQuery.Get()
 
 		if act.Current == activity.Searching {
 			if s.rng.Float64() < detectionProb {
@@ -295,6 +304,59 @@ func (s *Foraging) searching(w *ecs.World) {
 	}
 
 	s.patches = s.patches[:0]
+}
+
+func (s *Foraging) collecting(w *ecs.World) {
+	sz := float64(s.params.SquadronSize)
+	foragerQuery := s.foragerFilterLoad.Query(w)
+	for foragerQuery.Next() {
+		act, patch, milage, load := foragerQuery.Get()
+
+		if act.Current == activity.Experienced {
+			if act.PollenForager {
+				if patch.Pollen.IsZero() {
+					act.Current = activity.Resting
+				} else {
+					res := s.patchResourceMapper.Get(patch.Pollen)
+					if res.Pollen >= s.forageParams.PollenLoad*sz {
+						act.Current = activity.BringPollen
+						res.Pollen -= s.forageParams.PollenLoad * sz
+					} else {
+						act.Current = activity.Searching
+						patch.Pollen = ecs.Entity{}
+					}
+				}
+			} else {
+				if patch.Nectar.IsZero() {
+					act.Current = activity.Resting
+				} else {
+					res := s.patchResourceMapper.Get(patch.Nectar)
+					if res.Nectar >= s.forageParams.NectarLoad*sz {
+						act.Current = activity.BringNectar
+						res.Nectar -= s.forageParams.NectarLoad * sz
+					} else {
+						act.Current = activity.Searching
+						patch.Nectar = ecs.Entity{}
+					}
+				}
+			}
+		}
+
+		if act.Current == activity.BringNectar {
+			conf, trip := s.patchConfigMapper.Get(patch.Nectar)
+			load.Energy = conf.NectarConcentration * s.forageParams.NectarLoad * s.energyParams.EnergyScurose
+			dist := trip.CostNectar / (s.forageParams.FlightCostPerM * 1000)
+			milage.Today += float32(dist)
+			milage.Total += float32(dist)
+		}
+
+		if act.Current == activity.BringPollen {
+			trip := s.patchTripMapper.Get(patch.Pollen)
+			dist := trip.CostPollen / (s.forageParams.FlightCostPerM * 1000)
+			milage.Today += float32(dist)
+			milage.Total += float32(dist)
+		}
+	}
 }
 
 type PatchCandidate struct {

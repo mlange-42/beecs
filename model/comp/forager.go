@@ -23,3 +23,7 @@ type KnownPatch struct {
 	Nectar ecs.Entity
 	Pollen ecs.Entity
 }
+
+type NectarLoad struct {
+	Energy float64
+}

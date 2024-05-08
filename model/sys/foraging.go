@@ -136,6 +136,7 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 	s.decisions(w, forageProb, probCollectPollen)
 	s.searching(w)
 	s.collecting(w)
+	s.flightCost(w)
 
 	_ = forageProb
 	return 17 * 60, 1 // TODO!
@@ -355,6 +356,43 @@ func (s *Foraging) collecting(w *ecs.World) {
 			dist := trip.CostPollen / (s.forageParams.FlightCostPerM * 1000)
 			milage.Today += float32(dist)
 			milage.Total += float32(dist)
+		}
+	}
+}
+
+func (s *Foraging) flightCost(w *ecs.World) {
+	duration := 0.0
+	foragers := 0
+
+	query := s.foragerFilter.Query(w)
+	for query.Next() {
+		act, patch, milage := query.Get()
+
+		if act.Current == activity.Searching {
+			dist := s.forageParams.SearchLength / 1000.0
+			milage.Today += float32(dist)
+			milage.Total += float32(dist)
+
+			en := s.forageParams.SearchLength * s.forageParams.FlightCostPerM * float64(s.params.SquadronSize)
+			s.stores.Honey -= en
+
+			duration += s.forageParams.SearchLength / s.forageParams.FlightVelocity
+			foragers += 1
+		}
+
+		if act.Current == activity.BringNectar || act.Current == activity.BringPollen {
+			en := 0.0
+			if act.PollenForager {
+				trip := s.patchTripMapper.Get(patch.Pollen)
+				duration += trip.DurationPollen + s.forageParams.TimeUnloadingPollen
+				en = trip.CostPollen
+			} else {
+				trip := s.patchTripMapper.Get(patch.Nectar)
+				duration += trip.DurationNectar + s.forageParams.TimeUnloadingNectar
+				en = trip.CostNectar
+			}
+			s.stores.Honey -= en
+			foragers += 1
 		}
 	}
 }

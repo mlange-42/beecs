@@ -115,7 +115,7 @@ func (s *Foraging) calcForagingProb(decentHoney, idealPollen float64) float64 {
 }
 
 func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration float64, foragers int) {
-	duration, foragers = 0.0, 0
+	//duration, foragers = 0.0, 0
 
 	probCollectPollen := (1.0 - s.stores.Pollen/s.stores.IdealPollen) * s.forageParams.MaxProportionPollenForagers
 

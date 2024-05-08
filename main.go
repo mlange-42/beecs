@@ -6,6 +6,7 @@ import (
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/obs"
 	"github.com/mlange-42/beecs/model/res"
 	"github.com/mlange-42/beecs/model/sys"
@@ -129,6 +130,25 @@ func main() {
 		MaxAge:       160,
 		MinMilage:    0,
 		MaxMilage:    200,
+	})
+
+	m.AddSystem(&sys.InitPatchesList{
+		Patches: []comp.PatchConfig{
+			{
+				Nectar:               20,
+				NectarConcentration:  1.5,
+				Pollen:               1,
+				DistToColony:         1500,
+				DetectionProbability: 0.2,
+			},
+			{
+				Nectar:               20,
+				NectarConcentration:  1.5,
+				Pollen:               1,
+				DistToColony:         500,
+				DetectionProbability: 0.2,
+			},
+		},
 	})
 
 	// Sub-models

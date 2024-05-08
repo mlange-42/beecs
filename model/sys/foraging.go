@@ -21,9 +21,9 @@ type Foraging struct {
 	forageParams *res.ForagingParams
 	stores       *res.Stores
 
-	foragerFilter     generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
-	nectarPatchMapper generic.Map1[comp.Resource]
-	pollenPatchMapper generic.Map1[comp.Trip]
+	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	patchResourceMapper generic.Map1[comp.Resource]
+	patchTrimMapper     generic.Map1[comp.Trip]
 
 	maxHoneyStore float64
 	rng           *rand.Rand
@@ -36,8 +36,8 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.stores = ecs.GetResource[res.Stores](w)
 
 	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
-	s.nectarPatchMapper = generic.NewMap1[comp.Resource](w)
-	s.pollenPatchMapper = generic.NewMap1[comp.Trip](w)
+	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
+	s.patchTrimMapper = generic.NewMap1[comp.Trip](w)
 
 	storeParams := ecs.GetResource[res.StoreParams](w)
 	energyParams := ecs.GetResource[res.EnergyParams](w)
@@ -142,7 +142,7 @@ func (s *Foraging) foragerDecisions(w *ecs.World, probForage, probCollectPollen 
 		}
 
 		if !patch.Nectar.IsZero() && !act.PollenForager {
-			res := s.nectarPatchMapper.Get(patch.Nectar)
+			res := s.patchResourceMapper.Get(patch.Nectar)
 			if s.rng.Float64() < 1.0/res.EnergyEfficiency &&
 				s.rng.Float64() < s.stores.Honey/s.stores.DecentHoney {
 
@@ -154,7 +154,7 @@ func (s *Foraging) foragerDecisions(w *ecs.World, probForage, probCollectPollen 
 		}
 
 		if !patch.Pollen.IsZero() && act.PollenForager {
-			trip := s.pollenPatchMapper.Get(patch.Pollen)
+			trip := s.patchTrimMapper.Get(patch.Pollen)
 			if s.rng.Float64() < 1-math.Pow(1-s.forageParams.AbandonPollenPerSec, trip.DurationPollen) {
 
 				patch.Nectar = ecs.Entity{}

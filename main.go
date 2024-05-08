@@ -85,6 +85,9 @@ func main() {
 		StopProbability:      0.3,
 		AbandonPollenPerSec:  0.00002,
 		MaxKmPerDay:          7299, // ???
+
+		TimeUnloadingNectar: 116,
+		TimeUnloadingPollen: 210,
 	}
 	ecs.AddResource(&m.World, &forageParams)
 

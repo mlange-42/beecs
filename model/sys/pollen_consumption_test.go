@@ -48,6 +48,9 @@ func TestPollenConsumption(t *testing.T) {
 		EnergyHoney:   12.78,
 		EnergyScurose: 0.00582,
 	})
+	ecs.AddResource(&world, &res.NurseParams{
+		MaxBroodNurseRatio: 3.0,
+	})
 
 	stats := res.PopulationStats{}
 	ecs.AddResource(&world, &stats)

@@ -6,6 +6,7 @@ import (
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/obs"
 	"github.com/mlange-42/beecs/model/res"
 	"github.com/mlange-42/beecs/model/sys"
@@ -44,7 +45,7 @@ func main() {
 		Larvae:    0.01,
 		Pupae:     0.001,
 		InHive:    0.004,
-		MaxMilage: 200,
+		MaxMilage: 800,
 	}
 	ecs.AddResource(&m.World, &workerMort)
 
@@ -63,12 +64,41 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &aff)
 
-	forageProb := res.ForagingProbabilityParams{
-		Base:      0.01,
-		High:      0.05,
-		Emergency: 0.2,
+	forageParams := res.ForagingParams{
+		ProbBase:      0.01,
+		ProbHigh:      0.05,
+		ProbEmergency: 0.2,
+
+		FlightVelocity:              6.5,           // [m/s]
+		SearchLength:                6.5 * 60 * 17, // [m] (6630m, 17 min)
+		MaxProportionPollenForagers: 0.8,
+
+		EnergyOnFlower:  0.2,
+		MortalityPerSec: 0.00001,
+		FlightCostPerM:  0.000006, //[kJ/m]
+
+		NectarLoad:           50,    // [muL]
+		PollenLoad:           0.015, // [g]
+		TimeNectarGathering:  1200,
+		TimePollenGathering:  600,
+		ConstantHandlingTime: false,
+		StopProbability:      0.3,
+		AbandonPollenPerSec:  0.00002,
+		MaxKmPerDay:          7299, // ???
+
+		TimeUnloadingNectar: 116,
+		TimeUnloadingPollen: 210,
 	}
-	ecs.AddResource(&m.World, &forageProb)
+	ecs.AddResource(&m.World, &forageParams)
+
+	danceParams := res.DanceParams{
+		Slope:                1.16,
+		Intercept:            0.0,
+		MaxCircuits:          117,
+		FindProbability:      0.5,
+		PollenDanceFollowers: 2,
+	}
+	ecs.AddResource(&m.World, &danceParams)
 
 	energy := res.EnergyParams{
 		EnergyHoney:   12.78,
@@ -76,42 +106,53 @@ func main() {
 	}
 	ecs.AddResource(&m.World, &energy)
 
+	storeParams := res.StoreParams{
+		IdealPollenStoreDays: 7,
+		MinIdealPollenStore:  250.0,
+		MaxHoneyStoreKg:      50.0,
+		ProteinStoreNurse:    7, // [d]
+	}
+	ecs.AddResource(&m.World, &storeParams)
+
 	honeyNeeds := res.HoneyNeeds{
-		WorkerResting:    11.0,
-		WorkerNurse:      53.42,
-		WorkerLarvaTotal: 65.4,
-		DroneLarva:       19.2,
-		Drone:            10.0,
+		WorkerResting:    11.0,  // [mg/d]
+		WorkerNurse:      53.42, // [mg/d]
+		WorkerLarvaTotal: 65.4,  // [mg]
+		DroneLarva:       19.2,  // [mg/d]
+		Drone:            10.0,  // [mg/d]
 	}
 	ecs.AddResource(&m.World, &honeyNeeds)
 
 	pollenNeeds := res.PollenNeeds{
-		WorkerLarvaTotal: 142.0,
-		DroneLarva:       50.0,
-		Worker:           1.5,
-		Drone:            2.0,
-
-		IdealStoreDays: 7,
-		MinIdealStore:  250.0,
+		WorkerLarvaTotal: 142.0, // [mg]
+		DroneLarva:       50.0,  // [mg/d]
+		Worker:           1.5,   // [mg/d]
+		Drone:            2.0,   // [mg/d]
 	}
 	ecs.AddResource(&m.World, &pollenNeeds)
 
 	nurseParams := res.NurseParams{
 		MaxBroodNurseRatio:         3.0,
 		ForagerNursingContribution: 0.2,
+		MaxEggsPerDay:              1600,
+		DroneEggsProportion:        0.0, // 0.04
+		EggNursingLimit:            true,
+		MaxBroodCells:              200_000,
 	}
 	ecs.AddResource(&m.World, &nurseParams)
 
 	factory := res.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
 
-	stores := res.Stores{}
-	ecs.AddResource(&m.World, &stores)
-
 	stats := res.PopulationStats{}
 	ecs.AddResource(&m.World, &stats)
 
 	// Initialization
+
+	m.AddSystem(&sys.InitStore{
+		InitialPollen: 100,
+		InitialHoney:  25,
+	})
 
 	m.AddSystem(&sys.InitCohorts{})
 
@@ -123,22 +164,43 @@ func main() {
 		MaxMilage:    200,
 	})
 
+	m.AddSystem(&sys.InitPatchesList{
+		Patches: []comp.PatchConfig{
+			{
+				Nectar:               20,
+				NectarConcentration:  1.5,
+				Pollen:               1,
+				DistToColony:         1500,
+				DetectionProbability: 0.2,
+			},
+			{
+				Nectar:               20,
+				NectarConcentration:  1.5,
+				Pollen:               1,
+				DistToColony:         500,
+				DetectionProbability: 0.2,
+			},
+		},
+	})
+
 	// Sub-models
 
 	m.AddSystem(&sys.CalcAff{})
 	m.AddSystem(&sys.CalcForagingPeriod{})
+	m.AddSystem(&sys.ReplenishPatches{})
 
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})
 
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})
+	m.AddSystem(&sys.BroodCare{})
 
-	m.AddSystem(&sys.EggLaying{
-		MaxEggsPerDay: 1600,
+	m.AddSystem(&sys.EggLaying{})
+
+	m.AddSystem(&sys.Foraging{
+		PatchUpdater: &sys.UpdatePatchesForaging{},
 	})
-
-	m.AddSystem(&sys.Foraging{})
 	m.AddSystem(&sys.HoneyConsumption{})
 	m.AddSystem(&sys.PollenConsumption{})
 
@@ -167,8 +229,31 @@ func main() {
 			Observer: &obs.AgeStructure{
 				MaxAge: 400,
 			},
-			YLim:   [...]float64{0, 1600},
+			YLim:   [...]float64{0, 120},
 			Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
+		}))
+
+	m.AddUISystem((&window.Window{
+		Title:        "Stores",
+		Bounds:       window.B(610, 30, 600, 400),
+		DrawInterval: 15,
+	}).
+		With(&plot.TimeSeries{
+			Observer:       &obs.Stores{},
+			Columns:        []string{"Honey [kg]", "Pollen [g]"},
+			UpdateInterval: 1,
+			Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Amount"},
+		}))
+
+	m.AddUISystem((&window.Window{
+		Title:        "Foraging Period",
+		Bounds:       window.B(610, 460, 600, 400),
+		DrawInterval: 15,
+	}).
+		With(&plot.TimeSeries{
+			Observer:       &obs.ForagingPeriod{},
+			UpdateInterval: 1,
+			Labels:         plot.Labels{Title: "Foraging Period", X: "Time [days]", Y: "Foraging Period [h]"},
 		}))
 
 	// Run

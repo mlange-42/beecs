@@ -66,6 +66,8 @@ func TestCountPopulation(t *testing.T) {
 		DronePupae:   60,
 		DronesInHive: 80,
 
-		TotalBrood: 90 + 120,
+		TotalBrood:      90 + 120,
+		TotalAdults:     900 + 70 + 80,
+		TotalPopulation: 900 + 70 + 80 + 90 + 120,
 	}, stats)
 }

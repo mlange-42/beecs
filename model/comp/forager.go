@@ -1,9 +1,8 @@
 package comp
 
-type ForagerActivity uint8
-
-const (
-	ActivityLazy ForagerActivity = iota
+import (
+	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model/activity"
 )
 
 type Milage struct {
@@ -16,5 +15,15 @@ type Age struct {
 }
 
 type Activity struct {
-	Current ForagerActivity
+	Current       activity.ForagerActivity
+	PollenForager bool
+}
+
+type KnownPatch struct {
+	Nectar ecs.Entity
+	Pollen ecs.Entity
+}
+
+type NectarLoad struct {
+	Energy float64
 }

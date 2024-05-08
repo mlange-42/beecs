@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"math"
 	"testing"
 
 	"github.com/mlange-42/arche/ecs"
@@ -44,6 +45,9 @@ func TestHoneyConsumption(t *testing.T) {
 		EnergyHoney:   12.78,
 		EnergyScurose: 0.00582,
 	})
+	ecs.AddResource(&world, &res.NurseParams{
+		MaxBroodNurseRatio: 3.0,
+	})
 
 	stats := res.PopulationStats{}
 	ecs.AddResource(&world, &stats)
@@ -76,6 +80,8 @@ func TestHoneyConsumption(t *testing.T) {
 	pop.Update(&world)
 	cons.Update(&world)
 
-	assert.Equal(t, float64(30*7+40*7+80*9+160*3+210*2), 100_000.0-stores.Honey)
+	expected := float64(30*7+40*7+80*9+160*3+(210/3)*2) * 0.001 * 12.78
+	actual := 100_000.0 - stores.Honey
+	assert.Less(t, math.Abs(expected-actual), 0.0001)
 	assert.Greater(t, stores.DecentHoney, 0.0)
 }

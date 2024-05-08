@@ -12,7 +12,9 @@ type PopulationStats struct {
 	DronePupae   int
 	DronesInHive int
 
-	TotalBrood int
+	TotalBrood      int
+	TotalAdults     int
+	TotalPopulation int
 }
 
 func (s *PopulationStats) Reset() {

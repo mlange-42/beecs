@@ -12,6 +12,7 @@ type HoneyConsumption struct {
 	stores       *res.Stores
 	pop          *res.PopulationStats
 	workerDev    *res.WorkerDevelopment
+	nurseParams  *res.NurseParams
 	energyParams *res.EnergyParams
 }
 
@@ -20,20 +21,22 @@ func (s *HoneyConsumption) Initialize(w *ecs.World) {
 	s.stores = ecs.GetResource[res.Stores](w)
 	s.pop = ecs.GetResource[res.PopulationStats](w)
 	s.workerDev = ecs.GetResource[res.WorkerDevelopment](w)
+	s.nurseParams = ecs.GetResource[res.NurseParams](w)
 	s.energyParams = ecs.GetResource[res.EnergyParams](w)
 }
 
 func (s *HoneyConsumption) Update(w *ecs.World) {
-	thermoRegBrood := s.needs.WorkerNurse - s.needs.WorkerResting
+	thermoRegBrood := (s.needs.WorkerNurse - s.needs.WorkerResting) / s.nurseParams.MaxBroodNurseRatio
 	needLarva := s.needs.WorkerLarvaTotal / float64(s.workerDev.LarvaeTime)
 
 	needAdult := float64(s.pop.WorkersInHive+s.pop.WorkersForagers)*s.needs.WorkerResting + float64(s.pop.DronesInHive)*s.needs.Drone
 	needLarvae := float64(s.pop.WorkerLarvae)*needLarva + float64(s.pop.DroneLarvae)*s.needs.DroneLarva
 
 	consumption := needAdult + needLarvae + float64(s.pop.TotalBrood)*thermoRegBrood
+	consumptionEnergy := 0.001 * consumption * s.energyParams.EnergyHoney
 
-	s.stores.Honey = math.Max(s.stores.Honey-consumption, 0)
-	s.stores.DecentHoney = float64(s.pop.WorkersInHive+s.pop.WorkersForagers) * 1.5 * s.energyParams.EnergyHoney
+	s.stores.Honey = math.Max(s.stores.Honey-consumptionEnergy, 0)
+	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * 1.5 * s.energyParams.EnergyHoney
 }
 
 func (s *HoneyConsumption) Finalize(w *ecs.World) {}

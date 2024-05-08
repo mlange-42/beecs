@@ -133,6 +133,10 @@ func main() {
 	nurseParams := res.NurseParams{
 		MaxBroodNurseRatio:         3.0,
 		ForagerNursingContribution: 0.2,
+		MaxEggsPerDay:              1600,
+		DroneEggsProportion:        0.0, // 0.04
+		EggNursingLimit:            true,
+		MaxBroodCells:              200_000,
 	}
 	ecs.AddResource(&m.World, &nurseParams)
 
@@ -190,9 +194,7 @@ func main() {
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})
 
-	m.AddSystem(&sys.EggLaying{
-		MaxEggsPerDay: 1600,
-	})
+	m.AddSystem(&sys.EggLaying{})
 
 	m.AddSystem(&sys.Foraging{
 		PatchUpdater: &sys.UpdatePatchesForaging{},
@@ -225,7 +227,7 @@ func main() {
 			Observer: &obs.AgeStructure{
 				MaxAge: 400,
 			},
-			YLim:   [...]float64{0, 1600},
+			YLim:   [...]float64{0, 120},
 			Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
 		}))
 

@@ -55,6 +55,8 @@ func (s *CountPopulation) count(w *ecs.World) {
 	s.stats.TotalBrood =
 		s.stats.WorkerEggs + s.stats.WorkerLarvae + s.stats.WorkerPupae +
 			s.stats.DroneEggs + s.stats.DroneLarvae + s.stats.DronePupae
+	s.stats.TotalAdults = s.stats.WorkersInHive + s.stats.WorkersForagers + s.stats.DronesInHive
+	s.stats.TotalPopulation = s.stats.TotalBrood + s.stats.TotalAdults
 }
 
 func countCohort(coh []int) int {

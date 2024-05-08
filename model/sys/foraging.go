@@ -512,7 +512,7 @@ func (s *Foraging) dancing(w *ecs.World) {
 		}
 
 		if act.Current == activity.BringPollen {
-			trip := s.patchTripMapper.Get(patch.Nectar)
+			trip := s.patchTripMapper.Get(patch.Pollen)
 			danceTripDuration := trip.DurationPollen
 
 			danceFollowers := s.danceParams.PollenDanceFollowers

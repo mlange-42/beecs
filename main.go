@@ -45,7 +45,7 @@ func main() {
 		Larvae:    0.01,
 		Pupae:     0.001,
 		InHive:    0.004,
-		MaxMilage: 200,
+		MaxMilage: 800,
 	}
 	ecs.AddResource(&m.World, &workerMort)
 

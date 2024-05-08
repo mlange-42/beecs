@@ -7,24 +7,21 @@ import (
 )
 
 type PatchFactory struct {
-	builder generic.Map7[
+	builder generic.Map6[
 		comp.PatchConfig, comp.Trip, comp.HandlingTime,
-		comp.Resource, comp.Mortality, comp.Dance,
-		comp.KnownPatch]
+		comp.Resource, comp.Mortality, comp.Dance]
 }
 
 func NewPatchFactory(world *ecs.World) PatchFactory {
 	return PatchFactory{
-		builder: generic.NewMap7[
+		builder: generic.NewMap6[
 			comp.PatchConfig, comp.Trip, comp.HandlingTime,
-			comp.Resource, comp.Mortality, comp.Dance,
-			comp.KnownPatch](world),
+			comp.Resource, comp.Mortality, comp.Dance](world),
 	}
 }
 
 func (f *PatchFactory) CreatePatch(conf comp.PatchConfig) ecs.Entity {
 	return f.builder.NewWith(
 		&conf, &comp.Trip{}, &comp.HandlingTime{},
-		&comp.Resource{}, &comp.Mortality{}, &comp.Dance{},
-		&comp.KnownPatch{})
+		&comp.Resource{}, &comp.Mortality{}, &comp.Dance{})
 }

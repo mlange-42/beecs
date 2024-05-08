@@ -139,13 +139,15 @@ func main() {
 	factory := res.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
 
-	stores := res.Stores{}
-	ecs.AddResource(&m.World, &stores)
-
 	stats := res.PopulationStats{}
 	ecs.AddResource(&m.World, &stats)
 
 	// Initialization
+
+	m.AddSystem(&sys.InitStore{
+		InitialPollen: 100,
+		InitialHoney:  25,
+	})
 
 	m.AddSystem(&sys.InitCohorts{})
 

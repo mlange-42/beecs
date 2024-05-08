@@ -81,6 +81,9 @@ func main() {
 		TimeNectarGathering:  1200,
 		TimePollenGathering:  600,
 		ConstantHandlingTime: false,
+		StopProbability:      0.3,
+		AbandonPollenPerSec:  0.00002,
+		MaxKmPerDay:          7299, // ???
 	}
 	ecs.AddResource(&m.World, &forageParams)
 

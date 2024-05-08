@@ -1,6 +1,9 @@
 package comp
 
-import "github.com/mlange-42/beecs/model/activity"
+import (
+	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model/activity"
+)
 
 type Milage struct {
 	Today float32
@@ -12,5 +15,11 @@ type Age struct {
 }
 
 type Activity struct {
-	Current activity.ForagerActivity
+	Current       activity.ForagerActivity
+	PollenForager bool
+}
+
+type KnownPatch struct {
+	Nectar ecs.Entity
+	Pollen ecs.Entity
 }

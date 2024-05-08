@@ -24,15 +24,17 @@ type Foraging struct {
 	stores       *res.Stores
 	pop          *res.PopulationStats
 
-	patches []PatchCandidate
+	patches  []PatchCandidate
+	toRemove []ecs.Entity
 
-	patchResourceMapper generic.Map1[comp.Resource]
-	patchTripMapper     generic.Map1[comp.Trip]
-	patchConfigMapper   generic.Map2[comp.PatchConfig, comp.Trip]
-	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
-	foragerFilterLoad   generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
-	foragerFilterSimple generic.Filter2[comp.Activity, comp.KnownPatch]
-	patchFilter         generic.Filter2[comp.Resource, comp.PatchConfig]
+	patchResourceMapper  generic.Map1[comp.Resource]
+	patchTripMapper      generic.Map1[comp.Trip]
+	patchMortalityMapper generic.Map1[comp.Mortality]
+	patchConfigMapper    generic.Map2[comp.PatchConfig, comp.Trip]
+	foragerFilter        generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	foragerFilterLoad    generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
+	foragerFilterSimple  generic.Filter2[comp.Activity, comp.KnownPatch]
+	patchFilter          generic.Filter2[comp.Resource, comp.PatchConfig]
 
 	maxHoneyStore float64
 }
@@ -52,6 +54,7 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchConfig]()
 	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
 	s.patchTripMapper = generic.NewMap1[comp.Trip](w)
+	s.patchMortalityMapper = generic.NewMap1[comp.Mortality](w)
 	s.patchConfigMapper = generic.NewMap2[comp.PatchConfig, comp.Trip](w)
 
 	storeParams := ecs.GetResource[res.StoreParams](w)
@@ -123,8 +126,6 @@ func (s *Foraging) calcForagingProb(decentHoney, idealPollen float64) float64 {
 }
 
 func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration float64, foragers int) {
-	//duration, foragers = 0.0, 0
-
 	probCollectPollen := (1.0 - s.stores.Pollen/s.stores.IdealPollen) * s.forageParams.MaxProportionPollenForagers
 
 	if s.stores.Honey/s.stores.DecentHoney < 0.5 {
@@ -136,10 +137,9 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 	s.decisions(w, forageProb, probCollectPollen)
 	s.searching(w)
 	s.collecting(w)
-	s.flightCost(w)
-
-	_ = forageProb
-	return 17 * 60, 1 // TODO!
+	duration, foragers = s.flightCost(w)
+	s.mortality(w)
+	return
 }
 
 func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64) {
@@ -360,9 +360,9 @@ func (s *Foraging) collecting(w *ecs.World) {
 	}
 }
 
-func (s *Foraging) flightCost(w *ecs.World) {
-	duration := 0.0
-	foragers := 0
+func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
+	duration = 0.0
+	foragers = 0
 
 	query := s.foragerFilter.Query(w)
 	for query.Next() {
@@ -395,6 +395,42 @@ func (s *Foraging) flightCost(w *ecs.World) {
 			foragers += 1
 		}
 	}
+
+	return
+}
+
+func (s *Foraging) mortality(w *ecs.World) {
+	searchDuration := s.forageParams.SearchLength / s.forageParams.FlightVelocity
+
+	foragerQuery := s.foragerFilterSimple.Query(w)
+	for foragerQuery.Next() {
+		act, patch := foragerQuery.Get()
+
+		if act.Current == activity.Searching {
+			if s.rng.Float64() < 1-math.Pow(1-s.forageParams.MortalityPerSec, searchDuration) {
+				s.toRemove = append(s.toRemove, foragerQuery.Entity())
+			}
+		}
+
+		if act.Current == activity.BringNectar {
+			m := s.patchMortalityMapper.Get(patch.Nectar)
+			if s.rng.Float64() < m.Nectar {
+				s.toRemove = append(s.toRemove, foragerQuery.Entity())
+			}
+		}
+
+		if act.Current == activity.BringPollen {
+			m := s.patchMortalityMapper.Get(patch.Pollen)
+			if s.rng.Float64() < m.Pollen {
+				s.toRemove = append(s.toRemove, foragerQuery.Entity())
+			}
+		}
+	}
+
+	for _, e := range s.toRemove {
+		w.RemoveEntity(e)
+	}
+	s.toRemove = s.toRemove[:0]
 }
 
 type PatchCandidate struct {

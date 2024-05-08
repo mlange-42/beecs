@@ -70,7 +70,7 @@ func main() {
 		ProbEmergency: 0.2,
 
 		FlightVelocity:              6.5,           // [m/s]
-		SearchLength:                6.5 * 60 * 17, // [s] (17 min)
+		SearchLength:                6.5 * 60 * 17, // [m] (6630m, 17 min)
 		MaxProportionPollenForagers: 0.8,
 
 		EnergyOnFlower:  0.2,
@@ -240,8 +240,20 @@ func main() {
 	}).
 		With(&plot.TimeSeries{
 			Observer:       &obs.Stores{},
+			Columns:        []string{"Honey [kg]", "Pollen [g]"},
 			UpdateInterval: 1,
 			Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Amount"},
+		}))
+
+	m.AddUISystem((&window.Window{
+		Title:        "Foraging Period",
+		Bounds:       window.B(610, 460, 600, 400),
+		DrawInterval: 15,
+	}).
+		With(&plot.TimeSeries{
+			Observer:       &obs.ForagingPeriod{},
+			UpdateInterval: 1,
+			Labels:         plot.Labels{Title: "Foraging Period", X: "Time [days]", Y: "Foraging Period [h]"},
 		}))
 
 	// Run

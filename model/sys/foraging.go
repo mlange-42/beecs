@@ -390,8 +390,8 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 			milage.Today += float32(dist)
 			milage.Total += float32(dist)
 
-			en := s.forageParams.SearchLength * s.forageParams.FlightCostPerM * float64(s.params.SquadronSize)
-			s.stores.Honey -= en
+			en := s.forageParams.SearchLength * s.forageParams.FlightCostPerM
+			s.stores.Honey -= en * float64(s.params.SquadronSize)
 
 			duration += s.forageParams.SearchLength / s.forageParams.FlightVelocity
 			foragers += 1
@@ -408,7 +408,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 				duration += trip.DurationNectar + s.forageParams.TimeUnloadingNectar
 				en = trip.CostNectar
 			}
-			s.stores.Honey -= en
+			s.stores.Honey -= en * float64(s.params.SquadronSize)
 			foragers += 1
 		}
 	}

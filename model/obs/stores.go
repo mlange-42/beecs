@@ -18,11 +18,13 @@ func (o *Stores) Initialize(w *ecs.World) {
 }
 func (o *Stores) Update(w *ecs.World) {}
 func (o *Stores) Header() []string {
-	return []string{"Honey [kg]", "Pollen [g]"}
+	return []string{"Honey [kg]", "Pollen [g]", "DecentHoney [kg]", "IdealPollen [g]"}
 }
 func (o *Stores) Values(w *ecs.World) []float64 {
-	o.data[0] = (o.stores.Honey / o.energyHoney) / 1000
+	o.data[0] = 0.001 * o.stores.Honey / o.energyHoney
 	o.data[1] = o.stores.Pollen
+	o.data[2] = 0.001 * o.stores.DecentHoney / o.energyHoney
+	o.data[3] = o.stores.IdealPollen
 
 	return o.data
 }

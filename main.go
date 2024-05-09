@@ -147,6 +147,9 @@ func main() {
 	stats := res.PopulationStats{}
 	ecs.AddResource(&m.World, &stats)
 
+	consumptionStats := res.ConsumptionStats{}
+	ecs.AddResource(&m.World, &consumptionStats)
+
 	// Initialization
 
 	m.AddSystem(&sys.InitStore{
@@ -229,7 +232,7 @@ func main() {
 			Observer: &obs.AgeStructure{
 				MaxAge: 400,
 			},
-			YLim:   [...]float64{0, 120},
+			YLim:   [...]float64{0, 1800},
 			Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
 		}))
 

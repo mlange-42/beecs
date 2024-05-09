@@ -29,3 +29,11 @@ func (s *PopulationStats) Reset() {
 	s.DronePupae = 0
 	s.DronesInHive = 0
 }
+
+type ConsumptionStats struct {
+	HoneyDaily float64 // [mg]
+}
+
+func (s *ConsumptionStats) Reset() {
+	s.HoneyDaily = 0
+}

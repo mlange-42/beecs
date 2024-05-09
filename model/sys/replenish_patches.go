@@ -4,18 +4,13 @@ import (
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/comp"
-	"github.com/mlange-42/beecs/model/res"
 )
 
 type ReplenishPatches struct {
-	params *res.ForagingParams
-
 	filter generic.Filter2[comp.PatchConfig, comp.Resource]
 }
 
 func (s *ReplenishPatches) Initialize(w *ecs.World) {
-	s.params = ecs.GetResource[res.ForagingParams](w)
-
 	s.filter = *generic.NewFilter2[comp.PatchConfig, comp.Resource]()
 }
 

@@ -48,6 +48,7 @@ func TestHoneyConsumption(t *testing.T) {
 	ecs.AddResource(&world, &res.NurseParams{
 		MaxBroodNurseRatio: 3.0,
 	})
+	ecs.AddResource(&world, &res.ConsumptionStats{})
 
 	stats := res.PopulationStats{}
 	ecs.AddResource(&world, &stats)

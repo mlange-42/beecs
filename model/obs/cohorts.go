@@ -8,6 +8,8 @@ import (
 type WorkerCohorts struct {
 	pop  *res.PopulationStats
 	data []float64
+
+	Cumulative bool
 }
 
 func (o *WorkerCohorts) Initialize(w *ecs.World) {
@@ -16,14 +18,25 @@ func (o *WorkerCohorts) Initialize(w *ecs.World) {
 }
 func (o *WorkerCohorts) Update(w *ecs.World) {}
 func (o *WorkerCohorts) Header() []string {
-	return []string{"Eggs", "+Larvae", "+Pupae", "+InHive", "+Foragers"}
+	if o.Cumulative {
+		return []string{"Eggs", "+Larvae", "+Pupae", "+InHive", "+Foragers"}
+	}
+	return []string{"Eggs", "Larvae", "Pupae", "InHive", "Foragers"}
 }
 func (o *WorkerCohorts) Values(w *ecs.World) []float64 {
-	o.data[0] = float64(o.pop.WorkerEggs)
-	o.data[1] = o.data[0] + float64(o.pop.WorkerLarvae)
-	o.data[2] = o.data[1] + float64(o.pop.WorkerPupae)
-	o.data[3] = o.data[2] + float64(o.pop.WorkersInHive)
-	o.data[4] = o.data[3] + float64(o.pop.WorkersForagers)
+	if o.Cumulative {
+		o.data[0] = float64(o.pop.WorkerEggs)
+		o.data[1] = o.data[0] + float64(o.pop.WorkerLarvae)
+		o.data[2] = o.data[1] + float64(o.pop.WorkerPupae)
+		o.data[3] = o.data[2] + float64(o.pop.WorkersInHive)
+		o.data[4] = o.data[3] + float64(o.pop.WorkersForagers)
+	} else {
+		o.data[0] = float64(o.pop.WorkerEggs)
+		o.data[1] = float64(o.pop.WorkerLarvae)
+		o.data[2] = float64(o.pop.WorkerPupae)
+		o.data[3] = float64(o.pop.WorkersInHive)
+		o.data[4] = float64(o.pop.WorkersForagers)
+	}
 
 	return o.data
 }

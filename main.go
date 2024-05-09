@@ -248,11 +248,11 @@ func main() {
 	}).
 		With(
 			&plot.TimeSeries{
-				Observer:       &obs.Stores{},
-				Columns:        []string{"Honey [kg]", "Pollen [g]"},
+				Observer:       &obs.Stores{PollenFactor: 20},
+				Columns:        []string{"Honey", "Pollen x20"},
 				UpdateInterval: 1,
 				MaxRows:        2 * 365,
-				Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Amount"},
+				Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Mass [kg]"},
 			},
 			&plot.Controls{}))
 

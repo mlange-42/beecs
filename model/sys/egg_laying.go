@@ -54,8 +54,8 @@ func (s *EggLaying) Update(w *ecs.World) {
 
 	// TODO: queen age
 
-	s.eggs.Workers[0] = int(eggs)
-	s.eggs.Drones[0] = int(droneEggs)
+	s.eggs.Workers[0] = eggs
+	s.eggs.Drones[0] = droneEggs
 }
 
 func (s *EggLaying) Finalize(w *ecs.World) {}

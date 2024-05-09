@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/arche-pixel/plot"
 	"github.com/mlange-42/arche-pixel/window"
@@ -135,9 +136,10 @@ func main() {
 		MaxBroodNurseRatio:         3.0,
 		ForagerNursingContribution: 0.2,
 		MaxEggsPerDay:              1600,
-		DroneEggsProportion:        0.0, // 0.04
+		DroneEggsProportion:        0.04,
 		EggNursingLimit:            true,
 		MaxBroodCells:              200_000,
+		DroneEggLayingSeason:       [2]int{115, 240},
 	}
 	ecs.AddResource(&m.World, &nurseParams)
 
@@ -192,12 +194,12 @@ func main() {
 	m.AddSystem(&sys.CalcForagingPeriod{})
 	m.AddSystem(&sys.ReplenishPatches{})
 
-	m.AddSystem(&sys.MortalityCohorts{})
-	m.AddSystem(&sys.MortalityForagers{})
-
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})
+
 	m.AddSystem(&sys.BroodCare{})
+	m.AddSystem(&sys.MortalityCohorts{})
+	m.AddSystem(&sys.MortalityForagers{})
 
 	m.AddSystem(&sys.EggLaying{})
 
@@ -209,7 +211,15 @@ func main() {
 
 	m.AddSystem(&sys.CountPopulation{})
 
-	m.AddSystem(&system.FixedTermination{Steps: 100000})
+	m.AddSystem(&system.FixedTermination{Steps: 365})
+
+	// File output
+
+	m.AddSystem(&reporter.CSV{
+		Observer: &obs.WorkerCohorts{Cumulative: false},
+		File:     "out/cohorts.csv",
+		Sep:      ",",
+	})
 
 	// Graphics
 

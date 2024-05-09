@@ -3,8 +3,8 @@ package comp
 type Trip struct {
 	DurationNectar float64 // [s]
 	DurationPollen float64 // [s]
-	CostNectar     float64
-	CostPollen     float64
+	CostNectar     float64 // [kJ]
+	CostPollen     float64 // [kJ]
 }
 
 type HandlingTime struct {

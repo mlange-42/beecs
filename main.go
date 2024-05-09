@@ -218,46 +218,57 @@ func main() {
 		Bounds:       window.B(1, 30, 600, 400),
 		DrawInterval: 15,
 	}).
-		With(&plot.TimeSeries{
-			Observer:       &obs.WorkerCohorts{},
-			UpdateInterval: 1,
-			Labels:         plot.Labels{Title: "Cohorts", X: "Time [days]", Y: "Count"},
-		}))
+		With(
+			&plot.TimeSeries{
+				Observer:       &obs.WorkerCohorts{Cumulative: true},
+				UpdateInterval: 1,
+				MaxRows:        2 * 365,
+				Labels:         plot.Labels{Title: "Cohorts", X: "Time [days]", Y: "Count"},
+			},
+			&plot.Controls{}))
 
 	m.AddUISystem((&window.Window{
 		Title:  "Age distribution",
-		Bounds: window.B(1, 460, 600, 400),
+		Bounds: window.B(1, 465, 600, 400),
 	}).
-		With(&plot.Lines{
-			Observer: &obs.AgeStructure{
-				MaxAge: 400,
+		With(
+			&plot.Lines{
+				Observer: &obs.AgeStructure{
+					MaxAge: 400,
+				},
+				YLim:   [...]float64{0, 1800},
+				Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
 			},
-			YLim:   [...]float64{0, 1800},
-			Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
-		}))
+			&plot.Controls{}))
 
 	m.AddUISystem((&window.Window{
 		Title:        "Stores",
 		Bounds:       window.B(610, 30, 600, 400),
 		DrawInterval: 15,
 	}).
-		With(&plot.TimeSeries{
-			Observer:       &obs.Stores{},
-			Columns:        []string{"Honey [kg]", "Pollen [g]"},
-			UpdateInterval: 1,
-			Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Amount"},
-		}))
+		With(
+			&plot.TimeSeries{
+				Observer:       &obs.Stores{},
+				Columns:        []string{"Honey [kg]", "Pollen [g]"},
+				UpdateInterval: 1,
+				MaxRows:        2 * 365,
+				Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Amount"},
+			},
+			&plot.Controls{}))
 
 	m.AddUISystem((&window.Window{
 		Title:        "Foraging Period",
-		Bounds:       window.B(610, 460, 600, 400),
+		Bounds:       window.B(610, 465, 600, 400),
 		DrawInterval: 15,
 	}).
-		With(&plot.TimeSeries{
-			Observer:       &obs.ForagingPeriod{},
-			UpdateInterval: 1,
-			Labels:         plot.Labels{Title: "Foraging Period", X: "Time [days]", Y: "Foraging Period [h]"},
-		}))
+		With(
+			&plot.TimeSeries{
+				Observer:       &obs.ForagingPeriod{},
+				UpdateInterval: 1,
+				MaxRows:        2 * 365,
+				Labels:         plot.Labels{Title: "Foraging Period", X: "Time [days]", Y: "Foraging Period [h]"},
+			},
+			&plot.Controls{}))
 
 	// Run
 

@@ -26,8 +26,7 @@ func (s *EggLaying) Initialize(w *ecs.World) {
 }
 
 func (s *EggLaying) Update(w *ecs.World) {
-	// TODO: limit number of eggs
-	eggs := int(float64(s.nurseParams.MaxEggsPerDay) * season(s.time.Tick))
+	eggs := int(float64(s.nurseParams.MaxEggsPerDay) * (1.0 - season(s.time.Tick)))
 
 	if s.nurseParams.EggNursingLimit {
 		emergingAge := float64(s.workerDev.EggTime + s.workerDev.LarvaeTime + s.workerDev.PupaeTime)
@@ -66,5 +65,5 @@ func season(t int64) float64 {
 	s1 := (1 - (1 / (1 + x1*math.Exp(-2*d/x2))))
 	s2 := (1 / (1 + x3*math.Exp(-2*(d-x4)/x5)))
 
-	return 1 - math.Max(s1, s2)
+	return math.Max(s1, s2)
 }

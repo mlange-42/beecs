@@ -211,7 +211,7 @@ func main() {
 
 	m.AddSystem(&sys.CountPopulation{})
 
-	m.AddSystem(&system.FixedTermination{Steps: 365})
+	m.AddSystem(&system.FixedTermination{Steps: 3650})
 
 	// File output
 

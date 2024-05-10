@@ -36,7 +36,6 @@ func (o *AgeStructure) Initialize(w *ecs.World) {
 
 	o.filter = *generic.NewFilter1[comp.Age]()
 
-	// TODO: make x limits depend on parameters
 	ln := len(o.eggs.Workers) + len(o.larvae.Workers) + len(o.pupae.Workers) + o.MaxAge
 
 	o.data = make([][]float64, ln)

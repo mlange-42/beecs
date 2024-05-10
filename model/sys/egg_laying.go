@@ -6,6 +6,7 @@ import (
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/util"
 )
 
 type EggLaying struct {
@@ -25,34 +26,35 @@ func (s *EggLaying) Initialize(w *ecs.World) {
 }
 
 func (s *EggLaying) Update(w *ecs.World) {
-	// TODO: limit number of eggs
-	eggs := float64(s.nurseParams.MaxEggsPerDay) * season(s.time.Tick)
+	eggs := int(float64(s.nurseParams.MaxEggsPerDay) * (1.0 - season(s.time.Tick)))
 
 	if s.nurseParams.EggNursingLimit {
 		emergingAge := float64(s.workerDev.EggTime + s.workerDev.LarvaeTime + s.workerDev.PupaeTime)
-		eggsNurse := (float64(s.pop.WorkersInHive) + float64(s.pop.WorkersForagers)*s.nurseParams.ForagerNursingContribution) *
-			s.nurseParams.MaxBroodNurseRatio / emergingAge
+		eggsNurse := int((float64(s.pop.WorkersInHive) + float64(s.pop.WorkersForagers)*s.nurseParams.ForagerNursingContribution) *
+			s.nurseParams.MaxBroodNurseRatio / emergingAge)
 
 		if eggsNurse < eggs {
 			eggs = eggsNurse
 		}
 	}
-	if eggs > float64(s.nurseParams.MaxEggsPerDay) {
-		eggs = float64(s.nurseParams.MaxEggsPerDay)
+	if eggs > s.nurseParams.MaxEggsPerDay {
+		eggs = s.nurseParams.MaxEggsPerDay
 	}
 	if s.pop.TotalBrood+int(eggs) > s.nurseParams.MaxBroodCells {
-		eggs = float64(s.nurseParams.MaxBroodCells - s.pop.TotalBrood)
+		eggs = s.nurseParams.MaxBroodCells - s.pop.TotalBrood
 	}
 
-	// TODO: limit to drone eggs period
-
-	droneEggs := math.Max(s.nurseParams.DroneEggsProportion*float64(eggs), 0)
-	eggs = math.Max(eggs-droneEggs, 0)
+	droneEggs := 0
+	dayOfYear := int(s.time.Tick % 365)
+	if dayOfYear >= s.nurseParams.DroneEggLayingSeason[0] && dayOfYear <= s.nurseParams.DroneEggLayingSeason[1] {
+		droneEggs = int(math.Max(s.nurseParams.DroneEggsProportion*float64(eggs), 0))
+	}
+	eggs = util.MaxInt(eggs-droneEggs, 0)
 
 	// TODO: queen age
 
-	s.eggs.Workers[0] = int(eggs)
-	s.eggs.Drones[0] = int(droneEggs)
+	s.eggs.Workers[0] = eggs
+	s.eggs.Drones[0] = droneEggs
 }
 
 func (s *EggLaying) Finalize(w *ecs.World) {}
@@ -63,5 +65,5 @@ func season(t int64) float64 {
 	s1 := (1 - (1 / (1 + x1*math.Exp(-2*d/x2))))
 	s2 := (1 / (1 + x3*math.Exp(-2*(d-x4)/x5)))
 
-	return 1 - math.Max(s1, s2)
+	return math.Max(s1, s2)
 }

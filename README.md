@@ -34,4 +34,4 @@ Given that the model is developed with ECS, the structure should be very obvious
 
 - [`model/comp`](https://github.com/mlange-42/beecs/blob/main/model/comp) contains all components.
 - [`model/sys`](https://github.com/mlange-42/beecs/blob/main/model/sys) contains all systems.
-- [`model/res`](https://github.com/mlange-42/beecs/blob/main/model/sys) contains global parameters and variables (as ECS resources).
+- [`model/res`](https://github.com/mlange-42/beecs/blob/main/model/res) contains global parameters and variables (as ECS resources).

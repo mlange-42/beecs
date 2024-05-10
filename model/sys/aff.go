@@ -54,7 +54,7 @@ func (s *CalcAff) Update(w *ecs.World) {
 		aff--
 	}
 	maxBrood := (float64(s.pop.WorkersInHive) + float64(s.pop.WorkersForagers)*s.nurseParams.ForagerNursingContribution) *
-		float64(s.nurseParams.MaxBroodNurseRatio)
+		s.nurseParams.MaxBroodNurseRatio
 	if maxBrood > 0 && float64(s.pop.TotalBrood)/maxBrood > broodTH {
 		aff += 2
 	}

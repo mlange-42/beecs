@@ -195,8 +195,8 @@ func main() {
 	m.AddSystem(&sys.ReplenishPatches{})
 
 	m.AddSystem(&sys.AgeCohorts{})
-	m.AddSystem(&sys.EggLaying{})
 	m.AddSystem(&sys.TransitionForagers{})
+	m.AddSystem(&sys.EggLaying{})
 
 	m.AddSystem(&sys.BroodCare{})
 	m.AddSystem(&sys.MortalityCohorts{})
@@ -210,7 +210,8 @@ func main() {
 
 	m.AddSystem(&sys.CountPopulation{})
 
-	m.AddSystem(&system.FixedTermination{Steps: 91})
+	//m.AddSystem(&sys.Pause{Steps: 91})
+	m.AddSystem(&system.FixedTermination{Steps: 365})
 
 	// File output
 

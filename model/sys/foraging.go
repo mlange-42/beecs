@@ -399,11 +399,11 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 			en := 0.0
 			if act.PollenForager {
 				trip := s.patchTripMapper.Get(patch.Pollen)
-				duration += trip.DurationPollen + s.forageParams.TimeUnloadingPollen
+				duration += trip.DurationPollen + s.forageParams.TimePollenUnloading
 				en = trip.CostPollen
 			} else {
 				trip := s.patchTripMapper.Get(patch.Nectar)
-				duration += trip.DurationNectar + s.forageParams.TimeUnloadingNectar
+				duration += trip.DurationNectar + s.forageParams.TimeNectarUnloading
 				en = trip.CostNectar
 			}
 			s.stores.Honey -= en * float64(s.params.SquadronSize)

@@ -32,8 +32,8 @@ type ForagingParams struct {
 	AbandonPollenPerSec  float64
 	MaxKmPerDay          float64
 
-	TimeUnloadingNectar float64
-	TimeUnloadingPollen float64
+	TimeNectarUnloading float64
+	TimePollenUnloading float64
 }
 
 type DanceParams struct {

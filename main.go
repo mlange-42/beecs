@@ -29,7 +29,7 @@ func main() {
 		EggTime:     3,
 		LarvaeTime:  6,
 		PupaeTime:   12,
-		MaxLifespan: 390,
+		MaxLifespan: 290,
 	}
 	ecs.AddResource(&m.World, &workerDev)
 
@@ -87,8 +87,8 @@ func main() {
 		AbandonPollenPerSec:  0.00002,
 		MaxKmPerDay:          7299, // ???
 
-		TimeUnloadingNectar: 116,
-		TimeUnloadingPollen: 210,
+		TimeNectarUnloading: 116,
+		TimePollenUnloading: 210,
 	}
 	ecs.AddResource(&m.World, &forageParams)
 
@@ -195,13 +195,12 @@ func main() {
 	m.AddSystem(&sys.ReplenishPatches{})
 
 	m.AddSystem(&sys.AgeCohorts{})
+	m.AddSystem(&sys.EggLaying{})
 	m.AddSystem(&sys.TransitionForagers{})
 
 	m.AddSystem(&sys.BroodCare{})
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})
-
-	m.AddSystem(&sys.EggLaying{})
 
 	m.AddSystem(&sys.Foraging{
 		PatchUpdater: &sys.UpdatePatchesForaging{},
@@ -211,7 +210,7 @@ func main() {
 
 	m.AddSystem(&sys.CountPopulation{})
 
-	m.AddSystem(&system.FixedTermination{Steps: 3650})
+	m.AddSystem(&system.FixedTermination{Steps: 91})
 
 	// File output
 
@@ -230,7 +229,7 @@ func main() {
 	}).
 		With(
 			&plot.TimeSeries{
-				Observer:       &obs.WorkerCohorts{Cumulative: true},
+				Observer:       &obs.WorkerCohorts{Cumulative: false},
 				UpdateInterval: 1,
 				MaxRows:        2 * 365,
 				Labels:         plot.Labels{Title: "Cohorts", X: "Time [days]", Y: "Count"},

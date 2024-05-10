@@ -194,7 +194,7 @@ func main() {
 	m.AddSystem(&sys.CalcForagingPeriod{})
 	m.AddSystem(&sys.ReplenishPatches{})
 
-	m.AddSystem(&sys.BroodCare{})
+	m.AddSystem(&sys.BroodCare{}) // Moved before any other population changes for now, to avoid counting more than once.
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})
 	m.AddSystem(&sys.EggLaying{})
@@ -215,11 +215,11 @@ func main() {
 
 	// File output
 
-	m.AddSystem(&reporter.CSV{
+	/*m.AddSystem(&reporter.CSV{
 		Observer: &obs.WorkerCohorts{Cumulative: false},
 		File:     "out/cohorts.csv",
 		Sep:      ";",
-	})
+	})*/
 
 	m.AddSystem(&reporter.CSV{
 		Observer: &obs.Debug{},

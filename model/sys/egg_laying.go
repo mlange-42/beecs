@@ -26,21 +26,22 @@ func (s *EggLaying) Initialize(w *ecs.World) {
 }
 
 func (s *EggLaying) Update(w *ecs.World) {
-	eggs := int(float64(s.nurseParams.MaxEggsPerDay) * (1.0 - season(s.time.Tick)))
+	elr := float64(s.nurseParams.MaxEggsPerDay) * (1.0 - season(s.time.Tick))
 
 	if s.nurseParams.EggNursingLimit {
 		emergingAge := float64(s.workerDev.EggTime + s.workerDev.LarvaeTime + s.workerDev.PupaeTime)
-		eggsNurse := int((float64(s.pop.WorkersInHive) + float64(s.pop.WorkersForagers)*s.nurseParams.ForagerNursingContribution) *
-			s.nurseParams.MaxBroodNurseRatio / emergingAge)
+		elrNurse := (float64(s.pop.WorkersInHive) + float64(s.pop.WorkersForagers)*s.nurseParams.ForagerNursingContribution) *
+			s.nurseParams.MaxBroodNurseRatio / emergingAge
 
-		if eggsNurse < eggs {
-			eggs = eggsNurse
+		if elrNurse < elr {
+			elr = elrNurse
 		}
 	}
-	if eggs > s.nurseParams.MaxEggsPerDay {
-		eggs = s.nurseParams.MaxEggsPerDay
+	if elr > float64(s.nurseParams.MaxEggsPerDay) {
+		elr = float64(s.nurseParams.MaxEggsPerDay)
 	}
-	if s.pop.TotalBrood+int(eggs) > s.nurseParams.MaxBroodCells {
+	eggs := int(math.Round(elr))
+	if s.pop.TotalBrood+eggs > s.nurseParams.MaxBroodCells {
 		eggs = s.nurseParams.MaxBroodCells - s.pop.TotalBrood
 	}
 

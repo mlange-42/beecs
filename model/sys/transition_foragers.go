@@ -31,7 +31,7 @@ func (s *TransitionForagers) Update(w *ecs.World) {
 	}
 
 	squadrons := newForagers / s.params.SquadronSize
-	remainder := newForagers - squadrons*s.params.SquadronSize
+	remainder := newForagers % s.params.SquadronSize
 
 	s.inHive.Workers[aff-1] += remainder
 

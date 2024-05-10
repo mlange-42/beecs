@@ -8,11 +8,11 @@ import (
 )
 
 type Stores struct {
-	PollenFactor int
-
 	stores      *res.Stores
 	data        []float64
 	energyHoney float64
+
+	PollenFactor int
 }
 
 func (o *Stores) Initialize(w *ecs.World) {

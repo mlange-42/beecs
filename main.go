@@ -14,9 +14,15 @@ import (
 )
 
 func main() {
+	gui := true
+	files := false
+	ticks := 365 * 10
+
 	m := model.New()
-	m.TPS = 30
-	m.FPS = 30
+	if gui {
+		m.TPS = 30
+		m.FPS = 30
+	}
 
 	// Resources
 
@@ -29,7 +35,7 @@ func main() {
 		EggTime:     3,
 		LarvaeTime:  6,
 		PupaeTime:   12,
-		MaxLifespan: 390,
+		MaxLifespan: 290,
 	}
 	ecs.AddResource(&m.World, &workerDev)
 
@@ -87,8 +93,8 @@ func main() {
 		AbandonPollenPerSec:  0.00002,
 		MaxKmPerDay:          7299, // ???
 
-		TimeUnloadingNectar: 116,
-		TimeUnloadingPollen: 210,
+		TimeNectarUnloading: 116,
+		TimePollenUnloading: 210,
 	}
 	ecs.AddResource(&m.World, &forageParams)
 
@@ -194,14 +200,13 @@ func main() {
 	m.AddSystem(&sys.CalcForagingPeriod{})
 	m.AddSystem(&sys.ReplenishPatches{})
 
+	m.AddSystem(&sys.BroodCare{}) // Moved before any other population changes for now, to avoid counting more than once.
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})
+	m.AddSystem(&sys.EggLaying{})
 
-	m.AddSystem(&sys.BroodCare{})
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})
-
-	m.AddSystem(&sys.EggLaying{})
 
 	m.AddSystem(&sys.Foraging{
 		PatchUpdater: &sys.UpdatePatchesForaging{},
@@ -211,74 +216,85 @@ func main() {
 
 	m.AddSystem(&sys.CountPopulation{})
 
-	m.AddSystem(&system.FixedTermination{Steps: 3650})
+	//m.AddSystem(&sys.Pause{Steps: 91})
+	m.AddSystem(&system.FixedTermination{Steps: int64(ticks)})
 
 	// File output
 
-	m.AddSystem(&reporter.CSV{
-		Observer: &obs.WorkerCohorts{Cumulative: false},
-		File:     "out/cohorts.csv",
-		Sep:      ",",
-	})
+	if files {
+		/*m.AddSystem(&reporter.CSV{
+			Observer: &obs.WorkerCohorts{Cumulative: false},
+			File:     "out/cohorts.csv",
+			Sep:      ";",
+		})*/
+
+		m.AddSystem(&reporter.CSV{
+			Observer: &obs.Debug{},
+			File:     "out/out-beecs.csv",
+			Sep:      ";",
+		})
+	}
 
 	// Graphics
 
-	m.AddUISystem((&window.Window{
-		Title:        "Cohorts",
-		Bounds:       window.B(1, 30, 600, 400),
-		DrawInterval: 15,
-	}).
-		With(
-			&plot.TimeSeries{
-				Observer:       &obs.WorkerCohorts{Cumulative: true},
-				UpdateInterval: 1,
-				MaxRows:        2 * 365,
-				Labels:         plot.Labels{Title: "Cohorts", X: "Time [days]", Y: "Count"},
-			},
-			&plot.Controls{}))
-
-	m.AddUISystem((&window.Window{
-		Title:  "Age distribution",
-		Bounds: window.B(1, 465, 600, 400),
-	}).
-		With(
-			&plot.Lines{
-				Observer: &obs.AgeStructure{
-					MaxAge: 400,
+	if gui {
+		m.AddUISystem((&window.Window{
+			Title:        "Cohorts",
+			Bounds:       window.B(1, 30, 600, 400),
+			DrawInterval: 15,
+		}).
+			With(
+				&plot.TimeSeries{
+					Observer:       &obs.WorkerCohorts{Cumulative: false},
+					UpdateInterval: 1,
+					MaxRows:        2 * 365,
+					Labels:         plot.Labels{Title: "Cohorts", X: "Time [days]", Y: "Count"},
 				},
-				YLim:   [...]float64{0, 1800},
-				Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
-			},
-			&plot.Controls{}))
+				&plot.Controls{}))
 
-	m.AddUISystem((&window.Window{
-		Title:        "Stores",
-		Bounds:       window.B(610, 30, 600, 400),
-		DrawInterval: 15,
-	}).
-		With(
-			&plot.TimeSeries{
-				Observer:       &obs.Stores{PollenFactor: 20},
-				Columns:        []string{"Honey", "Pollen x20"},
-				UpdateInterval: 1,
-				MaxRows:        2 * 365,
-				Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Mass [kg]"},
-			},
-			&plot.Controls{}))
+		m.AddUISystem((&window.Window{
+			Title:  "Age distribution",
+			Bounds: window.B(1, 465, 600, 400),
+		}).
+			With(
+				&plot.Lines{
+					Observer: &obs.AgeStructure{
+						MaxAge: 400,
+					},
+					YLim:   [...]float64{0, 1800},
+					Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
+				},
+				&plot.Controls{}))
 
-	m.AddUISystem((&window.Window{
-		Title:        "Foraging Period",
-		Bounds:       window.B(610, 465, 600, 400),
-		DrawInterval: 15,
-	}).
-		With(
-			&plot.TimeSeries{
-				Observer:       &obs.ForagingPeriod{},
-				UpdateInterval: 1,
-				MaxRows:        2 * 365,
-				Labels:         plot.Labels{Title: "Foraging Period", X: "Time [days]", Y: "Foraging Period [h]"},
-			},
-			&plot.Controls{}))
+		m.AddUISystem((&window.Window{
+			Title:        "Stores",
+			Bounds:       window.B(610, 30, 600, 400),
+			DrawInterval: 15,
+		}).
+			With(
+				&plot.TimeSeries{
+					Observer:       &obs.Stores{PollenFactor: 20},
+					Columns:        []string{"Honey", "Pollen x20"},
+					UpdateInterval: 1,
+					MaxRows:        2 * 365,
+					Labels:         plot.Labels{Title: "Stores", X: "Time [days]", Y: "Mass [kg]"},
+				},
+				&plot.Controls{}))
+
+		m.AddUISystem((&window.Window{
+			Title:        "Foraging Period",
+			Bounds:       window.B(610, 465, 600, 400),
+			DrawInterval: 15,
+		}).
+			With(
+				&plot.TimeSeries{
+					Observer:       &obs.ForagingPeriod{},
+					UpdateInterval: 1,
+					MaxRows:        2 * 365,
+					Labels:         plot.Labels{Title: "Foraging Period", X: "Time [days]", Y: "Foraging Period [h]"},
+				},
+				&plot.Controls{}))
+	}
 
 	// Run
 

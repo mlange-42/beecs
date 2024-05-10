@@ -194,11 +194,11 @@ func main() {
 	m.AddSystem(&sys.CalcForagingPeriod{})
 	m.AddSystem(&sys.ReplenishPatches{})
 
+	m.AddSystem(&sys.BroodCare{})
 	m.AddSystem(&sys.AgeCohorts{})
 	m.AddSystem(&sys.TransitionForagers{})
 	m.AddSystem(&sys.EggLaying{})
 
-	m.AddSystem(&sys.BroodCare{})
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})
 
@@ -218,7 +218,13 @@ func main() {
 	m.AddSystem(&reporter.CSV{
 		Observer: &obs.WorkerCohorts{Cumulative: false},
 		File:     "out/cohorts.csv",
-		Sep:      ",",
+		Sep:      ";",
+	})
+
+	m.AddSystem(&reporter.CSV{
+		Observer: &obs.Debug{},
+		File:     "out/out-beecs.csv",
+		Sep:      ";",
 	})
 
 	// Graphics

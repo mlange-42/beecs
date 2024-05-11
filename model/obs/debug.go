@@ -20,7 +20,7 @@ func (o *Debug) Initialize(w *ecs.World) {
 }
 func (o *Debug) Update(w *ecs.World) {}
 func (o *Debug) Header() []string {
-	return []string{"ForagingPeriod", "HoneyStore", "PollenStore", "Eggs", "Larvae", "Pupae", "InHive", "Foragers"}
+	return []string{"DailyForagingPeriod", "HoneyEnergyStore", "PollenStore_g", "TotalEggs", "TotalLarvae", "TotalPupae", "TotalIHBees", "TotalForagers"}
 }
 func (o *Debug) Values(w *ecs.World) []float64 {
 	o.data[0] = float64(o.foraging.SecondsToday)

@@ -1,6 +1,8 @@
-# beecs validation
+# Validation
 
 Validation of the beecs implementation against the original [BEEHAVE](https://beehave-model.net) model.
+
+The plots below show simulation results for one year. Lines are medians of 100 simulations, areas are 5% and 95% quantiles.
 
 ## Colony structure
 

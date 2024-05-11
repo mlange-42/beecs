@@ -1,4 +1,4 @@
-# BeeCS
+# beecs
 
 Work-in-progress re-implementation of the [BEEHAVE](https://beehave-model.net) model
 in [Go](https://go.dev) using the [Arche](https://github.com/mlange-42/arche) Entity Component System (ECS).
@@ -7,7 +7,7 @@ All the hard work to develop, parameterize and validate the original BEEHAVE mod
 I was not involved in that development in any way, and just re-implement the model following its ODD Protocol and the NetLogo code.
 
 Beecs is currently at a state where it implements BEEHAVE's basic colony and foraging models.
-Colony dynamics already mimic BEEHAVE quite well, but there are still differences that need to be addressed.
+Colony dynamics already mimic BEEHAVE quite well, but there are still differences that need to be addressed. See the [test](https://github.com/mlange-42/beecs/tree/main/tests).
 
 ## Usage
 

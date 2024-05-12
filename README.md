@@ -7,7 +7,7 @@ All the hard work to develop, parameterize and validate the original BEEHAVE mod
 I was not involved in that development in any way, and just re-implement the model following its ODD Protocol and the NetLogo code.
 
 Beecs is currently at a state where it implements BEEHAVE's basic colony and foraging models.
-Colony dynamics already mimic BEEHAVE quite well, but there are still differences that need to be addressed. See the [test](https://github.com/mlange-42/beecs/tree/main/tests).
+Colony dynamics already mimic BEEHAVE quite well, but there are still differences that need to be addressed. See the [tests](https://github.com/mlange-42/beecs/tree/main/tests).
 
 ## Usage
 
@@ -29,8 +29,8 @@ go run .
 
 ## Exploring the model
 
-To explore the model code, start with reading file [`main.go`](https://github.com/mlange-42/beecs/blob/main/main.go).
-Given that the model is developed with ECS, the structure should be very obvious.
+To explore the model code, start with reading files [`main.go`](https://github.com/mlange-42/beecs/blob/main/main.go) and [`model/default.go`](https://github.com/mlange-42/beecs/blob/main/model/default.go).
+Given that the model is developed with ECS, the structure should be quite obvious.
 
 - [`model/comp`](https://github.com/mlange-42/beecs/blob/main/model/comp) contains all components.
 - [`model/sys`](https://github.com/mlange-42/beecs/blob/main/model/sys) contains all systems.

@@ -22,7 +22,7 @@ def plot_quantiles(netlogo_file, beecs_file, out_dir):
 
     for col in columns:
         plot_column(
-            data_beehave, data_beecs, col, quantiles, path.join(out_dir, col + ".svg")
+            data_beehave, data_beecs, col, quantiles, path.join(out_dir, col + ".png")
         )
 
 
@@ -52,5 +52,5 @@ def plot_column(data_beehave, data_beecs, column, quantiles, image_file):
 
 if __name__ == "__main__":
     plot_quantiles(
-        "tests/default/netlogo.csv", "tests/default/beecs.csv", "tests/default"
+        "tests/default/beehave.csv", "tests/default/beecs.csv", "tests/default"
     )

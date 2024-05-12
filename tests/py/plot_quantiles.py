@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def plot_quantiles(netlogo_file, beecs_file, out_dir):
+def plot_quantiles(netlogo_file, beecs_file, out_dir, format):
     data_beehave = pd.read_csv(netlogo_file, delimiter=";")
     data_beecs = pd.read_csv(beecs_file, delimiter=";")
 
@@ -22,7 +22,11 @@ def plot_quantiles(netlogo_file, beecs_file, out_dir):
 
     for col in columns:
         plot_column(
-            data_beehave, data_beecs, col, quantiles, path.join(out_dir, col + ".svg")
+            data_beehave,
+            data_beecs,
+            col,
+            quantiles,
+            path.join(out_dir, col + "." + format),
         )
 
 
@@ -52,5 +56,9 @@ def plot_column(data_beehave, data_beecs, column, quantiles, image_file):
 
 if __name__ == "__main__":
     plot_quantiles(
-        "tests/default/beehave.csv", "tests/default/beecs.csv", "tests/default"
+        "tests/default/beehave.csv",
+        "tests/default/beecs.csv",
+        "tests/default",
+        #"png",
+        "svg",
     )

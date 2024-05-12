@@ -176,7 +176,7 @@ func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64
 			}
 		}
 
-		if !patch.Nectar.IsZero() && !act.PollenForager {
+		if !act.PollenForager && !patch.Nectar.IsZero() {
 			res := s.patchResourceMapper.Get(patch.Nectar)
 			if s.rng.Float64() < 1.0/res.EnergyEfficiency &&
 				s.rng.Float64() < s.stores.Honey/s.stores.DecentHoney {
@@ -191,7 +191,6 @@ func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64
 		if !patch.Pollen.IsZero() && act.PollenForager {
 			trip := s.patchTripMapper.Get(patch.Pollen)
 			if s.rng.Float64() < 1-math.Pow(1-s.forageParams.AbandonPollenPerSec, trip.DurationPollen) {
-
 				patch.Nectar = ecs.Entity{}
 				if act.Current != activity.Resting && act.Current != activity.Lazy {
 					act.Current = activity.Searching
@@ -248,40 +247,42 @@ func (s *Foraging) searching(w *ecs.World) {
 	}
 	detectionProb := 1.0 - nonDetectionProb
 
+	// TODO: shuffle foragers
 	foragerQuery := s.foragerFilterSimple.Query(w)
 	for foragerQuery.Next() {
 		act, patch := foragerQuery.Get()
 
 		if act.Current == activity.Searching {
-			if s.rng.Float64() < detectionProb {
-				p := s.rng.Float64() * cumProb
-				cum := 0.0
-				var selected PatchCandidate
-				for _, pch := range s.patches {
-					cum += pch.Probability
-					if cum >= p {
-						selected = pch
-						break
-					}
+			if s.rng.Float64() >= detectionProb {
+				continue
+			}
+			p := s.rng.Float64() * cumProb
+			cum := 0.0
+			var selected PatchCandidate
+			for _, pch := range s.patches {
+				cum += pch.Probability
+				if cum >= p {
+					selected = pch
+					break
 				}
-				if act.PollenForager {
-					if selected.HasPollen {
-						patch.Pollen = selected.Patch
-						act.Current = activity.BringPollen
-						res := s.patchResourceMapper.Get(selected.Patch)
-						res.Pollen -= s.forageParams.PollenLoad * sz
-					} else {
-						patch.Pollen = ecs.Entity{}
-					}
+			}
+			if act.PollenForager {
+				if selected.HasPollen {
+					patch.Pollen = selected.Patch
+					act.Current = activity.BringPollen
+					res := s.patchResourceMapper.Get(selected.Patch)
+					res.Pollen -= s.forageParams.PollenLoad * sz
 				} else {
-					if selected.HasNectar {
-						patch.Nectar = selected.Patch
-						act.Current = activity.BringNectar
-						res := s.patchResourceMapper.Get(selected.Patch)
-						res.Nectar -= s.forageParams.NectarLoad * sz
-					} else {
-						patch.Nectar = ecs.Entity{}
-					}
+					patch.Pollen = ecs.Entity{}
+				}
+			} else {
+				if selected.HasNectar {
+					patch.Nectar = selected.Patch
+					act.Current = activity.BringNectar
+					res := s.patchResourceMapper.Get(selected.Patch)
+					res.Nectar -= s.forageParams.NectarLoad * sz
+				} else {
+					patch.Nectar = ecs.Entity{}
 				}
 			}
 		}
@@ -296,6 +297,7 @@ func (s *Foraging) searching(w *ecs.World) {
 				res := s.patchResourceMapper.Get(patch.Nectar)
 				if res.Nectar >= s.forageParams.NectarLoad*sz {
 					res.Nectar -= s.forageParams.NectarLoad * sz
+					act.Current = activity.BringNectar
 					success = true
 				}
 			}
@@ -311,6 +313,7 @@ func (s *Foraging) searching(w *ecs.World) {
 				res := s.patchResourceMapper.Get(patch.Pollen)
 				if res.Pollen >= s.forageParams.PollenLoad*sz {
 					res.Pollen -= s.forageParams.PollenLoad * sz
+					act.Current = activity.BringPollen
 					success = true
 				}
 			}

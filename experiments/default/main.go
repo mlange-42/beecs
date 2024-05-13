@@ -14,20 +14,22 @@ import (
 func main() {
 	m := amodel.New()
 
+	params := model.DefaultParams()
+
 	start := time.Now()
 
 	for i := 0; i < 100; i++ {
-		run(m, i)
+		run(m, i, &params)
 	}
 
-	dur := time.Now().Sub(start)
+	dur := time.Since(start)
 	fmt.Println(dur)
 }
 
-func run(m *amodel.Model, idx int) {
+func run(m *amodel.Model, idx int, params *model.Params) {
 	ticks := 365
 
-	m = model.Default(m)
+	m = model.Default(params, m)
 
 	m.AddSystem(&system.FixedTermination{Steps: int64(ticks)})
 

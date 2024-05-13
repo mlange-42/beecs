@@ -9,7 +9,7 @@ import (
 type CalcAff struct {
 	affParams    *res.AgeFirstForagingParams
 	energyParams *res.EnergyParams
-	nurseParams  *res.NurseParams
+	nurseParams  *res.NursingParams
 	consStats    *res.ConsumptionStats
 	stores       *res.Stores
 	pop          *res.PopulationStats
@@ -20,7 +20,7 @@ type CalcAff struct {
 func (s *CalcAff) Initialize(w *ecs.World) {
 	s.affParams = ecs.GetResource[res.AgeFirstForagingParams](w)
 	s.energyParams = ecs.GetResource[res.EnergyParams](w)
-	s.nurseParams = ecs.GetResource[res.NurseParams](w)
+	s.nurseParams = ecs.GetResource[res.NursingParams](w)
 	s.consStats = ecs.GetResource[res.ConsumptionStats](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 	s.pop = ecs.GetResource[res.PopulationStats](w)
@@ -34,7 +34,7 @@ func (s *CalcAff) Initialize(w *ecs.World) {
 func (s *CalcAff) Update(w *ecs.World) {
 	pollenTH := 0.5
 	proteinTH := 1.0
-	honeyTH := 35.0 * (s.consStats.HoneyDaily / 1000) * s.energyParams.EnergyHoney
+	honeyTH := 35.0 * (s.consStats.HoneyDaily / 1000) * s.energyParams.Honey
 	broodTH := 0.1
 	foragerToWorkerTH := 0.3
 

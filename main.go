@@ -14,7 +14,8 @@ func main() {
 	files := false
 	ticks := 3650
 
-	m := model.Default(nil)
+	params := model.DefaultParams()
+	m := model.Default(&params, nil)
 	if gui {
 		m.TPS = 30
 		m.FPS = 30

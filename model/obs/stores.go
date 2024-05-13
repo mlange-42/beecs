@@ -21,7 +21,7 @@ type Stores struct {
 
 func (o *Stores) Initialize(w *ecs.World) {
 	o.stores = ecs.GetResource[res.Stores](w)
-	o.energyHoney = ecs.GetResource[res.EnergyParams](w).EnergyHoney
+	o.energyHoney = ecs.GetResource[res.EnergyParams](w).Honey
 	o.data = make([]float64, len(o.Header()))
 
 	if o.PollenFactor <= 0 {

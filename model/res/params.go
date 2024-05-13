@@ -79,8 +79,8 @@ type DroneMortality struct {
 }
 
 type EnergyParams struct {
-	EnergyHoney   float64 // [kJ/g]
-	EnergyScurose float64 // [kJ/micromol]
+	Honey   float64 // [kJ/g]
+	Scurose float64 // [kJ/micromol]
 }
 
 type HoneyNeeds struct {
@@ -101,7 +101,7 @@ type PollenNeeds struct {
 	Drone  float64 // [mg/d]
 }
 
-type NurseParams struct {
+type NursingParams struct {
 	MaxBroodNurseRatio         float64
 	ForagerNursingContribution float64
 	MaxEggsPerDay              int

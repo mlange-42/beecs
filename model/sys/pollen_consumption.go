@@ -11,7 +11,7 @@ import (
 type PollenConsumption struct {
 	needs       *res.PollenNeeds
 	storeParams *res.StoreParams
-	nurseParams *res.NurseParams
+	nurseParams *res.NursingParams
 	stores      *res.Stores
 	pop         *res.PopulationStats
 	workerDev   *res.WorkerDevelopment
@@ -20,7 +20,7 @@ type PollenConsumption struct {
 func (s *PollenConsumption) Initialize(w *ecs.World) {
 	s.needs = ecs.GetResource[res.PollenNeeds](w)
 	s.storeParams = ecs.GetResource[res.StoreParams](w)
-	s.nurseParams = ecs.GetResource[res.NurseParams](w)
+	s.nurseParams = ecs.GetResource[res.NursingParams](w)
 	s.stores = ecs.GetResource[res.Stores](w)
 	s.pop = ecs.GetResource[res.PopulationStats](w)
 	s.workerDev = ecs.GetResource[res.WorkerDevelopment](w)

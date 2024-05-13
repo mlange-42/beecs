@@ -3,16 +3,15 @@ package model
 import (
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/res"
 	"github.com/mlange-42/beecs/model/sys"
 )
 
-// Default sets up the default beecs model with the standard BEEHAVE parameters.
+// Default sets up the default beecs model with the standard sub-models.
 //
 // If the argument m is nil, a new model instance is created.
 // If it is non-nil, the model is reset and re-used, saving some time for initialization and memory allocation.
-func Default(m *model.Model) *model.Model {
+func Default(params *Params, m *model.Model) *model.Model {
 	if m == nil {
 		m = model.New()
 	} else {
@@ -21,146 +20,22 @@ func Default(m *model.Model) *model.Model {
 
 	// Resources
 
-	workerDev := res.WorkerDevelopment{
-		EggTime:     3,
-		LarvaeTime:  6,
-		PupaeTime:   12,
-		MaxLifespan: 290,
-	}
-	ecs.AddResource(&m.World, &workerDev)
-
-	droneDev := res.DroneDevelopment{
-		EggTime:     3,
-		LarvaeTime:  7,
-		PupaeTime:   14,
-		MaxLifespan: 37,
-	}
-	ecs.AddResource(&m.World, &droneDev)
-
-	workerMort := res.WorkerMortality{
-		Eggs:      0.03,
-		Larvae:    0.01,
-		Pupae:     0.001,
-		InHive:    0.004,
-		MaxMilage: 800,
-	}
-	ecs.AddResource(&m.World, &workerMort)
-
-	droneMort := res.DroneMortality{
-		Eggs:   0.064,
-		Larvae: 0.044,
-		Pupae:  0.005,
-		InHive: 0.05,
-	}
-	ecs.AddResource(&m.World, &droneMort)
-
-	aff := res.AgeFirstForagingParams{
-		Base: 21,
-		Min:  7,
-		Max:  50,
-	}
-	ecs.AddResource(&m.World, &aff)
-
-	foragerParams := res.ForagerParams{
-		FlightVelocity: 6.5,      // [m/s]
-		FlightCostPerM: 0.000006, //[kJ/m]
-		NectarLoad:     50,       // [muL]
-		PollenLoad:     0.015,    // [g]
-		MaxKmPerDay:    7299,     // ???
-		SquadronSize:   100,
-	}
-	ecs.AddResource(&m.World, &foragerParams)
-
-	forageParams := res.ForagingParams{
-		ProbBase:      0.01,
-		ProbHigh:      0.05,
-		ProbEmergency: 0.2,
-
-		SearchLength: 6.5 * 60 * 17, // [m] (6630m, 17 min)
-
-		EnergyOnFlower:  0.2,
-		MortalityPerSec: 0.00001,
-
-		StopProbability:     0.3,
-		AbandonPollenPerSec: 0.00002,
-	}
-	ecs.AddResource(&m.World, &forageParams)
-
-	handlingParams := res.HandlingTimeParams{
-		NectarGathering:      1200,
-		PollenGathering:      600,
-		NectarUnloading:      116,
-		PollenUnloading:      210,
-		ConstantHandlingTime: false,
-	}
-	ecs.AddResource(&m.World, &handlingParams)
-
-	danceParams := res.DanceParams{
-		Slope:                       1.16,
-		Intercept:                   0.0,
-		MaxCircuits:                 117,
-		FindProbability:             0.5,
-		PollenDanceFollowers:        2,
-		MaxProportionPollenForagers: 0.8,
-	}
-	ecs.AddResource(&m.World, &danceParams)
-
-	energy := res.EnergyParams{
-		EnergyHoney:   12.78,
-		EnergyScurose: 0.00582,
-	}
-	ecs.AddResource(&m.World, &energy)
-
-	storeParams := res.StoreParams{
-		IdealPollenStoreDays: 7,
-		MinIdealPollenStore:  250.0,
-		MaxHoneyStoreKg:      50.0,
-		ProteinStoreNurse:    7, // [d]
-	}
-	ecs.AddResource(&m.World, &storeParams)
-
-	honeyNeeds := res.HoneyNeeds{
-		WorkerResting:    11.0,  // [mg/d]
-		WorkerNurse:      53.42, // [mg/d]
-		WorkerLarvaTotal: 65.4,  // [mg]
-		DroneLarva:       19.2,  // [mg/d]
-		Drone:            10.0,  // [mg/d]
-	}
-	ecs.AddResource(&m.World, &honeyNeeds)
-
-	pollenNeeds := res.PollenNeeds{
-		WorkerLarvaTotal: 142.0, // [mg]
-		DroneLarva:       50.0,  // [mg/d]
-		Worker:           1.5,   // [mg/d]
-		Drone:            2.0,   // [mg/d]
-	}
-	ecs.AddResource(&m.World, &pollenNeeds)
-
-	nurseParams := res.NurseParams{
-		MaxBroodNurseRatio:         3.0,
-		ForagerNursingContribution: 0.2,
-		MaxEggsPerDay:              1600,
-		DroneEggsProportion:        0.04,
-		EggNursingLimit:            true,
-		MaxBroodCells:              200_000,
-		DroneEggLayingSeason:       [2]int{115, 240},
-	}
-	ecs.AddResource(&m.World, &nurseParams)
-
-	initPop := res.InitialPopulation{
-		Count:     10_000,
-		MinAge:    100,
-		MaxAge:    160,
-		MinMilage: 0,
-		MaxMilage: 200,
-	}
-	ecs.AddResource(&m.World, &initPop)
-
-	initStores := res.InitialStores{
-		Honey:  25,  // [kg]
-		Pollen: 100, // [g]
-	}
-	ecs.AddResource(&m.World, &initStores)
+	ecs.AddResource(&m.World, &params.WorkerDevelopment)
+	ecs.AddResource(&m.World, &params.DroneDevelopment)
+	ecs.AddResource(&m.World, &params.WorkerMortality)
+	ecs.AddResource(&m.World, &params.DroneMortality)
+	ecs.AddResource(&m.World, &params.AgeFirstForaging)
+	ecs.AddResource(&m.World, &params.Forager)
+	ecs.AddResource(&m.World, &params.Foraging)
+	ecs.AddResource(&m.World, &params.HandlingTime)
+	ecs.AddResource(&m.World, &params.Dance)
+	ecs.AddResource(&m.World, &params.Energy)
+	ecs.AddResource(&m.World, &params.Stores)
+	ecs.AddResource(&m.World, &params.HoneyNeeds)
+	ecs.AddResource(&m.World, &params.PollenNeeds)
+	ecs.AddResource(&m.World, &params.Nursing)
+	ecs.AddResource(&m.World, &params.InitialPopulation)
+	ecs.AddResource(&m.World, &params.InitialStores)
 
 	factory := res.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
@@ -180,22 +55,7 @@ func Default(m *model.Model) *model.Model {
 	m.AddSystem(&sys.InitPopulation{})
 
 	m.AddSystem(&sys.InitPatchesList{
-		Patches: []comp.PatchConfig{
-			{
-				Nectar:               20,
-				NectarConcentration:  1.5,
-				Pollen:               1,
-				DistToColony:         1500,
-				DetectionProbability: 0.2,
-			},
-			{
-				Nectar:               20,
-				NectarConcentration:  1.5,
-				Pollen:               1,
-				DistToColony:         500,
-				DetectionProbability: 0.2,
-			},
-		},
+		Patches: params.Patches,
 	})
 
 	// Sub-models

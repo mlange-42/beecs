@@ -10,7 +10,7 @@ import (
 type BroodCare struct {
 	pop         *res.PopulationStats
 	stores      *res.Stores
-	nurseParams *res.NurseParams
+	nurseParams *res.NursingParams
 
 	eggs   *res.Eggs
 	larvae *res.Larvae
@@ -20,7 +20,7 @@ type BroodCare struct {
 func (s *BroodCare) Initialize(w *ecs.World) {
 	s.pop = ecs.GetResource[res.PopulationStats](w)
 	s.stores = ecs.GetResource[res.Stores](w)
-	s.nurseParams = ecs.GetResource[res.NurseParams](w)
+	s.nurseParams = ecs.GetResource[res.NursingParams](w)
 
 	s.eggs = ecs.GetResource[res.Eggs](w)
 	s.larvae = ecs.GetResource[res.Larvae](w)

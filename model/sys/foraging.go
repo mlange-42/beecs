@@ -77,7 +77,7 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	storeParams := ecs.GetResource[res.StoreParams](w)
 	energyParams := ecs.GetResource[res.EnergyParams](w)
 
-	s.maxHoneyStore = storeParams.MaxHoneyStoreKg * 1000.0 * energyParams.EnergyHoney
+	s.maxHoneyStore = storeParams.MaxHoneyStoreKg * 1000.0 * energyParams.Honey
 	s.rng = rand.New(ecs.GetResource[resource.Rand](w))
 
 	s.PatchUpdater.Initialize(w)
@@ -367,7 +367,7 @@ func (s *Foraging) collecting(w *ecs.World) {
 
 		if act.Current == activity.BringNectar {
 			conf, trip := s.patchConfigMapper.Get(patch.Nectar)
-			load.Energy = conf.NectarConcentration * s.foragerParams.NectarLoad * s.energyParams.EnergyScurose
+			load.Energy = conf.NectarConcentration * s.foragerParams.NectarLoad * s.energyParams.Scurose
 			dist := trip.CostNectar / (s.foragerParams.FlightCostPerM * 1000)
 			milage.Today += float32(dist)
 			milage.Total += float32(dist)

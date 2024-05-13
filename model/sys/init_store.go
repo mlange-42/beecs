@@ -11,7 +11,7 @@ func (s *InitStore) Initialize(w *ecs.World) {
 	init := ecs.GetResource[res.InitialStores](w)
 	energyParams := ecs.GetResource[res.EnergyParams](w)
 	stores := res.Stores{
-		Honey:               init.Honey * 1000.0 * energyParams.EnergyHoney,
+		Honey:               init.Honey * 1000.0 * energyParams.Honey,
 		Pollen:              init.Pollen,
 		ProteinFactorNurses: 1.0,
 	}

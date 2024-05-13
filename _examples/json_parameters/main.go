@@ -1,3 +1,4 @@
+// Demonstrates how to read parameters from JSON.
 package main
 
 import (

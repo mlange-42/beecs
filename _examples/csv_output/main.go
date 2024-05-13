@@ -1,3 +1,4 @@
+// Demonstrates how to write CSV output.
 package main
 
 import (

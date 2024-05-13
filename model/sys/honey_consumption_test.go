@@ -13,8 +13,8 @@ import (
 func TestHoneyConsumption(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &params.ForagerParams{SquadronSize: 10})
-	ecs.AddResource(&world, &params.AgeFirstForagingParams{Max: 5})
+	ecs.AddResource(&world, &params.Foragers{SquadronSize: 10})
+	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
 	ecs.AddResource(&world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
@@ -42,11 +42,11 @@ func TestHoneyConsumption(t *testing.T) {
 	}
 	ecs.AddResource(&world, &stores)
 
-	ecs.AddResource(&world, &params.EnergyParams{
+	ecs.AddResource(&world, &params.EnergyContent{
 		Honey:   12.78,
 		Scurose: 0.00582,
 	})
-	ecs.AddResource(&world, &params.NursingParams{
+	ecs.AddResource(&world, &params.Nursing{
 		MaxBroodNurseRatio: 3.0,
 	})
 	ecs.AddResource(&world, &globals.ConsumptionStats{})

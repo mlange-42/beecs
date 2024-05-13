@@ -1,12 +1,12 @@
 package params
 
-type AgeFirstForagingParams struct {
+type AgeFirstForaging struct {
 	Base int
 	Min  int
 	Max  int
 }
 
-type ForagerParams struct {
+type Foragers struct {
 	FlightVelocity float64 // [m/s]
 	FlightCostPerM float64 // [kJ/m]
 	MaxKmPerDay    float64
@@ -15,7 +15,7 @@ type ForagerParams struct {
 	SquadronSize   int
 }
 
-type HandlingTimeParams struct {
+type HandlingTime struct {
 	NectarGathering      float64 // [s]
 	PollenGathering      float64 // [s]
 	NectarUnloading      float64 // [s]
@@ -23,7 +23,7 @@ type HandlingTimeParams struct {
 	ConstantHandlingTime bool
 }
 
-type ForagingParams struct {
+type Foraging struct {
 	ProbBase      float64
 	ProbHigh      float64
 	ProbEmergency float64
@@ -37,7 +37,7 @@ type ForagingParams struct {
 	AbandonPollenPerSec float64
 }
 
-type DanceParams struct {
+type Dance struct {
 	Slope                       float64
 	Intercept                   float64
 	MaxCircuits                 int
@@ -78,7 +78,7 @@ type DroneMortality struct {
 	MaxLifespan int
 }
 
-type EnergyParams struct {
+type EnergyContent struct {
 	Honey   float64 // [kJ/g]
 	Scurose float64 // [kJ/micromol]
 }
@@ -101,7 +101,7 @@ type PollenNeeds struct {
 	Drone  float64 // [mg/d]
 }
 
-type NursingParams struct {
+type Nursing struct {
 	MaxBroodNurseRatio         float64
 	ForagerNursingContribution float64
 	MaxEggsPerDay              int
@@ -112,7 +112,7 @@ type NursingParams struct {
 	DroneEggLayingSeasonEnd    int
 }
 
-type StoreParams struct {
+type Stores struct {
 	IdealPollenStoreDays int
 	MinIdealPollenStore  float64
 	MaxHoneyStoreKg      float64

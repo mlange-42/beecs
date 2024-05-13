@@ -11,21 +11,21 @@ import (
 )
 
 type UpdatePatchesForaging struct {
-	forageParams      *params.ForagingParams
-	foragerParams     *params.ForagerParams
-	handingTimeParams *params.HandlingTimeParams
-	energyParams      *params.EnergyParams
-	danceParams       *params.DanceParams
+	forageParams      *params.Foraging
+	foragerParams     *params.Foragers
+	handingTimeParams *params.HandlingTime
+	energyParams      *params.EnergyContent
+	danceParams       *params.Dance
 
 	filter generic.Filter6[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
 }
 
 func (s *UpdatePatchesForaging) Initialize(w *ecs.World) {
-	s.forageParams = ecs.GetResource[params.ForagingParams](w)
-	s.foragerParams = ecs.GetResource[params.ForagerParams](w)
-	s.handingTimeParams = ecs.GetResource[params.HandlingTimeParams](w)
-	s.energyParams = ecs.GetResource[params.EnergyParams](w)
-	s.danceParams = ecs.GetResource[params.DanceParams](w)
+	s.forageParams = ecs.GetResource[params.Foraging](w)
+	s.foragerParams = ecs.GetResource[params.Foragers](w)
+	s.handingTimeParams = ecs.GetResource[params.HandlingTime](w)
+	s.energyParams = ecs.GetResource[params.EnergyContent](w)
+	s.danceParams = ecs.GetResource[params.Dance](w)
 
 	s.filter = *generic.NewFilter6[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]()
 }

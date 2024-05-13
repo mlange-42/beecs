@@ -8,9 +8,9 @@ import (
 )
 
 type CalcAff struct {
-	affParams    *params.AgeFirstForagingParams
-	energyParams *params.EnergyParams
-	nurseParams  *params.NursingParams
+	affParams    *params.AgeFirstForaging
+	energyParams *params.EnergyContent
+	nurseParams  *params.Nursing
 	consStats    *globals.ConsumptionStats
 	stores       *globals.Stores
 	pop          *globals.PopulationStats
@@ -19,9 +19,9 @@ type CalcAff struct {
 }
 
 func (s *CalcAff) Initialize(w *ecs.World) {
-	s.affParams = ecs.GetResource[params.AgeFirstForagingParams](w)
-	s.energyParams = ecs.GetResource[params.EnergyParams](w)
-	s.nurseParams = ecs.GetResource[params.NursingParams](w)
+	s.affParams = ecs.GetResource[params.AgeFirstForaging](w)
+	s.energyParams = ecs.GetResource[params.EnergyContent](w)
+	s.nurseParams = ecs.GetResource[params.Nursing](w)
 	s.consStats = ecs.GetResource[globals.ConsumptionStats](w)
 	s.stores = ecs.GetResource[globals.Stores](w)
 	s.pop = ecs.GetResource[globals.PopulationStats](w)

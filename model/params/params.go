@@ -9,21 +9,21 @@ import (
 
 type Params struct {
 	Patches           []comp.PatchConfig
-	Nursing           NursingParams
-	Foraging          ForagingParams
-	Forager           ForagerParams
-	Dance             DanceParams
+	Nursing           Nursing
+	Foraging          Foraging
+	Forager           Foragers
+	Dance             Dance
 	HoneyNeeds        HoneyNeeds
 	WorkerMortality   WorkerMortality
 	DroneMortality    DroneMortality
-	HandlingTime      HandlingTimeParams
+	HandlingTime      HandlingTime
 	PollenNeeds       PollenNeeds
-	Stores            StoreParams
+	Stores            Stores
 	WorkerDevelopment WorkerDevelopment
 	InitialPopulation InitialPopulation
 	DroneDevelopment  DroneDevelopment
-	AgeFirstForaging  AgeFirstForagingParams
-	Energy            EnergyParams
+	AgeFirstForaging  AgeFirstForaging
+	Energy            EnergyContent
 	InitialStores     InitialStores
 }
 
@@ -54,12 +54,12 @@ func Default() Params {
 			Pupae:  0.005,
 			InHive: 0.05,
 		},
-		AgeFirstForaging: AgeFirstForagingParams{
+		AgeFirstForaging: AgeFirstForaging{
 			Base: 21,
 			Min:  7,
 			Max:  50,
 		},
-		Forager: ForagerParams{
+		Forager: Foragers{
 			FlightVelocity: 6.5,      // [m/s]
 			FlightCostPerM: 0.000006, //[kJ/m]
 			NectarLoad:     50,       // [muL]
@@ -67,7 +67,7 @@ func Default() Params {
 			MaxKmPerDay:    7299,     // ???
 			SquadronSize:   100,
 		},
-		Foraging: ForagingParams{
+		Foraging: Foraging{
 			ProbBase:      0.01,
 			ProbHigh:      0.05,
 			ProbEmergency: 0.2,
@@ -80,14 +80,14 @@ func Default() Params {
 			StopProbability:     0.3,
 			AbandonPollenPerSec: 0.00002,
 		},
-		HandlingTime: HandlingTimeParams{
+		HandlingTime: HandlingTime{
 			NectarGathering:      1200,
 			PollenGathering:      600,
 			NectarUnloading:      116,
 			PollenUnloading:      210,
 			ConstantHandlingTime: false,
 		},
-		Dance: DanceParams{
+		Dance: Dance{
 			Slope:                       1.16,
 			Intercept:                   0.0,
 			MaxCircuits:                 117,
@@ -95,11 +95,11 @@ func Default() Params {
 			PollenDanceFollowers:        2,
 			MaxProportionPollenForagers: 0.8,
 		},
-		Energy: EnergyParams{
+		Energy: EnergyContent{
 			Honey:   12.78,
 			Scurose: 0.00582,
 		},
-		Stores: StoreParams{
+		Stores: Stores{
 			IdealPollenStoreDays: 7,
 			MinIdealPollenStore:  250.0,
 			MaxHoneyStoreKg:      50.0,
@@ -118,7 +118,7 @@ func Default() Params {
 			Worker:           1.5,   // [mg/d]
 			Drone:            2.0,   // [mg/d]
 		},
-		Nursing: NursingParams{
+		Nursing: Nursing{
 			MaxBroodNurseRatio:         3.0,
 			ForagerNursingContribution: 0.2,
 			MaxEggsPerDay:              1600,

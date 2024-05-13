@@ -11,8 +11,8 @@ import (
 type HoneyConsumption struct {
 	needs        *params.HoneyNeeds
 	workerDev    *params.WorkerDevelopment
-	nurseParams  *params.NursingParams
-	energyParams *params.EnergyParams
+	nurseParams  *params.Nursing
+	energyParams *params.EnergyContent
 
 	stores *globals.Stores
 	pop    *globals.PopulationStats
@@ -22,8 +22,8 @@ type HoneyConsumption struct {
 func (s *HoneyConsumption) Initialize(w *ecs.World) {
 	s.needs = ecs.GetResource[params.HoneyNeeds](w)
 	s.workerDev = ecs.GetResource[params.WorkerDevelopment](w)
-	s.nurseParams = ecs.GetResource[params.NursingParams](w)
-	s.energyParams = ecs.GetResource[params.EnergyParams](w)
+	s.nurseParams = ecs.GetResource[params.Nursing](w)
+	s.energyParams = ecs.GetResource[params.EnergyContent](w)
 
 	s.stores = ecs.GetResource[globals.Stores](w)
 	s.pop = ecs.GetResource[globals.PopulationStats](w)

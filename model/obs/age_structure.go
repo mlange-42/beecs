@@ -24,7 +24,7 @@ type AgeStructure struct {
 	inHive *globals.InHive
 	aff    *globals.AgeFirstForaging
 	time   *resource.Tick
-	params *params.ForagerParams
+	params *params.Foragers
 
 	data   [][]float64
 	filter generic.Filter1[comp.Age]
@@ -37,7 +37,7 @@ func (o *AgeStructure) Initialize(w *ecs.World) {
 	o.inHive = ecs.GetResource[globals.InHive](w)
 	o.aff = ecs.GetResource[globals.AgeFirstForaging](w)
 	o.time = ecs.GetResource[resource.Tick](w)
-	o.params = ecs.GetResource[params.ForagerParams](w)
+	o.params = ecs.GetResource[params.Foragers](w)
 
 	o.filter = *generic.NewFilter1[comp.Age]()
 

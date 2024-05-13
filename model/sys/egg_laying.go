@@ -14,7 +14,7 @@ type EggLaying struct {
 	time        *resource.Tick
 	eggs        *globals.Eggs
 	pop         *globals.PopulationStats
-	nurseParams *params.NursingParams
+	nurseParams *params.Nursing
 	workerDev   *params.WorkerDevelopment
 }
 
@@ -22,7 +22,7 @@ func (s *EggLaying) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
 	s.eggs = ecs.GetResource[globals.Eggs](w)
 	s.pop = ecs.GetResource[globals.PopulationStats](w)
-	s.nurseParams = ecs.GetResource[params.NursingParams](w)
+	s.nurseParams = ecs.GetResource[params.Nursing](w)
 	s.workerDev = ecs.GetResource[params.WorkerDevelopment](w)
 }
 

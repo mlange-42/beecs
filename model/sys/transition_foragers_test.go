@@ -16,8 +16,8 @@ func TestTransitionForagers(t *testing.T) {
 	world := ecs.NewWorld()
 
 	ecs.AddResource(&world, &resource.Tick{})
-	ecs.AddResource(&world, &params.ForagerParams{SquadronSize: 100})
-	ecs.AddResource(&world, &params.AgeFirstForagingParams{Max: 5})
+	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
+	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
 	ecs.AddResource(&world, &globals.AgeFirstForaging{Aff: 3})
 	ecs.AddResource(&world, &params.WorkerDevelopment{
 		EggTime:     2,

@@ -14,7 +14,7 @@ type InitCohorts struct {
 }
 
 func (s *InitCohorts) Initialize(w *ecs.World) {
-	aff := ecs.GetResource[params.AgeFirstForagingParams](w)
+	aff := ecs.GetResource[params.AgeFirstForaging](w)
 
 	workerDev := ecs.GetResource[params.WorkerDevelopment](w)
 	droneDev := ecs.GetResource[params.DroneDevelopment](w)

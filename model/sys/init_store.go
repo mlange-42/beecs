@@ -10,7 +10,7 @@ type InitStore struct{}
 
 func (s *InitStore) Initialize(w *ecs.World) {
 	init := ecs.GetResource[params.InitialStores](w)
-	energyParams := ecs.GetResource[params.EnergyParams](w)
+	energyParams := ecs.GetResource[params.EnergyContent](w)
 	stores := globals.Stores{
 		Honey:               init.Honey * 1000.0 * energyParams.Honey,
 		Pollen:              init.Pollen,

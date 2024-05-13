@@ -9,7 +9,7 @@ import (
 )
 
 type CountPopulation struct {
-	params *params.ForagerParams
+	params *params.Foragers
 
 	eggs   *globals.Eggs
 	larvae *globals.Larvae
@@ -21,7 +21,7 @@ type CountPopulation struct {
 }
 
 func (s *CountPopulation) Initialize(w *ecs.World) {
-	s.params = ecs.GetResource[params.ForagerParams](w)
+	s.params = ecs.GetResource[params.Foragers](w)
 
 	s.eggs = ecs.GetResource[globals.Eggs](w)
 	s.larvae = ecs.GetResource[globals.Larvae](w)

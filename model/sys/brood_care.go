@@ -9,7 +9,7 @@ import (
 )
 
 type BroodCare struct {
-	nurseParams *params.NursingParams
+	nurseParams *params.Nursing
 
 	pop    *globals.PopulationStats
 	stores *globals.Stores
@@ -20,7 +20,7 @@ type BroodCare struct {
 }
 
 func (s *BroodCare) Initialize(w *ecs.World) {
-	s.nurseParams = ecs.GetResource[params.NursingParams](w)
+	s.nurseParams = ecs.GetResource[params.Nursing](w)
 
 	s.pop = ecs.GetResource[globals.PopulationStats](w)
 	s.stores = ecs.GetResource[globals.Stores](w)

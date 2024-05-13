@@ -19,12 +19,12 @@ type Foraging struct {
 	PatchUpdater model.System
 	rng          *rand.Rand
 
-	foragerParams      *params.ForagerParams
-	forageParams       *params.ForagingParams
-	handlingTimeParams *params.HandlingTimeParams
-	danceParams        *params.DanceParams
-	energyParams       *params.EnergyParams
-	storeParams        *params.StoreParams
+	foragerParams      *params.Foragers
+	forageParams       *params.Foraging
+	handlingTimeParams *params.HandlingTime
+	danceParams        *params.Dance
+	energyParams       *params.EnergyContent
+	storeParams        *params.Stores
 
 	foragePeriod *globals.ForagingPeriod
 	stores       *globals.Stores
@@ -53,12 +53,12 @@ type Foraging struct {
 }
 
 func (s *Foraging) Initialize(w *ecs.World) {
-	s.foragerParams = ecs.GetResource[params.ForagerParams](w)
-	s.forageParams = ecs.GetResource[params.ForagingParams](w)
-	s.handlingTimeParams = ecs.GetResource[params.HandlingTimeParams](w)
-	s.danceParams = ecs.GetResource[params.DanceParams](w)
-	s.energyParams = ecs.GetResource[params.EnergyParams](w)
-	s.storeParams = ecs.GetResource[params.StoreParams](w)
+	s.foragerParams = ecs.GetResource[params.Foragers](w)
+	s.forageParams = ecs.GetResource[params.Foraging](w)
+	s.handlingTimeParams = ecs.GetResource[params.HandlingTime](w)
+	s.danceParams = ecs.GetResource[params.Dance](w)
+	s.energyParams = ecs.GetResource[params.EnergyContent](w)
+	s.storeParams = ecs.GetResource[params.Stores](w)
 
 	s.pop = ecs.GetResource[globals.PopulationStats](w)
 	s.foragePeriod = ecs.GetResource[globals.ForagingPeriod](w)
@@ -78,8 +78,8 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.patchConfigMapper = generic.NewMap2[comp.PatchConfig, comp.Trip](w)
 	s.foragerMapper = generic.NewMap2[comp.Activity, comp.KnownPatch](w)
 
-	storeParams := ecs.GetResource[params.StoreParams](w)
-	energyParams := ecs.GetResource[params.EnergyParams](w)
+	storeParams := ecs.GetResource[params.Stores](w)
+	energyParams := ecs.GetResource[params.EnergyContent](w)
 
 	s.maxHoneyStore = storeParams.MaxHoneyStoreKg * 1000.0 * energyParams.Honey
 	s.rng = rand.New(ecs.GetResource[resource.Rand](w))

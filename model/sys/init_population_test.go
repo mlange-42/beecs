@@ -18,7 +18,7 @@ func TestInitPopulation(t *testing.T) {
 
 	fac := globals.NewForagerFactory(&world)
 	ecs.AddResource(&world, &fac)
-	ecs.AddResource(&world, &params.ForagerParams{SquadronSize: 100})
+	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
 	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
 	ecs.AddResource(&world, &params.InitialPopulation{
 		Count:     10_000,

@@ -8,6 +8,10 @@ import (
 	"github.com/mlange-42/beecs/model/sys"
 )
 
+// Default sets up the default beecs model with the standard BEEHAVE parameters.
+//
+// If the argument m is nil, a new model instance is created.
+// If it is non-nil, the model is reset and re-used, saving some time for initialization and memory allocation.
 func Default(m *model.Model) *model.Model {
 	if m == nil {
 		m = model.New()

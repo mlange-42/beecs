@@ -12,7 +12,7 @@ import (
 func main() {
 	gui := true
 	files := false
-	ticks := 365
+	ticks := 3650
 
 	m := model.Default(nil)
 	if gui {
@@ -43,7 +43,7 @@ func main() {
 		}).
 			With(
 				&plot.TimeSeries{
-					Observer:       &obs.WorkerCohorts{Cumulative: false},
+					Observer:       &obs.WorkerCohorts{Cumulative: true},
 					UpdateInterval: 1,
 					MaxRows:        2 * 365,
 					Labels:         plot.Labels{Title: "Cohorts", X: "Time [days]", Y: "Count"},
@@ -59,7 +59,7 @@ func main() {
 					Observer: &obs.AgeStructure{
 						MaxAge: 400,
 					},
-					YLim:   [...]float64{0, 1800},
+					YLim:   [...]float64{0, 2000},
 					Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
 				},
 				&plot.Controls{}))

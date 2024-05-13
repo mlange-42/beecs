@@ -6,21 +6,16 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
-type InitPopulation struct {
-	InitialCount int
-	MinAge       int
-	MaxAge       int
-	MinMilage    float32
-	MaxMilage    float32
-}
+type InitPopulation struct{}
 
 func (s *InitPopulation) Initialize(w *ecs.World) {
+	init := ecs.GetResource[res.InitialPopulation](w)
 	params := ecs.GetResource[res.Params](w)
 	factory := ecs.GetResource[res.ForagerFactory](w)
 	rand := ecs.GetResource[resource.Rand](w)
 
-	squadrons := s.InitialCount / params.SquadronSize
-	factory.CreateInitialSquadrons(squadrons, -s.MaxAge, -s.MinAge, s.MinMilage, s.MaxMilage, rand)
+	squadrons := init.Count / params.SquadronSize
+	factory.CreateInitialSquadrons(squadrons, -init.MaxAge, -init.MinAge, init.MinMilage, init.MaxMilage, rand)
 }
 
 func (s *InitPopulation) Update(w *ecs.World) {}

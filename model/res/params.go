@@ -115,3 +115,16 @@ type StoreParams struct {
 	MaxHoneyStoreKg      float64
 	ProteinStoreNurse    float64 // [d]
 }
+
+type InitialPopulation struct {
+	Count     int
+	MinAge    int
+	MaxAge    int
+	MinMilage float32
+	MaxMilage float32
+}
+
+type InitialStores struct {
+	Honey  float64 // [kg]
+	Pollen float64 // [g]
+}

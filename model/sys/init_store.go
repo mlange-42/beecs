@@ -5,16 +5,14 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
-type InitStore struct {
-	InitialPollen float64 // [g]
-	InitialHoney  float64 // [kg]
-}
+type InitStore struct{}
 
 func (s *InitStore) Initialize(w *ecs.World) {
+	init := ecs.GetResource[res.InitialStores](w)
 	energyParams := ecs.GetResource[res.EnergyParams](w)
 	stores := res.Stores{
-		Pollen:              s.InitialPollen,
-		Honey:               s.InitialHoney * 1000.0 * energyParams.EnergyHoney,
+		Honey:               init.Honey * 1000.0 * energyParams.EnergyHoney,
+		Pollen:              init.Pollen,
 		ProteinFactorNurses: 1.0,
 	}
 

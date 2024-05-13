@@ -19,14 +19,15 @@ func TestInitPopulation(t *testing.T) {
 	ecs.AddResource(&world, &fac)
 	ecs.AddResource(&world, &res.Params{SquadronSize: 100})
 	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
+	ecs.AddResource(&world, &res.InitialPopulation{
+		Count:     10_000,
+		MinAge:    100,
+		MaxAge:    160,
+		MinMilage: 0,
+		MaxMilage: 200,
+	})
 
-	s := InitPopulation{
-		InitialCount: 10_000,
-		MinAge:       100,
-		MaxAge:       160,
-		MinMilage:    0,
-		MaxMilage:    200,
-	}
+	s := InitPopulation{}
 	s.Initialize(&world)
 
 	filter := generic.NewFilter2[comp.Milage, comp.Age]()

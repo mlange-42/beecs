@@ -144,6 +144,21 @@ func Default(m *model.Model) *model.Model {
 	}
 	ecs.AddResource(&m.World, &nurseParams)
 
+	initPop := res.InitialPopulation{
+		Count:     10_000,
+		MinAge:    100,
+		MaxAge:    160,
+		MinMilage: 0,
+		MaxMilage: 200,
+	}
+	ecs.AddResource(&m.World, &initPop)
+
+	initStores := res.InitialStores{
+		Honey:  25,  // [kg]
+		Pollen: 100, // [g]
+	}
+	ecs.AddResource(&m.World, &initStores)
+
 	factory := res.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
 
@@ -155,20 +170,11 @@ func Default(m *model.Model) *model.Model {
 
 	// Initialization
 
-	m.AddSystem(&sys.InitStore{
-		InitialPollen: 100,
-		InitialHoney:  25,
-	})
+	m.AddSystem(&sys.InitStore{})
 
 	m.AddSystem(&sys.InitCohorts{})
 
-	m.AddSystem(&sys.InitPopulation{
-		InitialCount: 10_000,
-		MinAge:       100,
-		MaxAge:       160,
-		MinMilage:    0,
-		MaxMilage:    200,
-	})
+	m.AddSystem(&sys.InitPopulation{})
 
 	m.AddSystem(&sys.InitPatchesList{
 		Patches: []comp.PatchConfig{

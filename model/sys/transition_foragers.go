@@ -8,7 +8,7 @@ import (
 
 type TransitionForagers struct {
 	inHive  *res.InHive
-	params  *res.Params
+	params  *res.ForagerParams
 	aff     *res.AgeFirstForaging
 	time    *resource.Tick
 	factory *res.ForagerFactory
@@ -16,7 +16,7 @@ type TransitionForagers struct {
 
 func (s *TransitionForagers) Initialize(w *ecs.World) {
 	s.inHive = ecs.GetResource[res.InHive](w)
-	s.params = ecs.GetResource[res.Params](w)
+	s.params = ecs.GetResource[res.ForagerParams](w)
 	s.aff = ecs.GetResource[res.AgeFirstForaging](w)
 	s.time = ecs.GetResource[resource.Tick](w)
 	s.factory = ecs.GetResource[res.ForagerFactory](w)

@@ -1,9 +1,5 @@
 package res
 
-type Params struct {
-	SquadronSize int
-}
-
 type AgeFirstForagingParams struct {
 	Base int
 	Min  int
@@ -16,6 +12,7 @@ type ForagerParams struct {
 	MaxKmPerDay    float64
 	NectarLoad     float64 // [muL]
 	PollenLoad     float64 // [g]
+	SquadronSize   int
 }
 
 type HandlingTimeParams struct {

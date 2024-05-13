@@ -17,7 +17,6 @@ import (
 type Foraging struct {
 	PatchUpdater       model.System
 	rng                *rand.Rand
-	params             *res.Params
 	foragePeriod       *res.ForagingPeriod
 	foragerParams      *res.ForagerParams
 	forageParams       *res.ForagingParams
@@ -52,7 +51,6 @@ type Foraging struct {
 
 func (s *Foraging) Initialize(w *ecs.World) {
 	s.pop = ecs.GetResource[res.PopulationStats](w)
-	s.params = ecs.GetResource[res.Params](w)
 	s.foragePeriod = ecs.GetResource[res.ForagingPeriod](w)
 	s.foragerParams = ecs.GetResource[res.ForagerParams](w)
 	s.forageParams = ecs.GetResource[res.ForagingParams](w)
@@ -230,7 +228,7 @@ func (s *Foraging) searching(w *ecs.World) {
 	cumProb := 0.0
 	nonDetectionProb := 1.0
 
-	sz := float64(s.params.SquadronSize)
+	sz := float64(s.foragerParams.SquadronSize)
 	patchQuery := s.patchFilter.Query(w)
 	for patchQuery.Next() {
 		res, conf := patchQuery.Get()
@@ -332,7 +330,7 @@ func (s *Foraging) searching(w *ecs.World) {
 }
 
 func (s *Foraging) collecting(w *ecs.World) {
-	sz := float64(s.params.SquadronSize)
+	sz := float64(s.foragerParams.SquadronSize)
 	foragerQuery := s.foragerFilterLoad.Query(w)
 	for foragerQuery.Next() {
 		act, patch, milage, load := foragerQuery.Get()
@@ -398,7 +396,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 			milage.Total += float32(dist)
 
 			en := s.forageParams.SearchLength * s.foragerParams.FlightCostPerM
-			s.stores.Honey -= en * float64(s.params.SquadronSize)
+			s.stores.Honey -= en * float64(s.foragerParams.SquadronSize)
 
 			duration += s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 			foragers += 1
@@ -413,7 +411,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 				duration += trip.DurationNectar + s.handlingTimeParams.NectarUnloading
 				en = trip.CostNectar
 			}
-			s.stores.Honey -= en * float64(s.params.SquadronSize)
+			s.stores.Honey -= en * float64(s.foragerParams.SquadronSize)
 			foragers += 1
 		}
 	}
@@ -557,13 +555,13 @@ func (s *Foraging) unloading(w *ecs.World) {
 		act, load := query.Get()
 		if act.Current == activity.BringNectar {
 			s.stores.Honey = math.Min(
-				s.stores.Honey+load.Energy*float64(s.params.SquadronSize),
+				s.stores.Honey+load.Energy*float64(s.foragerParams.SquadronSize),
 				s.maxHoneyStore,
 			)
 			load.Energy = 0
 			act.Current = activity.Experienced
 		} else if act.Current == activity.BringPollen {
-			s.stores.Pollen += s.foragerParams.PollenLoad * float64(s.params.SquadronSize)
+			s.stores.Pollen += s.foragerParams.PollenLoad * float64(s.foragerParams.SquadronSize)
 			act.Current = activity.Experienced
 		}
 	}

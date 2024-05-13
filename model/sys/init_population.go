@@ -10,7 +10,7 @@ type InitPopulation struct{}
 
 func (s *InitPopulation) Initialize(w *ecs.World) {
 	init := ecs.GetResource[res.InitialPopulation](w)
-	params := ecs.GetResource[res.Params](w)
+	params := ecs.GetResource[res.ForagerParams](w)
 	factory := ecs.GetResource[res.ForagerFactory](w)
 	rand := ecs.GetResource[resource.Rand](w)
 

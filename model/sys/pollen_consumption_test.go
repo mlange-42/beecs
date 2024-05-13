@@ -11,7 +11,7 @@ import (
 func TestPollenConsumption(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &res.Params{SquadronSize: 10})
+	ecs.AddResource(&world, &res.ForagerParams{SquadronSize: 10})
 	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
 	ecs.AddResource(&world, &res.WorkerDevelopment{
 		EggTime:     2,

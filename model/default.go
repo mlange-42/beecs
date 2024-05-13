@@ -21,11 +21,6 @@ func Default(m *model.Model) *model.Model {
 
 	// Resources
 
-	params := res.Params{
-		SquadronSize: 100,
-	}
-	ecs.AddResource(&m.World, &params)
-
 	workerDev := res.WorkerDevelopment{
 		EggTime:     3,
 		LarvaeTime:  6,
@@ -72,6 +67,7 @@ func Default(m *model.Model) *model.Model {
 		NectarLoad:     50,       // [muL]
 		PollenLoad:     0.015,    // [g]
 		MaxKmPerDay:    7299,     // ???
+		SquadronSize:   100,
 	}
 	ecs.AddResource(&m.World, &foragerParams)
 

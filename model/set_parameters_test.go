@@ -26,3 +26,18 @@ func TestSetParameter(t *testing.T) {
 	err = model.SetParameter(&m.World, "params.Foragers.SquadronSizE", 10)
 	assert.NotNil(t, err)
 }
+
+func TestGetParameter(t *testing.T) {
+	p := params.Default()
+	m := model.Default(&p, nil)
+
+	v, err := model.GetParameter(&m.World, "params.Foragers.SquadronSize")
+	assert.Nil(t, err)
+	assert.Equal(t, int64(100), v)
+
+	_, err = model.GetParameter(&m.World, "params.ForagerS.SquadronSize")
+	assert.NotNil(t, err)
+
+	_, err = model.GetParameter(&m.World, "params.Foragers.SquadronSizE")
+	assert.NotNil(t, err)
+}

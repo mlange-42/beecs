@@ -38,6 +38,10 @@ func (e *Experiment) ParameterSets() int {
 	return e.parameterSets
 }
 
+func (e *Experiment) Parameters() []string {
+	return e.parameters
+}
+
 func (e Experiment) Values(idx int) map[string]any {
 	for i, par := range e.parameters {
 		fn := e.functions[i]

@@ -1,5 +1,9 @@
 package params
 
+type RandomSeed struct {
+	Seed int
+}
+
 type AgeFirstForaging struct {
 	Base int
 	Min  int

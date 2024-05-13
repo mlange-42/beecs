@@ -9,6 +9,7 @@ import (
 
 type Params struct {
 	Patches           []comp.PatchConfig
+	RandomSeed        RandomSeed
 	Nursing           Nursing
 	Foraging          Foraging
 	Forager           Foragers

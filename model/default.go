@@ -19,6 +19,14 @@ func Default(p *params.Params, m *model.Model) *model.Model {
 		m.Reset()
 	}
 
+	// Random seed
+
+	if p.RandomSeed.Seed > 0 {
+		m.Seed(uint64(p.RandomSeed.Seed))
+	} else {
+		m.Seed()
+	}
+
 	// Resources
 
 	ecs.AddResource(&m.World, &p.WorkerDevelopment)

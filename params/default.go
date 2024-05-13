@@ -4,6 +4,9 @@ import "github.com/mlange-42/beecs/comp"
 
 func Default() Params {
 	return Params{
+		RandomSeed: RandomSeed{
+			Seed: 0,
+		},
 		WorkerDevelopment: WorkerDevelopment{
 			EggTime:     3,
 			LarvaeTime:  6,

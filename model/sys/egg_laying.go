@@ -47,7 +47,7 @@ func (s *EggLaying) Update(w *ecs.World) {
 
 	droneEggs := 0
 	dayOfYear := int(s.time.Tick % 365)
-	if dayOfYear >= s.nurseParams.DroneEggLayingSeason[0] && dayOfYear <= s.nurseParams.DroneEggLayingSeason[1] {
+	if dayOfYear >= s.nurseParams.DroneEggLayingSeasonStart && dayOfYear <= s.nurseParams.DroneEggLayingSeasonEnd {
 		droneEggs = int(math.Max(s.nurseParams.DroneEggsProportion*float64(eggs), 0))
 	}
 	eggs = util.MaxInt(eggs-droneEggs, 0)

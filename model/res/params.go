@@ -108,7 +108,8 @@ type NursingParams struct {
 	DroneEggsProportion        float64
 	EggNursingLimit            bool
 	MaxBroodCells              int
-	DroneEggLayingSeason       [2]int
+	DroneEggLayingSeasonStart  int
+	DroneEggLayingSeasonEnd    int
 }
 
 type StoreParams struct {

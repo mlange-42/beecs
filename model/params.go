@@ -123,7 +123,8 @@ func DefaultParams() Params {
 			DroneEggsProportion:        0.04,
 			EggNursingLimit:            true,
 			MaxBroodCells:              200_000,
-			DroneEggLayingSeason:       [2]int{115, 240},
+			DroneEggLayingSeasonStart:  115,
+			DroneEggLayingSeasonEnd:    240,
 		},
 		InitialPopulation: res.InitialPopulation{
 			Count:     10_000,

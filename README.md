@@ -32,6 +32,7 @@ go run .
 To explore the model code, start with reading files [`main.go`](https://github.com/mlange-42/beecs/blob/main/main.go) and [`model/default.go`](https://github.com/mlange-42/beecs/blob/main/model/default.go).
 Given that the model is developed with ECS, the structure should be quite obvious.
 
-- [`model/comp`](https://github.com/mlange-42/beecs/blob/main/model/comp) contains all components.
-- [`model/sys`](https://github.com/mlange-42/beecs/blob/main/model/sys) contains all systems.
-- [`model/res`](https://github.com/mlange-42/beecs/blob/main/model/res) contains global parameters and variables (as ECS resources).
+- [`comp`](https://github.com/mlange-42/beecs/blob/main/comp) contains all components.
+- [`sys`](https://github.com/mlange-42/beecs/blob/main/sys) contains all systems.
+- [`params`](https://github.com/mlange-42/beecs/blob/main/params) contains model parameters (as ECS resources).
+- [`globals`](https://github.com/mlange-42/beecs/blob/main/globals) contains global variables (as ECS resources).

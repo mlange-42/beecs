@@ -7,12 +7,16 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
+// Stores is a row observer for the current honey and pollen stores.
+//
+// Columns are "Honey", "Pollen", "DecentHoney", "IdealPollen".
+// All columns are in kg. Pollen can be scaled for plotting via PollenFactor.
 type Stores struct {
 	stores      *res.Stores
 	data        []float64
 	energyHoney float64
 
-	PollenFactor int
+	PollenFactor int // Scaling factor for pollen, for better plotting.
 }
 
 func (o *Stores) Initialize(w *ecs.World) {

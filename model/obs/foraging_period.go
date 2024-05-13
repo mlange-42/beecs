@@ -5,6 +5,9 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
+// ForagingPeriod is a row observer for the foraging period of the current day, in hours.
+//
+// Has a single column "Foraging Period [h]", and reports one row/value per model tick.
 type ForagingPeriod struct {
 	period *res.ForagingPeriod
 	data   []float64

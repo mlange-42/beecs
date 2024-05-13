@@ -5,11 +5,15 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
+// WorkerCohorts is a row observer for the colony structure by cohorts.
+//
+// Columns are the cohorts, either plain or cumulatively.
+// Provides one row per model tick.
 type WorkerCohorts struct {
 	pop  *res.PopulationStats
 	data []float64
 
-	Cumulative bool
+	Cumulative bool // Whether cohorts should be cumulative.
 }
 
 func (o *WorkerCohorts) Initialize(w *ecs.World) {

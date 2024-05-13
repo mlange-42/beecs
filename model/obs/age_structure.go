@@ -10,6 +10,12 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
+// AgeStructure is a table observer for the age and cohort structure of the colony.
+//
+// Rows are age in days, columns are cohorts ("Eggs", "Larvae", "Pupae", "InHive", "Foragers"),
+// and values are the number of individuals with the given cohort and age.
+//
+// NaN values are used for invalid age/cohort combinations, like foragers aged 1 day (which can only be eggs).
 type AgeStructure struct {
 	eggs   *res.Eggs
 	larvae *res.Larvae
@@ -21,8 +27,6 @@ type AgeStructure struct {
 
 	data   [][]float64
 	filter generic.Filter1[comp.Age]
-
-	MaxAge int
 }
 
 func (o *AgeStructure) Initialize(w *ecs.World) {
@@ -36,7 +40,8 @@ func (o *AgeStructure) Initialize(w *ecs.World) {
 
 	o.filter = *generic.NewFilter1[comp.Age]()
 
-	ln := len(o.eggs.Workers) + len(o.larvae.Workers) + len(o.pupae.Workers) + o.MaxAge
+	maxAge := ecs.GetResource[res.WorkerDevelopment](w).MaxLifespan
+	ln := len(o.eggs.Workers) + len(o.larvae.Workers) + len(o.pupae.Workers) + maxAge + 1
 
 	o.data = make([][]float64, ln)
 	for i := range o.data {

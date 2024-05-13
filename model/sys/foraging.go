@@ -26,7 +26,7 @@ type Foraging struct {
 	stores       *res.Stores
 	pop          *res.PopulationStats
 
-	patches  []PatchCandidate
+	patches  []patchCandidate
 	toRemove []ecs.Entity
 	resting  []ecs.Entity
 	dances   []ecs.Entity
@@ -235,7 +235,7 @@ func (s *Foraging) searching(w *ecs.World) {
 		if !hasNectar && !hasPollen {
 			continue
 		}
-		s.patches = append(s.patches, PatchCandidate{
+		s.patches = append(s.patches, patchCandidate{
 			Patch:       patchQuery.Entity(),
 			Probability: conf.DetectionProbability,
 			HasNectar:   hasNectar,
@@ -258,7 +258,7 @@ func (s *Foraging) searching(w *ecs.World) {
 			}
 			p := s.rng.Float64() * cumProb
 			cum := 0.0
-			var selected PatchCandidate
+			var selected patchCandidate
 			for _, pch := range s.patches {
 				cum += pch.Probability
 				if cum >= p {
@@ -565,7 +565,7 @@ func (s *Foraging) unloading(w *ecs.World) {
 	}
 }
 
-type PatchCandidate struct {
+type patchCandidate struct {
 	Patch       ecs.Entity
 	Probability float64
 	HasNectar   bool

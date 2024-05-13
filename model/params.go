@@ -1,6 +1,9 @@
 package model
 
 import (
+	"encoding/json"
+	"os"
+
 	"github.com/mlange-42/beecs/model/comp"
 	"github.com/mlange-42/beecs/model/res"
 )
@@ -155,4 +158,14 @@ func DefaultParams() Params {
 			},
 		},
 	}
+}
+
+func (p *Params) FromJSON(path string) error {
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	decoder := json.NewDecoder(file)
+	decoder.DisallowUnknownFields()
+	return decoder.Decode(p)
 }

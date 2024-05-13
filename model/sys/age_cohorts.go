@@ -2,21 +2,21 @@ package sys
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
 )
 
 type AgeCohorts struct {
-	eggs   *res.Eggs
-	larvae *res.Larvae
-	pupae  *res.Pupae
-	inHive *res.InHive
+	eggs   *globals.Eggs
+	larvae *globals.Larvae
+	pupae  *globals.Pupae
+	inHive *globals.InHive
 }
 
 func (s *AgeCohorts) Initialize(w *ecs.World) {
-	s.eggs = ecs.GetResource[res.Eggs](w)
-	s.larvae = ecs.GetResource[res.Larvae](w)
-	s.pupae = ecs.GetResource[res.Pupae](w)
-	s.inHive = ecs.GetResource[res.InHive](w)
+	s.eggs = ecs.GetResource[globals.Eggs](w)
+	s.larvae = ecs.GetResource[globals.Larvae](w)
+	s.pupae = ecs.GetResource[globals.Pupae](w)
+	s.inHive = ecs.GetResource[globals.InHive](w)
 }
 
 func (s *AgeCohorts) Update(w *ecs.World) {

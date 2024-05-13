@@ -7,7 +7,8 @@ import (
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/comp"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/rand"
 )
@@ -15,11 +16,11 @@ import (
 func TestInitPopulation(t *testing.T) {
 	world := ecs.NewWorld()
 
-	fac := res.NewForagerFactory(&world)
+	fac := globals.NewForagerFactory(&world)
 	ecs.AddResource(&world, &fac)
-	ecs.AddResource(&world, &res.ForagerParams{SquadronSize: 100})
+	ecs.AddResource(&world, &params.ForagerParams{SquadronSize: 100})
 	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
-	ecs.AddResource(&world, &res.InitialPopulation{
+	ecs.AddResource(&world, &params.InitialPopulation{
 		Count:     10_000,
 		MinAge:    100,
 		MaxAge:    160,

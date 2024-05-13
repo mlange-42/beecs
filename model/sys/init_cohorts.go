@@ -2,41 +2,42 @@ package sys
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 )
 
 type InitCohorts struct {
-	eggs   res.Eggs
-	larvae res.Larvae
-	pupae  res.Pupae
-	inHive res.InHive
+	eggs   globals.Eggs
+	larvae globals.Larvae
+	pupae  globals.Pupae
+	inHive globals.InHive
 }
 
 func (s *InitCohorts) Initialize(w *ecs.World) {
-	aff := ecs.GetResource[res.AgeFirstForagingParams](w)
+	aff := ecs.GetResource[params.AgeFirstForagingParams](w)
 
-	workerDev := ecs.GetResource[res.WorkerDevelopment](w)
-	droneDev := ecs.GetResource[res.DroneDevelopment](w)
+	workerDev := ecs.GetResource[params.WorkerDevelopment](w)
+	droneDev := ecs.GetResource[params.DroneDevelopment](w)
 
-	s.eggs = res.Eggs{
+	s.eggs = globals.Eggs{
 		Workers: make([]int, workerDev.EggTime),
 		Drones:  make([]int, droneDev.EggTime),
 	}
 	ecs.AddResource(w, &s.eggs)
 
-	s.larvae = res.Larvae{
+	s.larvae = globals.Larvae{
 		Workers: make([]int, workerDev.LarvaeTime),
 		Drones:  make([]int, droneDev.LarvaeTime),
 	}
 	ecs.AddResource(w, &s.larvae)
 
-	s.pupae = res.Pupae{
+	s.pupae = globals.Pupae{
 		Workers: make([]int, workerDev.PupaeTime),
 		Drones:  make([]int, droneDev.PupaeTime),
 	}
 	ecs.AddResource(w, &s.pupae)
 
-	s.inHive = res.InHive{
+	s.inHive = globals.InHive{
 		Workers: make([]int, aff.Max+1),
 		Drones:  make([]int, droneDev.MaxLifespan),
 	}

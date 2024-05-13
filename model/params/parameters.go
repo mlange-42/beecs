@@ -1,4 +1,4 @@
-package res
+package params
 
 type AgeFirstForagingParams struct {
 	Base int

@@ -9,23 +9,26 @@ import (
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/activity"
 	"github.com/mlange-42/beecs/model/comp"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
 type Foraging struct {
-	PatchUpdater       model.System
-	rng                *rand.Rand
-	foragePeriod       *res.ForagingPeriod
-	foragerParams      *res.ForagerParams
-	forageParams       *res.ForagingParams
-	handlingTimeParams *res.HandlingTimeParams
-	danceParams        *res.DanceParams
-	energyParams       *res.EnergyParams
-	storeParams        *res.StoreParams
-	stores             *res.Stores
-	pop                *res.PopulationStats
+	PatchUpdater model.System
+	rng          *rand.Rand
+
+	foragerParams      *params.ForagerParams
+	forageParams       *params.ForagingParams
+	handlingTimeParams *params.HandlingTimeParams
+	danceParams        *params.DanceParams
+	energyParams       *params.EnergyParams
+	storeParams        *params.StoreParams
+
+	foragePeriod *globals.ForagingPeriod
+	stores       *globals.Stores
+	pop          *globals.PopulationStats
 
 	patches  []patchCandidate
 	toRemove []ecs.Entity
@@ -50,15 +53,16 @@ type Foraging struct {
 }
 
 func (s *Foraging) Initialize(w *ecs.World) {
-	s.pop = ecs.GetResource[res.PopulationStats](w)
-	s.foragePeriod = ecs.GetResource[res.ForagingPeriod](w)
-	s.foragerParams = ecs.GetResource[res.ForagerParams](w)
-	s.forageParams = ecs.GetResource[res.ForagingParams](w)
-	s.handlingTimeParams = ecs.GetResource[res.HandlingTimeParams](w)
-	s.danceParams = ecs.GetResource[res.DanceParams](w)
-	s.energyParams = ecs.GetResource[res.EnergyParams](w)
-	s.storeParams = ecs.GetResource[res.StoreParams](w)
-	s.stores = ecs.GetResource[res.Stores](w)
+	s.foragerParams = ecs.GetResource[params.ForagerParams](w)
+	s.forageParams = ecs.GetResource[params.ForagingParams](w)
+	s.handlingTimeParams = ecs.GetResource[params.HandlingTimeParams](w)
+	s.danceParams = ecs.GetResource[params.DanceParams](w)
+	s.energyParams = ecs.GetResource[params.EnergyParams](w)
+	s.storeParams = ecs.GetResource[params.StoreParams](w)
+
+	s.pop = ecs.GetResource[globals.PopulationStats](w)
+	s.foragePeriod = ecs.GetResource[globals.ForagingPeriod](w)
+	s.stores = ecs.GetResource[globals.Stores](w)
 
 	s.activityFilter = *generic.NewFilter1[comp.Activity]()
 	s.loadFilter = *generic.NewFilter2[comp.Activity, comp.NectarLoad]()
@@ -74,8 +78,8 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.patchConfigMapper = generic.NewMap2[comp.PatchConfig, comp.Trip](w)
 	s.foragerMapper = generic.NewMap2[comp.Activity, comp.KnownPatch](w)
 
-	storeParams := ecs.GetResource[res.StoreParams](w)
-	energyParams := ecs.GetResource[res.EnergyParams](w)
+	storeParams := ecs.GetResource[params.StoreParams](w)
+	energyParams := ecs.GetResource[params.EnergyParams](w)
 
 	s.maxHoneyStore = storeParams.MaxHoneyStoreKg * 1000.0 * energyParams.Honey
 	s.rng = rand.New(ecs.GetResource[resource.Rand](w))

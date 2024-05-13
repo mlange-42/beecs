@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 )
 
 // Stores is a row observer for the current honey and pollen stores.
@@ -12,7 +13,7 @@ import (
 // Columns are "Honey", "Pollen", "DecentHoney", "IdealPollen".
 // All columns are in kg. Pollen can be scaled for plotting via PollenFactor.
 type Stores struct {
-	stores      *res.Stores
+	stores      *globals.Stores
 	data        []float64
 	energyHoney float64
 
@@ -20,8 +21,8 @@ type Stores struct {
 }
 
 func (o *Stores) Initialize(w *ecs.World) {
-	o.stores = ecs.GetResource[res.Stores](w)
-	o.energyHoney = ecs.GetResource[res.EnergyParams](w).Honey
+	o.stores = ecs.GetResource[globals.Stores](w)
+	o.energyHoney = ecs.GetResource[params.EnergyParams](w).Honey
 	o.data = make([]float64, len(o.Header()))
 
 	if o.PollenFactor <= 0 {

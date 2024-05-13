@@ -3,23 +3,24 @@ package sys
 import (
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 )
 
 type TransitionForagers struct {
-	inHive  *res.InHive
-	params  *res.ForagerParams
-	aff     *res.AgeFirstForaging
 	time    *resource.Tick
-	factory *res.ForagerFactory
+	params  *params.ForagerParams
+	factory *globals.ForagerFactory
+	inHive  *globals.InHive
+	aff     *globals.AgeFirstForaging
 }
 
 func (s *TransitionForagers) Initialize(w *ecs.World) {
-	s.inHive = ecs.GetResource[res.InHive](w)
-	s.params = ecs.GetResource[res.ForagerParams](w)
-	s.aff = ecs.GetResource[res.AgeFirstForaging](w)
 	s.time = ecs.GetResource[resource.Tick](w)
-	s.factory = ecs.GetResource[res.ForagerFactory](w)
+	s.params = ecs.GetResource[params.ForagerParams](w)
+	s.factory = ecs.GetResource[globals.ForagerFactory](w)
+	s.inHive = ecs.GetResource[globals.InHive](w)
+	s.aff = ecs.GetResource[globals.AgeFirstForaging](w)
 }
 
 func (s *TransitionForagers) Update(w *ecs.World) {

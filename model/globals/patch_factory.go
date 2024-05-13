@@ -1,4 +1,4 @@
-package res
+package globals
 
 import (
 	"github.com/mlange-42/arche/ecs"

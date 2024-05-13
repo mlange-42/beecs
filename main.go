@@ -7,6 +7,7 @@ import (
 	"github.com/mlange-42/arche-pixel/window"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/model/obs"
+	"github.com/mlange-42/beecs/model/params"
 )
 
 func main() {
@@ -14,8 +15,8 @@ func main() {
 	files := false
 	ticks := 3650
 
-	params := model.DefaultParams()
-	m := model.Default(&params, nil)
+	p := params.Default()
+	m := model.Default(&p, nil)
 	if gui {
 		m.TPS = 30
 		m.FPS = 30

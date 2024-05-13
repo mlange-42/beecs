@@ -1,4 +1,4 @@
-package res
+package globals
 
 type Stores struct {
 	Honey  float64 // [kJ]

@@ -4,26 +4,29 @@ import (
 	"math"
 
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/mlange-42/beecs/model/util"
 )
 
 type PollenConsumption struct {
-	needs       *res.PollenNeeds
-	storeParams *res.StoreParams
-	nurseParams *res.NursingParams
-	stores      *res.Stores
-	pop         *res.PopulationStats
-	workerDev   *res.WorkerDevelopment
+	needs       *params.PollenNeeds
+	storeParams *params.StoreParams
+	nurseParams *params.NursingParams
+	workerDev   *params.WorkerDevelopment
+
+	stores *globals.Stores
+	pop    *globals.PopulationStats
 }
 
 func (s *PollenConsumption) Initialize(w *ecs.World) {
-	s.needs = ecs.GetResource[res.PollenNeeds](w)
-	s.storeParams = ecs.GetResource[res.StoreParams](w)
-	s.nurseParams = ecs.GetResource[res.NursingParams](w)
-	s.stores = ecs.GetResource[res.Stores](w)
-	s.pop = ecs.GetResource[res.PopulationStats](w)
-	s.workerDev = ecs.GetResource[res.WorkerDevelopment](w)
+	s.needs = ecs.GetResource[params.PollenNeeds](w)
+	s.storeParams = ecs.GetResource[params.StoreParams](w)
+	s.nurseParams = ecs.GetResource[params.NursingParams](w)
+	s.workerDev = ecs.GetResource[params.WorkerDevelopment](w)
+
+	s.stores = ecs.GetResource[globals.Stores](w)
+	s.pop = ecs.GetResource[globals.PopulationStats](w)
 }
 
 func (s *PollenConsumption) Update(w *ecs.World) {

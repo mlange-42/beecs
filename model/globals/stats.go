@@ -1,4 +1,4 @@
-package res
+package globals
 
 type PopulationStats struct {
 	WorkerEggs      int

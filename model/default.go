@@ -3,7 +3,8 @@ package model
 import (
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/mlange-42/beecs/model/sys"
 )
 
@@ -11,7 +12,7 @@ import (
 //
 // If the argument m is nil, a new model instance is created.
 // If it is non-nil, the model is reset and re-used, saving some time for initialization and memory allocation.
-func Default(params *Params, m *model.Model) *model.Model {
+func Default(p *params.Params, m *model.Model) *model.Model {
 	if m == nil {
 		m = model.New()
 	} else {
@@ -20,30 +21,30 @@ func Default(params *Params, m *model.Model) *model.Model {
 
 	// Resources
 
-	ecs.AddResource(&m.World, &params.WorkerDevelopment)
-	ecs.AddResource(&m.World, &params.DroneDevelopment)
-	ecs.AddResource(&m.World, &params.WorkerMortality)
-	ecs.AddResource(&m.World, &params.DroneMortality)
-	ecs.AddResource(&m.World, &params.AgeFirstForaging)
-	ecs.AddResource(&m.World, &params.Forager)
-	ecs.AddResource(&m.World, &params.Foraging)
-	ecs.AddResource(&m.World, &params.HandlingTime)
-	ecs.AddResource(&m.World, &params.Dance)
-	ecs.AddResource(&m.World, &params.Energy)
-	ecs.AddResource(&m.World, &params.Stores)
-	ecs.AddResource(&m.World, &params.HoneyNeeds)
-	ecs.AddResource(&m.World, &params.PollenNeeds)
-	ecs.AddResource(&m.World, &params.Nursing)
-	ecs.AddResource(&m.World, &params.InitialPopulation)
-	ecs.AddResource(&m.World, &params.InitialStores)
+	ecs.AddResource(&m.World, &p.WorkerDevelopment)
+	ecs.AddResource(&m.World, &p.DroneDevelopment)
+	ecs.AddResource(&m.World, &p.WorkerMortality)
+	ecs.AddResource(&m.World, &p.DroneMortality)
+	ecs.AddResource(&m.World, &p.AgeFirstForaging)
+	ecs.AddResource(&m.World, &p.Forager)
+	ecs.AddResource(&m.World, &p.Foraging)
+	ecs.AddResource(&m.World, &p.HandlingTime)
+	ecs.AddResource(&m.World, &p.Dance)
+	ecs.AddResource(&m.World, &p.Energy)
+	ecs.AddResource(&m.World, &p.Stores)
+	ecs.AddResource(&m.World, &p.HoneyNeeds)
+	ecs.AddResource(&m.World, &p.PollenNeeds)
+	ecs.AddResource(&m.World, &p.Nursing)
+	ecs.AddResource(&m.World, &p.InitialPopulation)
+	ecs.AddResource(&m.World, &p.InitialStores)
 
-	factory := res.NewForagerFactory(&m.World)
+	factory := globals.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
 
-	stats := res.PopulationStats{}
+	stats := globals.PopulationStats{}
 	ecs.AddResource(&m.World, &stats)
 
-	consumptionStats := res.ConsumptionStats{}
+	consumptionStats := globals.ConsumptionStats{}
 	ecs.AddResource(&m.World, &consumptionStats)
 
 	// Initialization
@@ -55,7 +56,7 @@ func Default(params *Params, m *model.Model) *model.Model {
 	m.AddSystem(&sys.InitPopulation{})
 
 	m.AddSystem(&sys.InitPatchesList{
-		Patches: params.Patches,
+		Patches: p.Patches,
 	})
 
 	// Sub-models

@@ -5,29 +5,30 @@ import (
 	"testing"
 
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHoneyConsumption(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &res.ForagerParams{SquadronSize: 10})
-	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
-	ecs.AddResource(&world, &res.WorkerDevelopment{
+	ecs.AddResource(&world, &params.ForagerParams{SquadronSize: 10})
+	ecs.AddResource(&world, &params.AgeFirstForagingParams{Max: 5})
+	ecs.AddResource(&world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
 		PupaeTime:   4,
 		MaxLifespan: 100,
 	})
-	ecs.AddResource(&world, &res.DroneDevelopment{
+	ecs.AddResource(&world, &params.DroneDevelopment{
 		EggTime:     3,
 		LarvaeTime:  4,
 		PupaeTime:   5,
 		MaxLifespan: 6,
 	})
 
-	ecs.AddResource(&world, &res.HoneyNeeds{
+	ecs.AddResource(&world, &params.HoneyNeeds{
 		WorkerResting:    3,
 		WorkerNurse:      5,
 		WorkerLarvaTotal: 21, // -> 7/d
@@ -35,25 +36,25 @@ func TestHoneyConsumption(t *testing.T) {
 		Drone:            9,
 	})
 
-	stores := res.Stores{
+	stores := globals.Stores{
 		Honey:  100_000,
 		Pollen: 100_000,
 	}
 	ecs.AddResource(&world, &stores)
 
-	ecs.AddResource(&world, &res.EnergyParams{
+	ecs.AddResource(&world, &params.EnergyParams{
 		Honey:   12.78,
 		Scurose: 0.00582,
 	})
-	ecs.AddResource(&world, &res.NursingParams{
+	ecs.AddResource(&world, &params.NursingParams{
 		MaxBroodNurseRatio: 3.0,
 	})
-	ecs.AddResource(&world, &res.ConsumptionStats{})
+	ecs.AddResource(&world, &globals.ConsumptionStats{})
 
-	stats := res.PopulationStats{}
+	stats := globals.PopulationStats{}
 	ecs.AddResource(&world, &stats)
 
-	fac := res.NewForagerFactory(&world)
+	fac := globals.NewForagerFactory(&world)
 
 	init := InitCohorts{}
 	init.Initialize(&world)

@@ -5,24 +5,25 @@ import (
 
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/mlange-42/beecs/model/util"
 )
 
 type EggLaying struct {
 	time        *resource.Tick
-	eggs        *res.Eggs
-	pop         *res.PopulationStats
-	nurseParams *res.NursingParams
-	workerDev   *res.WorkerDevelopment
+	eggs        *globals.Eggs
+	pop         *globals.PopulationStats
+	nurseParams *params.NursingParams
+	workerDev   *params.WorkerDevelopment
 }
 
 func (s *EggLaying) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
-	s.eggs = ecs.GetResource[res.Eggs](w)
-	s.pop = ecs.GetResource[res.PopulationStats](w)
-	s.nurseParams = ecs.GetResource[res.NursingParams](w)
-	s.workerDev = ecs.GetResource[res.WorkerDevelopment](w)
+	s.eggs = ecs.GetResource[globals.Eggs](w)
+	s.pop = ecs.GetResource[globals.PopulationStats](w)
+	s.nurseParams = ecs.GetResource[params.NursingParams](w)
+	s.workerDev = ecs.GetResource[params.WorkerDevelopment](w)
 }
 
 func (s *EggLaying) Update(w *ecs.World) {

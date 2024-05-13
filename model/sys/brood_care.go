@@ -4,27 +4,30 @@ import (
 	"math"
 
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 )
 
 type BroodCare struct {
-	pop         *res.PopulationStats
-	stores      *res.Stores
-	nurseParams *res.NursingParams
+	nurseParams *params.NursingParams
 
-	eggs   *res.Eggs
-	larvae *res.Larvae
-	pupae  *res.Pupae
+	pop    *globals.PopulationStats
+	stores *globals.Stores
+
+	eggs   *globals.Eggs
+	larvae *globals.Larvae
+	pupae  *globals.Pupae
 }
 
 func (s *BroodCare) Initialize(w *ecs.World) {
-	s.pop = ecs.GetResource[res.PopulationStats](w)
-	s.stores = ecs.GetResource[res.Stores](w)
-	s.nurseParams = ecs.GetResource[res.NursingParams](w)
+	s.nurseParams = ecs.GetResource[params.NursingParams](w)
 
-	s.eggs = ecs.GetResource[res.Eggs](w)
-	s.larvae = ecs.GetResource[res.Larvae](w)
-	s.pupae = ecs.GetResource[res.Pupae](w)
+	s.pop = ecs.GetResource[globals.PopulationStats](w)
+	s.stores = ecs.GetResource[globals.Stores](w)
+
+	s.eggs = ecs.GetResource[globals.Eggs](w)
+	s.larvae = ecs.GetResource[globals.Larvae](w)
+	s.pupae = ecs.GetResource[globals.Pupae](w)
 }
 
 func (s *BroodCare) Update(w *ecs.World) {

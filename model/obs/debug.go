@@ -2,7 +2,7 @@ package obs
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
 )
 
 // Debug is a row observer for several colony structure variables,
@@ -10,16 +10,16 @@ import (
 //
 // Primarily meant for validation of beecs against BEEHAVE.
 type Debug struct {
-	pop      *res.PopulationStats
-	stores   *res.Stores
-	foraging *res.ForagingPeriod
+	pop      *globals.PopulationStats
+	stores   *globals.Stores
+	foraging *globals.ForagingPeriod
 	data     []float64
 }
 
 func (o *Debug) Initialize(w *ecs.World) {
-	o.pop = ecs.GetResource[res.PopulationStats](w)
-	o.stores = ecs.GetResource[res.Stores](w)
-	o.foraging = ecs.GetResource[res.ForagingPeriod](w)
+	o.pop = ecs.GetResource[globals.PopulationStats](w)
+	o.stores = ecs.GetResource[globals.Stores](w)
+	o.foraging = ecs.GetResource[globals.ForagingPeriod](w)
 	o.data = make([]float64, len(o.Header()))
 }
 func (o *Debug) Update(w *ecs.World) {}

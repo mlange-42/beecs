@@ -1,66 +1,65 @@
-package model
+package params
 
 import (
 	"encoding/json"
 	"os"
 
 	"github.com/mlange-42/beecs/model/comp"
-	"github.com/mlange-42/beecs/model/res"
 )
 
 type Params struct {
 	Patches           []comp.PatchConfig
-	Nursing           res.NursingParams
-	Foraging          res.ForagingParams
-	Forager           res.ForagerParams
-	Dance             res.DanceParams
-	HoneyNeeds        res.HoneyNeeds
-	WorkerMortality   res.WorkerMortality
-	DroneMortality    res.DroneMortality
-	HandlingTime      res.HandlingTimeParams
-	PollenNeeds       res.PollenNeeds
-	Stores            res.StoreParams
-	WorkerDevelopment res.WorkerDevelopment
-	InitialPopulation res.InitialPopulation
-	DroneDevelopment  res.DroneDevelopment
-	AgeFirstForaging  res.AgeFirstForagingParams
-	Energy            res.EnergyParams
-	InitialStores     res.InitialStores
+	Nursing           NursingParams
+	Foraging          ForagingParams
+	Forager           ForagerParams
+	Dance             DanceParams
+	HoneyNeeds        HoneyNeeds
+	WorkerMortality   WorkerMortality
+	DroneMortality    DroneMortality
+	HandlingTime      HandlingTimeParams
+	PollenNeeds       PollenNeeds
+	Stores            StoreParams
+	WorkerDevelopment WorkerDevelopment
+	InitialPopulation InitialPopulation
+	DroneDevelopment  DroneDevelopment
+	AgeFirstForaging  AgeFirstForagingParams
+	Energy            EnergyParams
+	InitialStores     InitialStores
 }
 
-func DefaultParams() Params {
+func Default() Params {
 	return Params{
-		WorkerDevelopment: res.WorkerDevelopment{
+		WorkerDevelopment: WorkerDevelopment{
 			EggTime:     3,
 			LarvaeTime:  6,
 			PupaeTime:   12,
 			MaxLifespan: 290,
 		},
-		DroneDevelopment: res.DroneDevelopment{
+		DroneDevelopment: DroneDevelopment{
 			EggTime:     3,
 			LarvaeTime:  7,
 			PupaeTime:   14,
 			MaxLifespan: 37,
 		},
-		WorkerMortality: res.WorkerMortality{
+		WorkerMortality: WorkerMortality{
 			Eggs:      0.03,
 			Larvae:    0.01,
 			Pupae:     0.001,
 			InHive:    0.004,
 			MaxMilage: 800,
 		},
-		DroneMortality: res.DroneMortality{
+		DroneMortality: DroneMortality{
 			Eggs:   0.064,
 			Larvae: 0.044,
 			Pupae:  0.005,
 			InHive: 0.05,
 		},
-		AgeFirstForaging: res.AgeFirstForagingParams{
+		AgeFirstForaging: AgeFirstForagingParams{
 			Base: 21,
 			Min:  7,
 			Max:  50,
 		},
-		Forager: res.ForagerParams{
+		Forager: ForagerParams{
 			FlightVelocity: 6.5,      // [m/s]
 			FlightCostPerM: 0.000006, //[kJ/m]
 			NectarLoad:     50,       // [muL]
@@ -68,7 +67,7 @@ func DefaultParams() Params {
 			MaxKmPerDay:    7299,     // ???
 			SquadronSize:   100,
 		},
-		Foraging: res.ForagingParams{
+		Foraging: ForagingParams{
 			ProbBase:      0.01,
 			ProbHigh:      0.05,
 			ProbEmergency: 0.2,
@@ -81,14 +80,14 @@ func DefaultParams() Params {
 			StopProbability:     0.3,
 			AbandonPollenPerSec: 0.00002,
 		},
-		HandlingTime: res.HandlingTimeParams{
+		HandlingTime: HandlingTimeParams{
 			NectarGathering:      1200,
 			PollenGathering:      600,
 			NectarUnloading:      116,
 			PollenUnloading:      210,
 			ConstantHandlingTime: false,
 		},
-		Dance: res.DanceParams{
+		Dance: DanceParams{
 			Slope:                       1.16,
 			Intercept:                   0.0,
 			MaxCircuits:                 117,
@@ -96,30 +95,30 @@ func DefaultParams() Params {
 			PollenDanceFollowers:        2,
 			MaxProportionPollenForagers: 0.8,
 		},
-		Energy: res.EnergyParams{
+		Energy: EnergyParams{
 			Honey:   12.78,
 			Scurose: 0.00582,
 		},
-		Stores: res.StoreParams{
+		Stores: StoreParams{
 			IdealPollenStoreDays: 7,
 			MinIdealPollenStore:  250.0,
 			MaxHoneyStoreKg:      50.0,
 			ProteinStoreNurse:    7, // [d]
 		},
-		HoneyNeeds: res.HoneyNeeds{
+		HoneyNeeds: HoneyNeeds{
 			WorkerResting:    11.0,  // [mg/d]
 			WorkerNurse:      53.42, // [mg/d]
 			WorkerLarvaTotal: 65.4,  // [mg]
 			DroneLarva:       19.2,  // [mg/d]
 			Drone:            10.0,  // [mg/d]
 		},
-		PollenNeeds: res.PollenNeeds{
+		PollenNeeds: PollenNeeds{
 			WorkerLarvaTotal: 142.0, // [mg]
 			DroneLarva:       50.0,  // [mg/d]
 			Worker:           1.5,   // [mg/d]
 			Drone:            2.0,   // [mg/d]
 		},
-		Nursing: res.NursingParams{
+		Nursing: NursingParams{
 			MaxBroodNurseRatio:         3.0,
 			ForagerNursingContribution: 0.2,
 			MaxEggsPerDay:              1600,
@@ -129,14 +128,14 @@ func DefaultParams() Params {
 			DroneEggLayingSeasonStart:  115,
 			DroneEggLayingSeasonEnd:    240,
 		},
-		InitialPopulation: res.InitialPopulation{
+		InitialPopulation: InitialPopulation{
 			Count:     10_000,
 			MinAge:    100,
 			MaxAge:    160,
 			MinMilage: 0,
 			MaxMilage: 200,
 		},
-		InitialStores: res.InitialStores{
+		InitialStores: InitialStores{
 			Honey:  25,  // [kg]
 			Pollen: 100, // [g]
 		},

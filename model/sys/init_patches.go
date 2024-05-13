@@ -3,7 +3,7 @@ package sys
 import (
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/beecs/model/comp"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
 )
 
 type InitPatchesList struct {
@@ -11,7 +11,7 @@ type InitPatchesList struct {
 }
 
 func (s *InitPatchesList) Initialize(w *ecs.World) {
-	fac := res.NewPatchFactory(w)
+	fac := globals.NewPatchFactory(w)
 
 	for _, p := range s.Patches {
 		_ = fac.CreatePatch(p)

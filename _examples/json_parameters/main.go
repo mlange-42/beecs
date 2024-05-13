@@ -8,21 +8,22 @@ import (
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/model/obs"
+	"github.com/mlange-42/beecs/model/params"
 )
 
 func main() {
 	// Get the default parameters.
-	params := model.DefaultParams()
+	p := params.Default()
 	// Read JSON to modify some parameters.
-	err := params.FromJSON("_examples/json_parameters/params.json")
+	err := p.FromJSON("_examples/json_parameters/params.json")
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Print one of the modified sections of the parameters.
-	fmt.Printf("%+v\n", params.Forager)
+	fmt.Printf("%+v\n", p.Forager)
 
 	// Create a model with the default sub-models.
-	m := model.Default(&params, nil)
+	m := model.Default(&p, nil)
 
 	// Add a system ("sub-model") to terminate after 365 ticks.
 	m.AddSystem(&system.FixedTermination{Steps: 365})

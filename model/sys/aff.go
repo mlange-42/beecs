@@ -2,30 +2,31 @@ package sys
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/mlange-42/beecs/model/util"
 )
 
 type CalcAff struct {
-	affParams    *res.AgeFirstForagingParams
-	energyParams *res.EnergyParams
-	nurseParams  *res.NursingParams
-	consStats    *res.ConsumptionStats
-	stores       *res.Stores
-	pop          *res.PopulationStats
+	affParams    *params.AgeFirstForagingParams
+	energyParams *params.EnergyParams
+	nurseParams  *params.NursingParams
+	consStats    *globals.ConsumptionStats
+	stores       *globals.Stores
+	pop          *globals.PopulationStats
 
-	aff res.AgeFirstForaging
+	aff globals.AgeFirstForaging
 }
 
 func (s *CalcAff) Initialize(w *ecs.World) {
-	s.affParams = ecs.GetResource[res.AgeFirstForagingParams](w)
-	s.energyParams = ecs.GetResource[res.EnergyParams](w)
-	s.nurseParams = ecs.GetResource[res.NursingParams](w)
-	s.consStats = ecs.GetResource[res.ConsumptionStats](w)
-	s.stores = ecs.GetResource[res.Stores](w)
-	s.pop = ecs.GetResource[res.PopulationStats](w)
+	s.affParams = ecs.GetResource[params.AgeFirstForagingParams](w)
+	s.energyParams = ecs.GetResource[params.EnergyParams](w)
+	s.nurseParams = ecs.GetResource[params.NursingParams](w)
+	s.consStats = ecs.GetResource[globals.ConsumptionStats](w)
+	s.stores = ecs.GetResource[globals.Stores](w)
+	s.pop = ecs.GetResource[globals.PopulationStats](w)
 
-	s.aff = res.AgeFirstForaging{
+	s.aff = globals.AgeFirstForaging{
 		Aff: s.affParams.Base,
 	}
 	ecs.AddResource(w, &s.aff)

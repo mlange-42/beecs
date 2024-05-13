@@ -1,47 +1,49 @@
-package res
+package params
 
-type Params struct {
-	SquadronSize int
-}
-
-type AgeFirstForagingParams struct {
+type AgeFirstForaging struct {
 	Base int
 	Min  int
 	Max  int
 }
 
-type ForagingParams struct {
+type Foragers struct {
+	FlightVelocity float64 // [m/s]
+	FlightCostPerM float64 // [kJ/m]
+	MaxKmPerDay    float64
+	NectarLoad     float64 // [muL]
+	PollenLoad     float64 // [g]
+	SquadronSize   int
+}
+
+type HandlingTime struct {
+	NectarGathering      float64 // [s]
+	PollenGathering      float64 // [s]
+	NectarUnloading      float64 // [s]
+	PollenUnloading      float64 // [s]
+	ConstantHandlingTime bool
+}
+
+type Foraging struct {
 	ProbBase      float64
 	ProbHigh      float64
 	ProbEmergency float64
 
-	FlightVelocity              float64 // [m/s]
-	SearchLength                float64 // [m]
-	MaxProportionPollenForagers float64
+	SearchLength float64 // [m]
 
 	EnergyOnFlower  float64
 	MortalityPerSec float64
-	FlightCostPerM  float64 // [kJ/m]
 
-	NectarLoad           float64 // [muL]
-	PollenLoad           float64 // [g]
-	TimeNectarGathering  float64 // [s]
-	TimePollenGathering  float64 // [s]
-	ConstantHandlingTime bool
-	StopProbability      float64
-	AbandonPollenPerSec  float64
-	MaxKmPerDay          float64
-
-	TimeNectarUnloading float64
-	TimePollenUnloading float64
+	StopProbability     float64
+	AbandonPollenPerSec float64
 }
 
-type DanceParams struct {
-	Slope                float64
-	Intercept            float64
-	MaxCircuits          int
-	FindProbability      float64
-	PollenDanceFollowers int
+type Dance struct {
+	Slope                       float64
+	Intercept                   float64
+	MaxCircuits                 int
+	FindProbability             float64
+	PollenDanceFollowers        int
+	MaxProportionPollenForagers float64
 }
 
 type WorkerDevelopment struct {
@@ -76,9 +78,9 @@ type DroneMortality struct {
 	MaxLifespan int
 }
 
-type EnergyParams struct {
-	EnergyHoney   float64 // [kJ/g]
-	EnergyScurose float64 // [kJ/micromol]
+type EnergyContent struct {
+	Honey   float64 // [kJ/g]
+	Scurose float64 // [kJ/micromol]
 }
 
 type HoneyNeeds struct {
@@ -99,19 +101,33 @@ type PollenNeeds struct {
 	Drone  float64 // [mg/d]
 }
 
-type NurseParams struct {
+type Nursing struct {
 	MaxBroodNurseRatio         float64
 	ForagerNursingContribution float64
 	MaxEggsPerDay              int
 	DroneEggsProportion        float64
 	EggNursingLimit            bool
 	MaxBroodCells              int
-	DroneEggLayingSeason       [2]int
+	DroneEggLayingSeasonStart  int
+	DroneEggLayingSeasonEnd    int
 }
 
-type StoreParams struct {
+type Stores struct {
 	IdealPollenStoreDays int
 	MinIdealPollenStore  float64
 	MaxHoneyStoreKg      float64
 	ProteinStoreNurse    float64 // [d]
+}
+
+type InitialPopulation struct {
+	Count     int
+	MinAge    int
+	MaxAge    int
+	MinMilage float32
+	MaxMilage float32
+}
+
+type InitialStores struct {
+	Honey  float64 // [kg]
+	Pollen float64 // [g]
 }

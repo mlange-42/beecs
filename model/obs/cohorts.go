@@ -2,7 +2,7 @@ package obs
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
 )
 
 // WorkerCohorts is a row observer for the colony structure by cohorts.
@@ -10,14 +10,14 @@ import (
 // Columns are the cohorts, either plain or cumulatively.
 // Provides one row per model tick.
 type WorkerCohorts struct {
-	pop  *res.PopulationStats
+	pop  *globals.PopulationStats
 	data []float64
 
 	Cumulative bool // Whether cohorts should be cumulative.
 }
 
 func (o *WorkerCohorts) Initialize(w *ecs.World) {
-	o.pop = ecs.GetResource[res.PopulationStats](w)
+	o.pop = ecs.GetResource[globals.PopulationStats](w)
 	o.data = make([]float64, len(o.Header()))
 }
 func (o *WorkerCohorts) Update(w *ecs.World) {}

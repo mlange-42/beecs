@@ -2,30 +2,31 @@ package sys
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/mlange-42/beecs/model/util"
 )
 
 type CalcAff struct {
-	affParams    *res.AgeFirstForagingParams
-	energyParams *res.EnergyParams
-	nurseParams  *res.NurseParams
-	consStats    *res.ConsumptionStats
-	stores       *res.Stores
-	pop          *res.PopulationStats
+	affParams    *params.AgeFirstForaging
+	energyParams *params.EnergyContent
+	nurseParams  *params.Nursing
+	consStats    *globals.ConsumptionStats
+	stores       *globals.Stores
+	pop          *globals.PopulationStats
 
-	aff res.AgeFirstForaging
+	aff globals.AgeFirstForaging
 }
 
 func (s *CalcAff) Initialize(w *ecs.World) {
-	s.affParams = ecs.GetResource[res.AgeFirstForagingParams](w)
-	s.energyParams = ecs.GetResource[res.EnergyParams](w)
-	s.nurseParams = ecs.GetResource[res.NurseParams](w)
-	s.consStats = ecs.GetResource[res.ConsumptionStats](w)
-	s.stores = ecs.GetResource[res.Stores](w)
-	s.pop = ecs.GetResource[res.PopulationStats](w)
+	s.affParams = ecs.GetResource[params.AgeFirstForaging](w)
+	s.energyParams = ecs.GetResource[params.EnergyContent](w)
+	s.nurseParams = ecs.GetResource[params.Nursing](w)
+	s.consStats = ecs.GetResource[globals.ConsumptionStats](w)
+	s.stores = ecs.GetResource[globals.Stores](w)
+	s.pop = ecs.GetResource[globals.PopulationStats](w)
 
-	s.aff = res.AgeFirstForaging{
+	s.aff = globals.AgeFirstForaging{
 		Aff: s.affParams.Base,
 	}
 	ecs.AddResource(w, &s.aff)
@@ -34,7 +35,7 @@ func (s *CalcAff) Initialize(w *ecs.World) {
 func (s *CalcAff) Update(w *ecs.World) {
 	pollenTH := 0.5
 	proteinTH := 1.0
-	honeyTH := 35.0 * (s.consStats.HoneyDaily / 1000) * s.energyParams.EnergyHoney
+	honeyTH := 35.0 * (s.consStats.HoneyDaily / 1000) * s.energyParams.Honey
 	broodTH := 0.1
 	foragerToWorkerTH := 0.3
 

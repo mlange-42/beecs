@@ -4,32 +4,33 @@ import (
 	"testing"
 
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCountPopulation(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &res.Params{SquadronSize: 100})
-	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
-	ecs.AddResource(&world, &res.WorkerDevelopment{
+	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
+	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
+	ecs.AddResource(&world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
 		PupaeTime:   4,
 		MaxLifespan: 100,
 	})
-	ecs.AddResource(&world, &res.DroneDevelopment{
+	ecs.AddResource(&world, &params.DroneDevelopment{
 		EggTime:     3,
 		LarvaeTime:  4,
 		PupaeTime:   5,
 		MaxLifespan: 6,
 	})
 
-	stats := res.PopulationStats{}
+	stats := globals.PopulationStats{}
 	ecs.AddResource(&world, &stats)
 
-	fac := res.NewForagerFactory(&world)
+	fac := globals.NewForagerFactory(&world)
 
 	init := InitCohorts{}
 	init.Initialize(&world)
@@ -37,7 +38,7 @@ func TestCountPopulation(t *testing.T) {
 	pop := CountPopulation{}
 	pop.Initialize(&world)
 
-	assert.Equal(t, res.PopulationStats{}, stats)
+	assert.Equal(t, globals.PopulationStats{}, stats)
 
 	init.eggs.Workers[1] = 10
 	init.eggs.Drones[1] = 20
@@ -54,7 +55,7 @@ func TestCountPopulation(t *testing.T) {
 	fac.CreateSquadrons(9, 0)
 
 	pop.Update(&world)
-	assert.Equal(t, res.PopulationStats{
+	assert.Equal(t, globals.PopulationStats{
 		WorkerEggs:      10,
 		WorkerLarvae:    30,
 		WorkerPupae:     50,

@@ -3,7 +3,7 @@ package sys
 import (
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
 )
 
 var foragingHoursBerlin2000 = []float64{
@@ -29,12 +29,12 @@ var foragingHoursBerlin2000 = []float64{
 
 type CalcForagingPeriod struct {
 	time   *resource.Tick
-	period res.ForagingPeriod
+	period globals.ForagingPeriod
 }
 
 func (s *CalcForagingPeriod) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
-	s.period = res.ForagingPeriod{}
+	s.period = globals.ForagingPeriod{}
 	ecs.AddResource(w, &s.period)
 }
 

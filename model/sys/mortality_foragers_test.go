@@ -7,7 +7,8 @@ import (
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/comp"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/rand"
 )
@@ -15,32 +16,32 @@ import (
 func TestMortalityForagers(t *testing.T) {
 	world := ecs.NewWorld()
 
-	fac := res.NewForagerFactory(&world)
+	fac := globals.NewForagerFactory(&world)
 
 	time := resource.Tick{}
 	ecs.AddResource(&world, &time)
 	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
-	ecs.AddResource(&world, &res.AgeFirstForagingParams{Max: 5})
-	ecs.AddResource(&world, &res.WorkerDevelopment{
+	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
+	ecs.AddResource(&world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
 		PupaeTime:   4,
 		MaxLifespan: 390,
 	})
-	ecs.AddResource(&world, &res.DroneDevelopment{
+	ecs.AddResource(&world, &params.DroneDevelopment{
 		EggTime:     3,
 		LarvaeTime:  4,
 		PupaeTime:   5,
 		MaxLifespan: 6,
 	})
-	ecs.AddResource(&world, &res.WorkerMortality{
+	ecs.AddResource(&world, &params.WorkerMortality{
 		Eggs:      0.5,
 		Larvae:    0.5,
 		Pupae:     0.5,
 		InHive:    0.5,
 		MaxMilage: 200,
 	})
-	ecs.AddResource(&world, &res.DroneMortality{
+	ecs.AddResource(&world, &params.DroneMortality{
 		Eggs:   0.5,
 		Larvae: 0.5,
 		Pupae:  0.5,

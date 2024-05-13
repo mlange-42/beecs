@@ -2,19 +2,19 @@ package obs
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
 )
 
 // ForagingPeriod is a row observer for the foraging period of the current day, in hours.
 //
 // Has a single column "Foraging Period [h]", and reports one row/value per model tick.
 type ForagingPeriod struct {
-	period *res.ForagingPeriod
+	period *globals.ForagingPeriod
 	data   []float64
 }
 
 func (o *ForagingPeriod) Initialize(w *ecs.World) {
-	o.period = ecs.GetResource[res.ForagingPeriod](w)
+	o.period = ecs.GetResource[globals.ForagingPeriod](w)
 	o.data = make([]float64, len(o.Header()))
 }
 func (o *ForagingPeriod) Update(w *ecs.World) {}

@@ -3,3 +3,4 @@
 *.csv
 *.png
 *.svg
+/out/

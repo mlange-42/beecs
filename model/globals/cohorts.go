@@ -1,4 +1,4 @@
-package res
+package globals
 
 type Eggs struct {
 	Workers []int

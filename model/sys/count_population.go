@@ -4,26 +4,31 @@ import (
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/model/comp"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 )
 
 type CountPopulation struct {
-	eggs           *res.Eggs
-	larvae         *res.Larvae
-	pupae          *res.Pupae
-	inHive         *res.InHive
-	params         *res.Params
-	stats          *res.PopulationStats
+	params *params.Foragers
+
+	eggs   *globals.Eggs
+	larvae *globals.Larvae
+	pupae  *globals.Pupae
+	inHive *globals.InHive
+	stats  *globals.PopulationStats
+
 	foragersFilter *generic.Filter0
 }
 
 func (s *CountPopulation) Initialize(w *ecs.World) {
-	s.eggs = ecs.GetResource[res.Eggs](w)
-	s.larvae = ecs.GetResource[res.Larvae](w)
-	s.pupae = ecs.GetResource[res.Pupae](w)
-	s.inHive = ecs.GetResource[res.InHive](w)
-	s.params = ecs.GetResource[res.Params](w)
-	s.stats = ecs.GetResource[res.PopulationStats](w)
+	s.params = ecs.GetResource[params.Foragers](w)
+
+	s.eggs = ecs.GetResource[globals.Eggs](w)
+	s.larvae = ecs.GetResource[globals.Larvae](w)
+	s.pupae = ecs.GetResource[globals.Pupae](w)
+	s.inHive = ecs.GetResource[globals.InHive](w)
+	s.stats = ecs.GetResource[globals.PopulationStats](w)
+
 	s.foragersFilter = generic.NewFilter0().With(generic.T[comp.Age]())
 
 	s.count(w)

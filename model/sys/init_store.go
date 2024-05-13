@@ -2,19 +2,18 @@ package sys
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/res"
+	"github.com/mlange-42/beecs/model/globals"
+	"github.com/mlange-42/beecs/model/params"
 )
 
-type InitStore struct {
-	InitialPollen float64 // [g]
-	InitialHoney  float64 // [kg]
-}
+type InitStore struct{}
 
 func (s *InitStore) Initialize(w *ecs.World) {
-	energyParams := ecs.GetResource[res.EnergyParams](w)
-	stores := res.Stores{
-		Pollen:              s.InitialPollen,
-		Honey:               s.InitialHoney * 1000.0 * energyParams.EnergyHoney,
+	init := ecs.GetResource[params.InitialStores](w)
+	energyParams := ecs.GetResource[params.EnergyContent](w)
+	stores := globals.Stores{
+		Honey:               init.Honey * 1000.0 * energyParams.Honey,
+		Pollen:              init.Pollen,
 		ProteinFactorNurses: 1.0,
 	}
 

@@ -5,25 +5,30 @@ import (
 	"github.com/mlange-42/beecs/model/activity"
 )
 
+// Milage component for forager squadrons.
 type Milage struct {
-	Today float32
-	Total float32
+	Today float32 // Milage today [km].
+	Total float32 // Milage over total lifetime [km].
 }
 
+// Age component for forager squadrons.
 type Age struct {
-	DayOfBirth int
+	DayOfBirth int // Date of birth for calculating the age from the current model tick.
 }
 
+// Activity component for forager squadrons.
 type Activity struct {
-	Current       activity.ForagerActivity
-	PollenForager bool
+	Current       activity.ForagerActivity // Current activity.
+	PollenForager bool                     // Whether it is currently foraging for pollen.
 }
 
+// KnownPatch component for forager squadrons.
 type KnownPatch struct {
-	Nectar ecs.Entity
-	Pollen ecs.Entity
+	Nectar ecs.Entity // Known nectar patch.
+	Pollen ecs.Entity // Known pollen patch.
 }
 
+// NectarLoad component for forager squadrons.
 type NectarLoad struct {
-	Energy float64
+	Energy float64 // Current nectar energy load per individual [kJ]
 }

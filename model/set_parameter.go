@@ -3,11 +3,19 @@ package model
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/mlange-42/arche/ecs"
 )
 
-func SetParameter(world *ecs.World, group, par string, value any) error {
+func SetParameter(world *ecs.World, param string, value any) error {
+	parts := strings.Split(param, ".")
+	if len(parts) < 2 {
+		return fmt.Errorf("invalid parameter name '%s', should be pkg.Type.Field", param)
+	}
+	par := parts[len(parts)-1]
+	group := strings.Join(parts[:len(parts)-1], ".")
+
 	var resID ecs.ResID
 	var resType reflect.Type = nil
 	allRes := ecs.ResourceIDs(world)

@@ -56,11 +56,9 @@ func main() {
 		}).
 			With(
 				&plot.Lines{
-					Observer: &obs.AgeStructure{
-						MaxAge: 400,
-					},
-					YLim:   [...]float64{0, 2000},
-					Labels: plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
+					Observer: &obs.AgeStructure{},
+					YLim:     [...]float64{0, 2000},
+					Labels:   plot.Labels{Title: "Age distribution", X: "Age [days]", Y: "Count"},
 				},
 				&plot.Controls{}))
 

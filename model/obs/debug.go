@@ -5,6 +5,10 @@ import (
 	"github.com/mlange-42/beecs/model/res"
 )
 
+// Debug is a row observer for several colony structure variables,
+// using the same names as the original BEEHAVE implementation.
+//
+// Primarily meant for validation of beecs against BEEHAVE.
 type Debug struct {
 	pop      *res.PopulationStats
 	stores   *res.Stores

@@ -2,8 +2,8 @@ package params
 
 import "github.com/mlange-42/beecs/comp"
 
-func Default() Params {
-	return Params{
+func Default() DefaultParams {
+	return DefaultParams{
 		RandomSeed: RandomSeed{
 			Seed: 0,
 		},
@@ -117,21 +117,22 @@ func Default() Params {
 			Honey:  25,  // [kg]
 			Pollen: 100, // [g]
 		},
-
-		Patches: []comp.PatchConfig{
-			{
-				Nectar:               20,
-				NectarConcentration:  1.5,
-				Pollen:               1,
-				DistToColony:         1500,
-				DetectionProbability: 0.2,
-			},
-			{
-				Nectar:               20,
-				NectarConcentration:  1.5,
-				Pollen:               1,
-				DistToColony:         500,
-				DetectionProbability: 0.2,
+		InitialPatches: InitialPatches{
+			Patches: []comp.PatchConfig{
+				{
+					Nectar:               20,
+					NectarConcentration:  1.5,
+					Pollen:               1,
+					DistToColony:         1500,
+					DetectionProbability: 0.2,
+				},
+				{
+					Nectar:               20,
+					NectarConcentration:  1.5,
+					Pollen:               1,
+					DistToColony:         500,
+					DetectionProbability: 0.2,
+				},
 			},
 		},
 	}

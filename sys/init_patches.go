@@ -2,18 +2,17 @@ package sys
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/globals"
+	"github.com/mlange-42/beecs/params"
 )
 
-type InitPatchesList struct {
-	Patches []comp.PatchConfig
-}
+type InitPatchesList struct{}
 
 func (s *InitPatchesList) Initialize(w *ecs.World) {
+	patches := ecs.GetResource[params.InitialPatches](w)
 	fac := globals.NewPatchFactory(w)
 
-	for _, p := range s.Patches {
+	for _, p := range patches.Patches {
 		_ = fac.CreatePatch(p)
 	}
 }

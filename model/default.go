@@ -66,39 +66,46 @@ func Default(m *model.Model) *model.Model {
 	}
 	ecs.AddResource(&m.World, &aff)
 
+	foragerParams := res.ForagerParams{
+		FlightVelocity: 6.5,      // [m/s]
+		FlightCostPerM: 0.000006, //[kJ/m]
+		NectarLoad:     50,       // [muL]
+		PollenLoad:     0.015,    // [g]
+		MaxKmPerDay:    7299,     // ???
+	}
+	ecs.AddResource(&m.World, &foragerParams)
+
 	forageParams := res.ForagingParams{
 		ProbBase:      0.01,
 		ProbHigh:      0.05,
 		ProbEmergency: 0.2,
 
-		FlightVelocity:              6.5,           // [m/s]
-		SearchLength:                6.5 * 60 * 17, // [m] (6630m, 17 min)
-		MaxProportionPollenForagers: 0.8,
+		SearchLength: 6.5 * 60 * 17, // [m] (6630m, 17 min)
 
 		EnergyOnFlower:  0.2,
 		MortalityPerSec: 0.00001,
-		FlightCostPerM:  0.000006, //[kJ/m]
 
-		NectarLoad:           50,    // [muL]
-		PollenLoad:           0.015, // [g]
-		TimeNectarGathering:  1200,
-		TimePollenGathering:  600,
-		ConstantHandlingTime: false,
-		StopProbability:      0.3,
-		AbandonPollenPerSec:  0.00002,
-		MaxKmPerDay:          7299, // ???
-
-		TimeNectarUnloading: 116,
-		TimePollenUnloading: 210,
+		StopProbability:     0.3,
+		AbandonPollenPerSec: 0.00002,
 	}
 	ecs.AddResource(&m.World, &forageParams)
 
+	handlingParams := res.HandlingTimeParams{
+		NectarGathering:      1200,
+		PollenGathering:      600,
+		NectarUnloading:      116,
+		PollenUnloading:      210,
+		ConstantHandlingTime: false,
+	}
+	ecs.AddResource(&m.World, &handlingParams)
+
 	danceParams := res.DanceParams{
-		Slope:                1.16,
-		Intercept:            0.0,
-		MaxCircuits:          117,
-		FindProbability:      0.5,
-		PollenDanceFollowers: 2,
+		Slope:                       1.16,
+		Intercept:                   0.0,
+		MaxCircuits:                 117,
+		FindProbability:             0.5,
+		PollenDanceFollowers:        2,
+		MaxProportionPollenForagers: 0.8,
 	}
 	ecs.AddResource(&m.World, &danceParams)
 

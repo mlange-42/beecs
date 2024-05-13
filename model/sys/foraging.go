@@ -15,16 +15,18 @@ import (
 )
 
 type Foraging struct {
-	PatchUpdater model.System
-	rng          *rand.Rand
-	params       *res.Params
-	foragePeriod *res.ForagingPeriod
-	forageParams *res.ForagingParams
-	danceParams  *res.DanceParams
-	energyParams *res.EnergyParams
-	storeParams  *res.StoreParams
-	stores       *res.Stores
-	pop          *res.PopulationStats
+	PatchUpdater       model.System
+	rng                *rand.Rand
+	params             *res.Params
+	foragePeriod       *res.ForagingPeriod
+	foragerParams      *res.ForagerParams
+	forageParams       *res.ForagingParams
+	handlingTimeParams *res.HandlingTimeParams
+	danceParams        *res.DanceParams
+	energyParams       *res.EnergyParams
+	storeParams        *res.StoreParams
+	stores             *res.Stores
+	pop                *res.PopulationStats
 
 	patches  []patchCandidate
 	toRemove []ecs.Entity
@@ -52,7 +54,9 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.pop = ecs.GetResource[res.PopulationStats](w)
 	s.params = ecs.GetResource[res.Params](w)
 	s.foragePeriod = ecs.GetResource[res.ForagingPeriod](w)
+	s.foragerParams = ecs.GetResource[res.ForagerParams](w)
 	s.forageParams = ecs.GetResource[res.ForagingParams](w)
+	s.handlingTimeParams = ecs.GetResource[res.HandlingTimeParams](w)
 	s.danceParams = ecs.GetResource[res.DanceParams](w)
 	s.energyParams = ecs.GetResource[res.EnergyParams](w)
 	s.storeParams = ecs.GetResource[res.StoreParams](w)
@@ -93,7 +97,7 @@ func (s *Foraging) Update(w *ecs.World) {
 		milage.Today = 0
 	}
 
-	hangAroundDuration := s.forageParams.SearchLength / s.forageParams.FlightVelocity
+	hangAroundDuration := s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 	forageProb := s.calcForagingProb()
 
 	round := 0
@@ -141,7 +145,7 @@ func (s *Foraging) calcForagingProb() float64 {
 }
 
 func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration float64, foragers int) {
-	probCollectPollen := (1.0 - s.stores.Pollen/s.stores.IdealPollen) * s.forageParams.MaxProportionPollenForagers
+	probCollectPollen := (1.0 - s.stores.Pollen/s.stores.IdealPollen) * s.danceParams.MaxProportionPollenForagers
 
 	if s.stores.Honey/s.stores.DecentHoney < 0.5 {
 		probCollectPollen *= s.stores.Honey / s.stores.DecentHoney
@@ -216,7 +220,7 @@ func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64
 			}
 		}
 
-		if milage.Today > float32(s.forageParams.MaxKmPerDay) {
+		if milage.Today > float32(s.foragerParams.MaxKmPerDay) {
 			act.Current = activity.Resting
 		}
 	}
@@ -230,8 +234,8 @@ func (s *Foraging) searching(w *ecs.World) {
 	patchQuery := s.patchFilter.Query(w)
 	for patchQuery.Next() {
 		res, conf := patchQuery.Get()
-		hasNectar := res.Nectar >= s.forageParams.NectarLoad*sz
-		hasPollen := res.Pollen >= s.forageParams.PollenLoad*sz
+		hasNectar := res.Nectar >= s.foragerParams.NectarLoad*sz
+		hasPollen := res.Pollen >= s.foragerParams.PollenLoad*sz
 		if !hasNectar && !hasPollen {
 			continue
 		}
@@ -271,7 +275,7 @@ func (s *Foraging) searching(w *ecs.World) {
 					patch.Pollen = selected.Patch
 					act.Current = activity.BringPollen
 					res := s.patchResourceMapper.Get(selected.Patch)
-					res.Pollen -= s.forageParams.PollenLoad * sz
+					res.Pollen -= s.foragerParams.PollenLoad * sz
 				} else {
 					patch.Pollen = ecs.Entity{}
 				}
@@ -280,7 +284,7 @@ func (s *Foraging) searching(w *ecs.World) {
 					patch.Nectar = selected.Patch
 					act.Current = activity.BringNectar
 					res := s.patchResourceMapper.Get(selected.Patch)
-					res.Nectar -= s.forageParams.NectarLoad * sz
+					res.Nectar -= s.foragerParams.NectarLoad * sz
 				} else {
 					patch.Nectar = ecs.Entity{}
 				}
@@ -295,8 +299,8 @@ func (s *Foraging) searching(w *ecs.World) {
 			success := false
 			if s.rng.Float64() < s.danceParams.FindProbability {
 				res := s.patchResourceMapper.Get(patch.Nectar)
-				if res.Nectar >= s.forageParams.NectarLoad*sz {
-					res.Nectar -= s.forageParams.NectarLoad * sz
+				if res.Nectar >= s.foragerParams.NectarLoad*sz {
+					res.Nectar -= s.foragerParams.NectarLoad * sz
 					act.Current = activity.BringNectar
 					success = true
 				}
@@ -311,8 +315,8 @@ func (s *Foraging) searching(w *ecs.World) {
 			success := false
 			if s.rng.Float64() < s.danceParams.FindProbability {
 				res := s.patchResourceMapper.Get(patch.Pollen)
-				if res.Pollen >= s.forageParams.PollenLoad*sz {
-					res.Pollen -= s.forageParams.PollenLoad * sz
+				if res.Pollen >= s.foragerParams.PollenLoad*sz {
+					res.Pollen -= s.foragerParams.PollenLoad * sz
 					act.Current = activity.BringPollen
 					success = true
 				}
@@ -339,9 +343,9 @@ func (s *Foraging) collecting(w *ecs.World) {
 					act.Current = activity.Resting
 				} else {
 					res := s.patchResourceMapper.Get(patch.Pollen)
-					if res.Pollen >= s.forageParams.PollenLoad*sz {
+					if res.Pollen >= s.foragerParams.PollenLoad*sz {
 						act.Current = activity.BringPollen
-						res.Pollen -= s.forageParams.PollenLoad * sz
+						res.Pollen -= s.foragerParams.PollenLoad * sz
 					} else {
 						act.Current = activity.Searching
 						patch.Pollen = ecs.Entity{}
@@ -352,9 +356,9 @@ func (s *Foraging) collecting(w *ecs.World) {
 					act.Current = activity.Resting
 				} else {
 					res := s.patchResourceMapper.Get(patch.Nectar)
-					if res.Nectar >= s.forageParams.NectarLoad*sz {
+					if res.Nectar >= s.foragerParams.NectarLoad*sz {
 						act.Current = activity.BringNectar
-						res.Nectar -= s.forageParams.NectarLoad * sz
+						res.Nectar -= s.foragerParams.NectarLoad * sz
 					} else {
 						act.Current = activity.Searching
 						patch.Nectar = ecs.Entity{}
@@ -365,15 +369,15 @@ func (s *Foraging) collecting(w *ecs.World) {
 
 		if act.Current == activity.BringNectar {
 			conf, trip := s.patchConfigMapper.Get(patch.Nectar)
-			load.Energy = conf.NectarConcentration * s.forageParams.NectarLoad * s.energyParams.EnergyScurose
-			dist := trip.CostNectar / (s.forageParams.FlightCostPerM * 1000)
+			load.Energy = conf.NectarConcentration * s.foragerParams.NectarLoad * s.energyParams.EnergyScurose
+			dist := trip.CostNectar / (s.foragerParams.FlightCostPerM * 1000)
 			milage.Today += float32(dist)
 			milage.Total += float32(dist)
 		}
 
 		if act.Current == activity.BringPollen {
 			trip := s.patchTripMapper.Get(patch.Pollen)
-			dist := trip.CostPollen / (s.forageParams.FlightCostPerM * 1000)
+			dist := trip.CostPollen / (s.foragerParams.FlightCostPerM * 1000)
 			milage.Today += float32(dist)
 			milage.Total += float32(dist)
 		}
@@ -393,20 +397,20 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 			milage.Today += float32(dist)
 			milage.Total += float32(dist)
 
-			en := s.forageParams.SearchLength * s.forageParams.FlightCostPerM
+			en := s.forageParams.SearchLength * s.foragerParams.FlightCostPerM
 			s.stores.Honey -= en * float64(s.params.SquadronSize)
 
-			duration += s.forageParams.SearchLength / s.forageParams.FlightVelocity
+			duration += s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 			foragers += 1
 		} else if act.Current == activity.BringNectar || act.Current == activity.BringPollen {
 			en := 0.0
 			if act.PollenForager {
 				trip := s.patchTripMapper.Get(patch.Pollen)
-				duration += trip.DurationPollen + s.forageParams.TimePollenUnloading
+				duration += trip.DurationPollen + s.handlingTimeParams.PollenUnloading
 				en = trip.CostPollen
 			} else {
 				trip := s.patchTripMapper.Get(patch.Nectar)
-				duration += trip.DurationNectar + s.forageParams.TimeNectarUnloading
+				duration += trip.DurationNectar + s.handlingTimeParams.NectarUnloading
 				en = trip.CostNectar
 			}
 			s.stores.Honey -= en * float64(s.params.SquadronSize)
@@ -418,7 +422,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 }
 
 func (s *Foraging) mortality(w *ecs.World) {
-	searchDuration := s.forageParams.SearchLength / s.forageParams.FlightVelocity
+	searchDuration := s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 
 	foragerQuery := s.foragerFilterSimple.Query(w)
 	for foragerQuery.Next() {
@@ -559,7 +563,7 @@ func (s *Foraging) unloading(w *ecs.World) {
 			load.Energy = 0
 			act.Current = activity.Experienced
 		} else if act.Current == activity.BringPollen {
-			s.stores.Pollen += s.forageParams.PollenLoad * float64(s.params.SquadronSize)
+			s.stores.Pollen += s.foragerParams.PollenLoad * float64(s.params.SquadronSize)
 			act.Current = activity.Experienced
 		}
 	}

@@ -10,38 +10,43 @@ type AgeFirstForagingParams struct {
 	Max  int
 }
 
+type ForagerParams struct {
+	FlightVelocity float64 // [m/s]
+	FlightCostPerM float64 // [kJ/m]
+	MaxKmPerDay    float64
+	NectarLoad     float64 // [muL]
+	PollenLoad     float64 // [g]
+}
+
+type HandlingTimeParams struct {
+	NectarGathering      float64 // [s]
+	PollenGathering      float64 // [s]
+	NectarUnloading      float64 // [s]
+	PollenUnloading      float64 // [s]
+	ConstantHandlingTime bool
+}
+
 type ForagingParams struct {
 	ProbBase      float64
 	ProbHigh      float64
 	ProbEmergency float64
 
-	FlightVelocity              float64 // [m/s]
-	SearchLength                float64 // [m]
-	MaxProportionPollenForagers float64
+	SearchLength float64 // [m]
 
 	EnergyOnFlower  float64
 	MortalityPerSec float64
-	FlightCostPerM  float64 // [kJ/m]
 
-	NectarLoad           float64 // [muL]
-	PollenLoad           float64 // [g]
-	TimeNectarGathering  float64 // [s]
-	TimePollenGathering  float64 // [s]
-	ConstantHandlingTime bool
-	StopProbability      float64
-	AbandonPollenPerSec  float64
-	MaxKmPerDay          float64
-
-	TimeNectarUnloading float64
-	TimePollenUnloading float64
+	StopProbability     float64
+	AbandonPollenPerSec float64
 }
 
 type DanceParams struct {
-	Slope                float64
-	Intercept            float64
-	MaxCircuits          int
-	FindProbability      float64
-	PollenDanceFollowers int
+	Slope                       float64
+	Intercept                   float64
+	MaxCircuits                 int
+	FindProbability             float64
+	PollenDanceFollowers        int
+	MaxProportionPollenForagers float64
 }
 
 type WorkerDevelopment struct {

@@ -3,9 +3,9 @@ package model
 import (
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/model/globals"
-	"github.com/mlange-42/beecs/model/params"
-	"github.com/mlange-42/beecs/model/sys"
+	"github.com/mlange-42/beecs/globals"
+	"github.com/mlange-42/beecs/params"
+	"github.com/mlange-42/beecs/sys"
 )
 
 // Default sets up the default beecs model with the standard sub-models.

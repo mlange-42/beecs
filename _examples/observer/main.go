@@ -5,9 +5,9 @@ import (
 	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/model"
-	"github.com/mlange-42/beecs/model/globals"
-	"github.com/mlange-42/beecs/model/params"
+	"github.com/mlange-42/beecs/params"
 )
 
 type StoresObserver struct {

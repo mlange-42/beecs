@@ -8,8 +8,8 @@ import (
 	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/beecs/model"
-	"github.com/mlange-42/beecs/model/obs"
-	"github.com/mlange-42/beecs/model/params"
+	"github.com/mlange-42/beecs/obs"
+	"github.com/mlange-42/beecs/params"
 )
 
 func main() {

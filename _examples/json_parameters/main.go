@@ -20,7 +20,7 @@ func main() {
 		log.Fatal(err)
 	}
 	// Print one of the modified sections of the parameters.
-	fmt.Printf("%+v\n", p.Forager)
+	fmt.Printf("%+v\n", p.Foragers)
 
 	// Create a model with the default sub-models.
 	m := model.Default(&p, nil)

@@ -68,6 +68,6 @@ func (e *Experiment) ApplyValues(idx int, world *ecs.World) error {
 }
 
 type ParameterValue struct {
-	Value     any
 	Parameter string
+	Value     any
 }

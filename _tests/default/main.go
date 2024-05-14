@@ -6,7 +6,6 @@ import (
 
 	amodel "github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/reporter"
-	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/params"
@@ -16,6 +15,7 @@ func main() {
 	m := amodel.New()
 
 	p := params.Default()
+	p.Termination.MaxTicks = 365
 
 	start := time.Now()
 
@@ -28,11 +28,7 @@ func main() {
 }
 
 func run(m *amodel.Model, idx int, params *params.Params) {
-	ticks := 365
-
 	m = model.Default(params, m)
-
-	m.AddSystem(&system.FixedTermination{Steps: int64(ticks)})
 
 	m.AddSystem(&reporter.CSV{
 		Observer: &obs.Debug{},

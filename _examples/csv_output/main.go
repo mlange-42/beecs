@@ -3,7 +3,6 @@ package main
 
 import (
 	"github.com/mlange-42/arche-model/reporter"
-	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/params"
@@ -15,9 +14,6 @@ func main() {
 
 	// Create a model with the default sub-models.
 	m := model.Default(&p, nil)
-
-	// Add a system ("sub-model") to terminate after 365 ticks.
-	m.AddSystem(&system.FixedTermination{Steps: 365})
 
 	// Add a CSV output system using observer [obs.WorkerCohorts].
 	m.AddSystem(&reporter.CSV{

@@ -11,7 +11,6 @@ import (
 
 	amodel "github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/reporter"
-	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
@@ -65,9 +64,6 @@ func run(m *amodel.Model, exp *experiment.Experiment, idx int) {
 
 	// Set/overwrite parameters from the experiment.
 	exp.ApplyValues(idx, &m.World)
-
-	// Add a system ("sub-model") to terminate after 365 ticks.
-	m.AddSystem(&system.FixedTermination{Steps: 365})
 
 	// Add a CSV output system using observer [obs.WorkerCohorts].
 	m.AddSystem(&reporter.CSV{

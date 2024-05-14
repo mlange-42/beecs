@@ -15,6 +15,7 @@ type Params interface {
 }
 
 type DefaultParams struct {
+	Termination       Termination
 	InitialPatches    InitialPatches
 	Nursing           Nursing
 	Foraging          Foraging
@@ -54,6 +55,7 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 		rand.Seed(uint64(time.Now().UnixNano()))
 	}
 	// Resources
+	ecs.AddResource(world, &p.Termination)
 	ecs.AddResource(world, &p.WorkerDevelopment)
 	ecs.AddResource(world, &p.DroneDevelopment)
 	ecs.AddResource(world, &p.WorkerMortality)

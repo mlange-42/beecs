@@ -62,5 +62,7 @@ func Default(p params.Params, m *model.Model) *model.Model {
 
 	m.AddSystem(&sys.CountPopulation{})
 
+	m.AddSystem(&sys.FixedTermination{})
+
 	return m
 }

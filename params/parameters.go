@@ -6,6 +6,10 @@ type RandomSeed struct {
 	Seed int
 }
 
+type Termination struct {
+	MaxTicks int
+}
+
 type AgeFirstForaging struct {
 	Base int
 	Min  int

@@ -4,6 +4,9 @@ import "github.com/mlange-42/beecs/comp"
 
 func Default() DefaultParams {
 	return DefaultParams{
+		Termination: Termination{
+			MaxTicks: 365,
+		},
 		RandomSeed: RandomSeed{
 			Seed: 0,
 		},

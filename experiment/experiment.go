@@ -48,21 +48,26 @@ func (e *Experiment) Seed(seed uint64) {
 	e.rng.Seed(seed)
 }
 
-func (e *Experiment) Values(idx int) map[string]any {
-	values := map[string]any{}
+func (e *Experiment) Values(idx int) []ParameterValue {
+	values := []ParameterValue{}
 	for i, par := range e.parameters {
 		fn := e.functions[i]
-		values[par] = fn.Next(idx, e.rng)
+		values = append(values, ParameterValue{Parameter: par, Value: fn.Next(idx, e.rng)})
 	}
 	return values
 }
 
 func (e *Experiment) ApplyValues(idx int, world *ecs.World) error {
 	values := e.Values(idx)
-	for par, value := range values {
-		if err := model.SetParameter(world, par, value); err != nil {
+	for _, par := range values {
+		if err := model.SetParameter(world, par.Parameter, par.Value); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+type ParameterValue struct {
+	Value     any
+	Parameter string
 }

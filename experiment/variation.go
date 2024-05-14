@@ -1,4 +1,4 @@
-package params
+package experiment
 
 import (
 	"fmt"

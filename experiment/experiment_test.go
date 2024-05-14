@@ -12,14 +12,20 @@ func TestExperiment(t *testing.T) {
 
 	vars := []ParameterVariation{
 		{
-			Parameter:   "a",
-			Type:        VarySequenceRange,
-			FloatParams: []float64{0, 1, 11},
+			Parameter: "a",
+			SequenceFloatRange: &SequenceFloatRange{
+				Min:    0,
+				Max:    1,
+				Values: 11,
+			},
 		},
 		{
 			Parameter: "b",
-			Type:      VarySequenceRange,
-			IntParams: []int{1, 1, 3},
+			SequenceIntRange: &SequenceIntRange{
+				Min:    1,
+				Step:   1,
+				Values: 3,
+			},
 		},
 	}
 

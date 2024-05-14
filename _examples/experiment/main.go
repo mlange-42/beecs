@@ -23,13 +23,17 @@ func main() {
 	vars := []experiment.ParameterVariation{
 		{
 			Parameter: "params.InitialPopulation.Count",
-			Type:      "sequence-values",
-			IntParams: []int{1000, 2000, 5000, 10000}, // values to iterate
+			SequenceIntValues: &experiment.SequenceIntValues{
+				Values: []int{1000, 2000, 5000, 10000}, // values to iterate
+			},
 		},
 		{
-			Parameter:   "params.InitialStores.Honey",
-			Type:        "sequence-range",
-			FloatParams: []float64{0, 100, 11}, // lower limit, upper limit, #values
+			Parameter: "params.InitialStores.Honey",
+			SequenceFloatRange: &experiment.SequenceFloatRange{
+				Min:    0,
+				Max:    100,
+				Values: 11,
+			},
 		},
 	}
 

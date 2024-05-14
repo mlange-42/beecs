@@ -2,24 +2,28 @@ package experiment
 
 import (
 	"fmt"
+	"reflect"
 
 	"golang.org/x/exp/rand"
 )
 
-const (
-	VaryRandomRange    = "random-range"
-	VaryRandomValues   = "random-values"
-	VarySequenceRange  = "sequence-range"
-	VarySequenceValues = "sequence-values"
-)
-
 type ParameterVariation struct {
-	Parameter   string
-	Type        string
-	FloatParams []float64
-	IntParams   []int
-	BoolParams  []bool
-	NoStride    bool
+	Parameter string
+
+	RandomFloatRange    *RandomFloatRange
+	RandomFloatValues   *RandomFloatValues
+	SequenceFloatRange  *SequenceFloatRange
+	SequenceFloatValues *SequenceFloatValues
+
+	RandomIntRange    *RandomIntRange
+	RandomIntValues   *RandomIntValues
+	SequenceIntRange  *SequenceIntRange
+	SequenceIntValues *SequenceIntValues
+
+	RandomBoolValues   *RandomBoolValues
+	SequenceBoolValues *SequenceBoolValues
+
+	NoStride bool
 }
 
 type ParameterFunction interface {
@@ -32,200 +36,154 @@ func NewParameterFunction(v ParameterVariation, stride int) (ParameterFunction, 
 		stride = 1
 	}
 
-	if len(v.FloatParams) > 0 {
-		if len(v.IntParams) > 0 || len(v.BoolParams) > 0 {
-			return nil, fmt.Errorf("only one of FloatParams, IntParams and BoolParams may be given in a ParameterVariation")
-		}
-
-		switch v.Type {
-		case VaryRandomRange:
-			return &randomFloatRange{
-				values: v.FloatParams,
-			}, nil
-		case VaryRandomValues:
-			return &randomFloatValues{
-				values: v.FloatParams,
-			}, nil
-		case VarySequenceRange:
-			return &sequenceFloatRange{
-				values: v.FloatParams,
-				stride: stride,
-			}, nil
-		case VarySequenceValues:
-			return &sequenceFloatValues{
-				values: v.FloatParams,
-				stride: stride,
-			}, nil
-		default:
-			return nil, fmt.Errorf("invalid random variation type '%s' for float values", v.Type)
+	nonNin := 0
+	var function ParameterFunction
+	for _, ptr := range []ParameterFunction{
+		v.RandomBoolValues, v.RandomFloatRange, v.RandomFloatValues, v.RandomIntRange, v.RandomIntValues,
+		v.SequenceBoolValues, v.SequenceFloatRange, v.SequenceFloatValues, v.SequenceIntRange, v.SequenceIntValues,
+	} {
+		if !reflect.ValueOf(ptr).IsNil() {
+			nonNin++
+			function = ptr
 		}
 	}
-
-	if len(v.IntParams) > 0 {
-		if len(v.FloatParams) > 0 || len(v.BoolParams) > 0 {
-			return nil, fmt.Errorf("only one of FloatParams, IntParams and BoolParams may be given in a ParameterVariation")
-		}
-
-		switch v.Type {
-		case VaryRandomRange:
-			return &randomIntRange{
-				values: v.IntParams,
-			}, nil
-		case VaryRandomValues:
-			return &randomIntValues{
-				values: v.IntParams,
-			}, nil
-		case VarySequenceRange:
-			return &sequenceIntRange{
-				values: v.IntParams,
-				stride: stride,
-			}, nil
-		case VarySequenceValues:
-			return &sequenceIntValues{
-				values: v.IntParams,
-				stride: stride,
-			}, nil
-		default:
-			return nil, fmt.Errorf("invalid random variation type '%s' for float values", v.Type)
-		}
+	if nonNin != 1 {
+		return nil, fmt.Errorf("exactly one of RandomFloatValues, RandomIntRange, ...  must be given in a ParameterVariation")
+	}
+	switch f := function.(type) {
+	case *SequenceFloatRange:
+		f.stride = stride
+	case *SequenceFloatValues:
+		f.stride = stride
+	case *SequenceIntRange:
+		f.stride = stride
+	case *SequenceIntValues:
+		f.stride = stride
+	case *SequenceBoolValues:
+		f.stride = stride
 	}
 
-	if len(v.BoolParams) > 0 {
-		if len(v.FloatParams) > 0 || len(v.IntParams) > 0 {
-			return nil, fmt.Errorf("only one of FloatParams, IntParams and BoolParams may be given in a ParameterVariation")
-		}
-
-		switch v.Type {
-		case VaryRandomValues:
-			return &randomBoolValues{
-				values: v.BoolParams,
-			}, nil
-		case VarySequenceValues:
-			return &sequenceBoolValues{
-				values: v.BoolParams,
-				stride: stride,
-			}, nil
-		default:
-			return nil, fmt.Errorf("invalid random variation type '%s' for float values", v.Type)
-		}
-	}
-
-	return nil, fmt.Errorf("exactly one of FloatParams, IntParams and BoolParams must be given in a ParameterVariation")
+	return function, nil
 }
 
-type randomFloatRange struct {
-	values []float64
+type RandomFloatRange struct {
+	Min float64
+	Max float64
 }
 
-func (r *randomFloatRange) Next(index int, rng *rand.Rand) any {
-	return rng.Float64()*(r.values[1]-r.values[0]) + r.values[0]
+func (r *RandomFloatRange) Next(index int, rng *rand.Rand) any {
+	return rng.Float64()*(r.Max-r.Min) + r.Min
 }
 
-func (r *randomFloatRange) Stride() int { return 1 }
+func (r *RandomFloatRange) Stride() int { return 1 }
 
-type randomFloatValues struct {
-	values []float64
+type RandomFloatValues struct {
+	Values []float64
 }
 
-func (r *randomFloatValues) Next(index int, rng *rand.Rand) any {
-	return r.values[rng.Intn(len(r.values))]
+func (r *RandomFloatValues) Next(index int, rng *rand.Rand) any {
+	return r.Values[rng.Intn(len(r.Values))]
 }
 
-func (r *randomFloatValues) Stride() int { return 1 }
+func (r *RandomFloatValues) Stride() int { return 1 }
 
-type sequenceFloatRange struct {
-	values []float64
+type SequenceFloatRange struct {
+	Min    float64
+	Max    float64
+	Values int
 	stride int
 }
 
-func (s *sequenceFloatRange) Next(index int, rng *rand.Rand) any {
-	numSteps := int(s.values[2]) - 1
+func (s *SequenceFloatRange) Next(index int, rng *rand.Rand) any {
+	numSteps := s.Values - 1
 	idx := (index / s.stride) % (numSteps + 1)
-	step := (s.values[1] - s.values[0]) / float64(numSteps)
-	return s.values[0] + float64(idx)*step
+	step := (s.Max - s.Min) / float64(numSteps)
+	return s.Min + float64(idx)*step
 }
 
-func (s *sequenceFloatRange) Stride() int { return int(s.values[2]) }
+func (s *SequenceFloatRange) Stride() int { return s.Values }
 
-type sequenceFloatValues struct {
-	values []float64
+type SequenceFloatValues struct {
+	Values []float64
 	stride int
 }
 
-func (s *sequenceFloatValues) Next(index int, rng *rand.Rand) any {
-	numValues := len(s.values)
+func (s *SequenceFloatValues) Next(index int, rng *rand.Rand) any {
+	numValues := len(s.Values)
 	idx := (index / s.stride) % numValues
-	return s.values[idx]
+	return s.Values[idx]
 }
 
-func (s *sequenceFloatValues) Stride() int { return len(s.values) }
+func (s *SequenceFloatValues) Stride() int { return len(s.Values) }
 
-type randomIntRange struct {
-	values []int
+type RandomIntRange struct {
+	Min int
+	Max int
 }
 
-func (r *randomIntRange) Next(index int, rng *rand.Rand) any {
-	return rng.Intn(r.values[1]-r.values[0]) + r.values[0]
+func (r *RandomIntRange) Next(index int, rng *rand.Rand) any {
+	return rng.Intn(r.Max-r.Min) + r.Min
 }
 
-func (r *randomIntRange) Stride() int { return 1 }
+func (r *RandomIntRange) Stride() int { return 1 }
 
-type randomIntValues struct {
-	values []int
+type RandomIntValues struct {
+	Values []int
 }
 
-func (r *randomIntValues) Next(index int, rng *rand.Rand) any {
-	return r.values[rng.Intn(len(r.values))]
+func (r *RandomIntValues) Next(index int, rng *rand.Rand) any {
+	return r.Values[rng.Intn(len(r.Values))]
 }
 
-func (r *randomIntValues) Stride() int { return 1 }
+func (r *RandomIntValues) Stride() int { return 1 }
 
-type sequenceIntRange struct {
-	values []int
+type SequenceIntRange struct {
+	Min    int
+	Step   int
+	Values int
 	stride int
 }
 
-func (s *sequenceIntRange) Next(index int, rng *rand.Rand) any {
-	numValues := int(s.values[2])
+func (s *SequenceIntRange) Next(index int, rng *rand.Rand) any {
+	numValues := int(s.Values)
 	idx := (index / s.stride) % numValues
-	step := s.values[1]
-	return s.values[0] + idx*step
+	return s.Min + idx*s.Step
 }
 
-func (s *sequenceIntRange) Stride() int { return int(s.values[2]) }
+func (s *SequenceIntRange) Stride() int { return int(s.Values) }
 
-type sequenceIntValues struct {
-	values []int
+type SequenceIntValues struct {
+	Values []int
 	stride int
 }
 
-func (s *sequenceIntValues) Next(index int, rng *rand.Rand) any {
-	numValues := len(s.values)
+func (s *SequenceIntValues) Next(index int, rng *rand.Rand) any {
+	numValues := len(s.Values)
 	idx := (index / s.stride) % numValues
-	return s.values[idx]
+	return s.Values[idx]
 }
 
-func (s *sequenceIntValues) Stride() int { return len(s.values) }
+func (s *SequenceIntValues) Stride() int { return len(s.Values) }
 
-type randomBoolValues struct {
-	values []bool
+type RandomBoolValues struct {
+	Values []bool
 }
 
-func (r *randomBoolValues) Next(index int, rng *rand.Rand) any {
-	return r.values[rng.Intn(len(r.values))]
+func (r *RandomBoolValues) Next(index int, rng *rand.Rand) any {
+	return r.Values[rng.Intn(len(r.Values))]
 }
 
-func (r *randomBoolValues) Stride() int { return 1 }
+func (r *RandomBoolValues) Stride() int { return 1 }
 
-type sequenceBoolValues struct {
-	values []bool
+type SequenceBoolValues struct {
+	Values []bool
 	stride int
 }
 
-func (s *sequenceBoolValues) Next(index int, rng *rand.Rand) any {
-	numValues := len(s.values)
+func (s *SequenceBoolValues) Next(index int, rng *rand.Rand) any {
+	numValues := len(s.Values)
 	idx := (index / s.stride) % numValues
-	return s.values[idx]
+	return s.Values[idx]
 }
 
-func (s *sequenceBoolValues) Stride() int { return len(s.values) }
+func (s *SequenceBoolValues) Stride() int { return len(s.Values) }

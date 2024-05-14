@@ -40,7 +40,7 @@ func Default() DefaultParams {
 			Min:  7,
 			Max:  50,
 		},
-		Forager: Foragers{
+		Foragers: Foragers{
 			FlightVelocity: 6.5,      // [m/s]
 			FlightCostPerM: 0.000006, //[kJ/m]
 			NectarLoad:     50,       // [muL]

@@ -17,6 +17,10 @@ func TestSetParameter(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 10, ecs.GetResource[params.Foragers](&m.World).SquadronSize)
 
+	err = model.SetParameter(&m.World, "params.Foragers.SquadronSize", "25")
+	assert.Nil(t, err)
+	assert.Equal(t, 25, ecs.GetResource[params.Foragers](&m.World).SquadronSize)
+
 	err = model.SetParameter(&m.World, "params.Foragers.SquadronSize", 10.0)
 	assert.NotNil(t, err)
 

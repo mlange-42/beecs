@@ -19,7 +19,7 @@ type DefaultParams struct {
 	InitialPatches    InitialPatches
 	Nursing           Nursing
 	Foraging          Foraging
-	Forager           Foragers
+	Foragers          Foragers
 	Dance             Dance
 	HandlingTime      HandlingTime
 	WorkerMortality   WorkerMortality
@@ -61,7 +61,7 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 	ecs.AddResource(world, &p.WorkerMortality)
 	ecs.AddResource(world, &p.DroneMortality)
 	ecs.AddResource(world, &p.AgeFirstForaging)
-	ecs.AddResource(world, &p.Forager)
+	ecs.AddResource(world, &p.Foragers)
 	ecs.AddResource(world, &p.Foraging)
 	ecs.AddResource(world, &p.HandlingTime)
 	ecs.AddResource(world, &p.Dance)

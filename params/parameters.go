@@ -1,5 +1,11 @@
 package params
 
+import "github.com/mlange-42/beecs/comp"
+
+type RandomSeed struct {
+	Seed int
+}
+
 type AgeFirstForaging struct {
 	Base int
 	Min  int
@@ -130,4 +136,8 @@ type InitialPopulation struct {
 type InitialStores struct {
 	Honey  float64 // [kg]
 	Pollen float64 // [g]
+}
+
+type InitialPatches struct {
+	Patches []comp.PatchConfig
 }

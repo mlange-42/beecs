@@ -12,31 +12,14 @@ import (
 //
 // If the argument m is nil, a new model instance is created.
 // If it is non-nil, the model is reset and re-used, saving some time for initialization and memory allocation.
-func Default(p *params.Params, m *model.Model) *model.Model {
+func Default(p params.Params, m *model.Model) *model.Model {
 	if m == nil {
 		m = model.New()
 	} else {
 		m.Reset()
 	}
 
-	// Resources
-
-	ecs.AddResource(&m.World, &p.WorkerDevelopment)
-	ecs.AddResource(&m.World, &p.DroneDevelopment)
-	ecs.AddResource(&m.World, &p.WorkerMortality)
-	ecs.AddResource(&m.World, &p.DroneMortality)
-	ecs.AddResource(&m.World, &p.AgeFirstForaging)
-	ecs.AddResource(&m.World, &p.Forager)
-	ecs.AddResource(&m.World, &p.Foraging)
-	ecs.AddResource(&m.World, &p.HandlingTime)
-	ecs.AddResource(&m.World, &p.Dance)
-	ecs.AddResource(&m.World, &p.Energy)
-	ecs.AddResource(&m.World, &p.Stores)
-	ecs.AddResource(&m.World, &p.HoneyNeeds)
-	ecs.AddResource(&m.World, &p.PollenNeeds)
-	ecs.AddResource(&m.World, &p.Nursing)
-	ecs.AddResource(&m.World, &p.InitialPopulation)
-	ecs.AddResource(&m.World, &p.InitialStores)
+	p.Apply(&m.World)
 
 	factory := globals.NewForagerFactory(&m.World)
 	ecs.AddResource(&m.World, &factory)
@@ -55,9 +38,7 @@ func Default(p *params.Params, m *model.Model) *model.Model {
 
 	m.AddSystem(&sys.InitPopulation{})
 
-	m.AddSystem(&sys.InitPatchesList{
-		Patches: p.Patches,
-	})
+	m.AddSystem(&sys.InitPatchesList{})
 
 	// Sub-models
 

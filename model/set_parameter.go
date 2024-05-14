@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/mlange-42/arche/ecs"
@@ -41,6 +42,12 @@ func SetParameter(world *ecs.World, param string, value any) error {
 			f.SetInt(int64(v))
 		case int64:
 			f.SetInt(v)
+		case string:
+			vv, err := strconv.Atoi(v)
+			if err != nil {
+				return err
+			}
+			f.SetInt(int64(vv))
 		default:
 			return fmt.Errorf("unsupported parameter type %s for integer field", reflect.TypeOf(value).String())
 		}
@@ -50,6 +57,12 @@ func SetParameter(world *ecs.World, param string, value any) error {
 			f.SetFloat(float64(v))
 		case float64:
 			f.SetFloat(v)
+		case string:
+			vv, err := strconv.ParseFloat(v, 64)
+			if err != nil {
+				return err
+			}
+			f.SetFloat(vv)
 		default:
 			return fmt.Errorf("unsupported parameter type %s for float field", reflect.TypeOf(value).String())
 		}
@@ -57,9 +70,24 @@ func SetParameter(world *ecs.World, param string, value any) error {
 		switch v := value.(type) {
 		case bool:
 			f.SetBool(v)
+		case string:
+			vv, err := strconv.ParseBool(v)
+			if err != nil {
+				return err
+			}
+			f.SetBool(vv)
 		default:
 			return fmt.Errorf("unsupported parameter type %s for bool field", reflect.TypeOf(value).String())
 		}
+	} else if f.Kind() == reflect.String {
+		switch v := value.(type) {
+		case string:
+			f.SetString(v)
+		default:
+			return fmt.Errorf("unsupported parameter type %s for string field", reflect.TypeOf(value).String())
+		}
+	} else {
+		return fmt.Errorf("unsupported field kind %s", f.Kind().String())
 	}
 
 	return nil

@@ -2,7 +2,7 @@
     "InitialPopulation": {
         "Count": 50000
     },
-    "Forager": {
+    "Foragers": {
         "FlightVelocity": 6.0,
         "MaxKmPerDay": 25.0
     }

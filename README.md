@@ -11,6 +11,15 @@ Colony dynamics already mimic BEEHAVE quite well, but there are still difference
 
 ## Usage
 
+### As a command line app
+
+A command line interface for beecs is provided in [beecs-cli](https://github.com/mlange-42/beecs-cli).
+It also supports basic visualizations. See there for details.
+
+### With a graphical user interface
+
+[TODO]
+
 ### As a library
 
 To add beecs as a dependency to an existing Go project, run this in the project's root folder:
@@ -20,14 +29,6 @@ go get github.com/mlange-42/beecs
 ```
 
 Usage examples can be found in folder [_examples](https://github.com/mlange-42/beecs/blob/main/_examples).
-
-### As a command line app
-
-[TODO]
-
-### With a graphical user interface
-
-[TODO]
 
 ## Exploring the model
 

@@ -12,6 +12,7 @@ import (
 	amodel "github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-model/system"
+	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/params"
@@ -20,7 +21,7 @@ import (
 
 func main() {
 	// Define parameter variations.
-	vars := []params.ParameterVariation{
+	vars := []experiment.ParameterVariation{
 		{
 			Parameter: "params.InitialPopulation.Count",
 			Type:      "sequence-values",
@@ -34,12 +35,12 @@ func main() {
 	}
 
 	// Create an experiment.
-	experiment, err := params.NewExperiment(vars, rand.New(nil))
+	exp, err := experiment.New(vars, rand.New(nil))
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Get the number of parameter sets in the experiment.
-	sets := experiment.ParameterSets()
+	sets := exp.ParameterSets()
 
 	// Create an empty model.
 	m := amodel.New()
@@ -48,26 +49,22 @@ func main() {
 
 	for i := 0; i < sets; i++ {
 		// Get and print the parameter values for the current run.
-		values := experiment.Values(i)
+		values := exp.Values(i)
 		fmt.Printf("Running set %v\n", values)
 
 		// Initialize and run the model with the given parameters.
-		run(m, values, i)
+		run(m, &exp, i)
 	}
 }
 
-func run(m *amodel.Model, values map[string]any, idx int) {
+func run(m *amodel.Model, exp *experiment.Experiment, idx int) {
 	// Get the default parameters.
 	p := params.Default()
 	// Create a model with the default sub-models.
 	m = model.Default(&p, m)
 
 	// Set/overwrite parameters from the experiment.
-	for par, value := range values {
-		if err := model.SetParameter(&m.World, par, value); err != nil {
-			log.Fatal(err)
-		}
-	}
+	exp.ApplyValues(idx, &m.World)
 
 	// Add a system ("sub-model") to terminate after 365 ticks.
 	m.AddSystem(&system.FixedTermination{Steps: 365})

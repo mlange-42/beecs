@@ -1,4 +1,4 @@
-package params
+package experiment
 
 import (
 	"testing"
@@ -23,7 +23,7 @@ func TestExperiment(t *testing.T) {
 		},
 	}
 
-	e, err := NewExperiment(vars, rng)
+	e, err := New(vars, rng)
 
 	assert.Nil(t, err)
 

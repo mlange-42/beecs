@@ -1,16 +1,19 @@
-package params
+package experiment
 
-import "golang.org/x/exp/rand"
+import (
+	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/beecs/model"
+	"golang.org/x/exp/rand"
+)
 
 type Experiment struct {
-	values        map[string]any
 	rng           *rand.Rand
 	parameters    []string
 	functions     []ParameterFunction
 	parameterSets int
 }
 
-func NewExperiment(vars []ParameterVariation, rng *rand.Rand) (Experiment, error) {
+func New(vars []ParameterVariation, rng *rand.Rand) (Experiment, error) {
 	pars := []string{}
 	f := []ParameterFunction{}
 
@@ -30,7 +33,6 @@ func NewExperiment(vars []ParameterVariation, rng *rand.Rand) (Experiment, error
 		functions:     f,
 		parameterSets: stride,
 		rng:           rng,
-		values:        map[string]any{},
 	}, nil
 }
 
@@ -42,10 +44,25 @@ func (e *Experiment) Parameters() []string {
 	return e.parameters
 }
 
-func (e Experiment) Values(idx int) map[string]any {
+func (e *Experiment) Seed(seed uint64) {
+	e.rng.Seed(seed)
+}
+
+func (e *Experiment) Values(idx int) map[string]any {
+	values := map[string]any{}
 	for i, par := range e.parameters {
 		fn := e.functions[i]
-		e.values[par] = fn.Next(idx, e.rng)
+		values[par] = fn.Next(idx, e.rng)
 	}
-	return e.values
+	return values
+}
+
+func (e *Experiment) ApplyValues(idx int, world *ecs.World) error {
+	values := e.Values(idx)
+	for par, value := range values {
+		if err := model.SetParameter(world, par, value); err != nil {
+			return err
+		}
+	}
+	return nil
 }

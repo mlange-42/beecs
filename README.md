@@ -1,5 +1,10 @@
 # beecs
 
+[![Test status](https://img.shields.io/github/actions/workflow/status/mlange-42/beecs/tests.yml?branch=main&label=Tests&logo=github)](https://github.com/mlange-42/beecs/actions/workflows/tests.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mlange-42/beecs)](https://goreportcard.com/report/github.com/mlange-42/beecs)
+[![Go Reference](https://img.shields.io/badge/reference-%23007D9C?logo=go&logoColor=white&labelColor=gray)](https://pkg.go.dev/github.com/mlange-42/beecs)
+[![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/beecs)
+
 Work-in-progress re-implementation of the [BEEHAVE](https://beehave-model.net) model
 in [Go](https://go.dev) using the [Arche](https://github.com/mlange-42/arche) Entity Component System (ECS).
 

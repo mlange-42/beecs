@@ -9,6 +9,7 @@ import (
 	"github.com/mlange-42/arche/ecs"
 )
 
+// SetParameter sets a parameter of the model from it's string identifier.
 func SetParameter(world *ecs.World, param string, value any) error {
 	parts := strings.Split(param, ".")
 	if len(parts) < 2 {
@@ -93,6 +94,7 @@ func SetParameter(world *ecs.World, param string, value any) error {
 	return nil
 }
 
+// GetParameter gets a parameter of the model from it's string identifier.
 func GetParameter(world *ecs.World, param string) (any, error) {
 	parts := strings.Split(param, ".")
 	if len(parts) < 2 {

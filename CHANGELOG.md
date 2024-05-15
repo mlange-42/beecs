@@ -3,6 +3,7 @@
 ### Features
 
 - Implements seasonal and "scripted" patch dynamics (#49)
+- Adds support for weather/foraging period from files (#50)
 
 ### Bugfixes
 

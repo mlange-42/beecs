@@ -1,3 +1,4 @@
+// Package activity provides an enumeration of forager activities.
 package activity
 
 // ForagerActivity type alias for use as enumeration.

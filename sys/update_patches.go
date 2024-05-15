@@ -17,7 +17,7 @@ type UpdatePatchesForaging struct {
 	energyParams      *params.EnergyContent
 	danceParams       *params.Dance
 
-	filter generic.Filter6[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
+	filter generic.Filter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
 }
 
 func (s *UpdatePatchesForaging) Initialize(w *ecs.World) {
@@ -27,13 +27,13 @@ func (s *UpdatePatchesForaging) Initialize(w *ecs.World) {
 	s.energyParams = ecs.GetResource[params.EnergyContent](w)
 	s.danceParams = ecs.GetResource[params.Dance](w)
 
-	s.filter = *generic.NewFilter6[comp.PatchConfig, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]()
+	s.filter = *generic.NewFilter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]()
 }
 
 func (s *UpdatePatchesForaging) Update(w *ecs.World) {
 	query := s.filter.Query(w)
 	for query.Next() {
-		conf, r, ht, trip, mort, dance := query.Get()
+		conf, dist, r, ht, trip, mort, dance := query.Get()
 
 		if s.handingTimeParams.ConstantHandlingTime {
 			ht.Pollen = s.handingTimeParams.PollenGathering
@@ -43,18 +43,18 @@ func (s *UpdatePatchesForaging) Update(w *ecs.World) {
 			ht.Nectar = s.handingTimeParams.NectarGathering * r.MaxNectar / r.Nectar
 		}
 
-		trip.CostNectar = (2 * conf.DistToColony * s.foragerParams.FlightCostPerM) +
+		trip.CostNectar = (2 * dist.DistToColony * s.foragerParams.FlightCostPerM) +
 			(s.foragerParams.FlightCostPerM * ht.Nectar *
 				s.foragerParams.FlightVelocity * s.forageParams.EnergyOnFlower) // [kJ] = [m*kJ/m + kJ/m * s * m/s]
 
-		trip.CostPollen = (2 * conf.DistToColony * s.foragerParams.FlightCostPerM) +
+		trip.CostPollen = (2 * dist.DistToColony * s.foragerParams.FlightCostPerM) +
 			(s.foragerParams.FlightCostPerM * ht.Pollen *
 				s.foragerParams.FlightVelocity * s.forageParams.EnergyOnFlower) // [kJ] = [m*kJ/m + kJ/m * s * m/s]
 
 		r.EnergyEfficiency = (conf.NectarConcentration*s.foragerParams.NectarLoad*s.energyParams.Scurose - trip.CostNectar) / trip.CostNectar
 
-		trip.DurationNectar = 2*conf.DistToColony/s.foragerParams.FlightVelocity + ht.Nectar
-		trip.DurationPollen = 2*conf.DistToColony/s.foragerParams.FlightVelocity + ht.Pollen
+		trip.DurationNectar = 2*dist.DistToColony/s.foragerParams.FlightVelocity + ht.Nectar
+		trip.DurationPollen = 2*dist.DistToColony/s.foragerParams.FlightVelocity + ht.Pollen
 
 		mort.Nectar = 1.0 - (math.Pow(1.0-s.forageParams.MortalityPerSec, trip.DurationNectar))
 		mort.Pollen = 1.0 - (math.Pow(1.0-s.forageParams.MortalityPerSec, trip.DurationPollen))

@@ -7,8 +7,8 @@ import (
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
-	"github.com/mlange-42/beecs/activity"
 	"github.com/mlange-42/beecs/comp"
+	"github.com/mlange-42/beecs/enum/activity"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"golang.org/x/exp/rand"
@@ -39,7 +39,7 @@ type Foraging struct {
 	patchDanceMapper     generic.Map2[comp.Resource, comp.Dance]
 	patchTripMapper      generic.Map1[comp.Trip]
 	patchMortalityMapper generic.Map1[comp.Mortality]
-	patchConfigMapper    generic.Map2[comp.PatchConfig, comp.Trip]
+	patchConfigMapper    generic.Map2[comp.PatchProperties, comp.Trip]
 	foragerMapper        generic.Map2[comp.Activity, comp.KnownPatch]
 
 	activityFilter      generic.Filter1[comp.Activity]
@@ -47,7 +47,7 @@ type Foraging struct {
 	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
 	foragerFilterLoad   generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
 	foragerFilterSimple generic.Filter2[comp.Activity, comp.KnownPatch]
-	patchFilter         generic.Filter2[comp.Resource, comp.PatchConfig]
+	patchFilter         generic.Filter2[comp.Resource, comp.PatchProperties]
 
 	maxHoneyStore float64
 }
@@ -69,13 +69,13 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
 	s.foragerFilterLoad = *generic.NewFilter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]()
 	s.foragerFilterSimple = *generic.NewFilter2[comp.Activity, comp.KnownPatch]()
-	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchConfig]()
+	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchProperties]()
 
 	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
 	s.patchDanceMapper = generic.NewMap2[comp.Resource, comp.Dance](w)
 	s.patchTripMapper = generic.NewMap1[comp.Trip](w)
 	s.patchMortalityMapper = generic.NewMap1[comp.Mortality](w)
-	s.patchConfigMapper = generic.NewMap2[comp.PatchConfig, comp.Trip](w)
+	s.patchConfigMapper = generic.NewMap2[comp.PatchProperties, comp.Trip](w)
 	s.foragerMapper = generic.NewMap2[comp.Activity, comp.KnownPatch](w)
 
 	storeParams := ecs.GetResource[params.Stores](w)

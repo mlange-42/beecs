@@ -2,4 +2,4 @@
 
 ### Other
 
-- Random seed is written to ECS resource for analysis (#43)
+- Random seed is written to ECS resource for analysis (#43, #44, #45)

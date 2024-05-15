@@ -50,7 +50,7 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 	// Random seed
 	seed := p.RandomSeed
 	if seed.Seed <= 0 {
-		seed.Seed = rand.Intn(1_000_000_000_000)
+		seed.Seed = int(rand.Int31())
 	}
 	rng := ecs.GetResource[resource.Rand](world)
 	rng.Seed(uint64(seed.Seed))

@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/mlange-42/arche v0.12.0
-	github.com/mlange-42/arche-model v0.8.0
+	github.com/mlange-42/arche-model v0.8.1
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
 	gonum.org/v1/gonum v0.15.0

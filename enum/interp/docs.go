@@ -4,6 +4,6 @@ package interp
 type Interpolation uint8
 
 const (
-	Linear Interpolation = iota
-	Step
+	Step Interpolation = iota
+	Linear
 )

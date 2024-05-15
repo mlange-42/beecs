@@ -2,6 +2,7 @@ package sys
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/beecs/globals"
@@ -22,7 +23,7 @@ func (s *InitPatchesList) Initialize(w *ecs.World) {
 	if patches.File != "" {
 		pch, err := util.PatchesFromFile(patches.File)
 		if err != nil {
-			panic(fmt.Errorf("error reading patches file '%s': %s", patches.File, err.Error()))
+			log.Fatal(fmt.Errorf("error reading patches file '%s': %s", patches.File, err.Error()))
 		}
 		for _, p := range pch {
 			_ = fac.CreatePatch(p)

@@ -45,7 +45,7 @@ func (s *ReplenishPatches) Update(w *ecs.World) {
 		season := util.Season(day)
 
 		props.MaxNectar = seas.MaxNectar * season
-		props.MaxPollen = seas.MaxNectar * season
+		props.MaxPollen = seas.MaxPollen * season
 
 		props.DetectionProbability = seas.DetectionProbability
 		props.NectarConcentration = seas.NectarConcentration

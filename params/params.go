@@ -48,13 +48,15 @@ func (p *DefaultParams) FromJSON(path string) error {
 
 func (p *DefaultParams) Apply(world *ecs.World) {
 	// Random seed
-	rand := ecs.GetResource[resource.Rand](world)
-	if p.RandomSeed.Seed > 0 {
-		rand.Seed(uint64(p.RandomSeed.Seed))
-	} else {
-		rand.Seed(uint64(time.Now().UnixNano()))
+	seed := p.RandomSeed
+	if seed.Seed <= 0 {
+		seed.Seed = int(time.Now().UnixNano() % 1_000_000_000)
 	}
+	rand := ecs.GetResource[resource.Rand](world)
+	rand.Seed(uint64(seed.Seed))
+
 	// Resources
+	ecs.AddResource(world, &seed)
 	ecs.AddResource(world, &p.Termination)
 	ecs.AddResource(world, &p.WorkerDevelopment)
 	ecs.AddResource(world, &p.DroneDevelopment)

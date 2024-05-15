@@ -2,8 +2,8 @@ package params
 
 import (
 	"encoding/json"
+	"math/rand"
 	"os"
-	"time"
 
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
@@ -50,10 +50,10 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 	// Random seed
 	seed := p.RandomSeed
 	if seed.Seed <= 0 {
-		seed.Seed = int(time.Now().UnixNano() % 1_000_000_000)
+		seed.Seed = rand.Intn(1_000_000_000_000)
 	}
-	rand := ecs.GetResource[resource.Rand](world)
-	rand.Seed(uint64(seed.Seed))
+	rng := ecs.GetResource[resource.Rand](world)
+	rng.Seed(uint64(seed.Seed))
 
 	// Resources
 	ecs.AddResource(world, &seed)

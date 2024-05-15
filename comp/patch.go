@@ -1,14 +1,50 @@
 package comp
 
-// PatchConfig component for flower patches.
-//
-// Used for initialization of flower patches.
+import "github.com/mlange-42/beecs/enum/interp"
+
+// PatchConfig for initialization of flower patches.
 type PatchConfig struct {
+	DistToColony  float64        // Distance to the colony [m].
+	ConstantPatch *ConstantPatch `json:",omitempty"`
+	SeasonalPatch *SeasonalPatch `json:",omitempty"`
+	ScriptedPatch *ScriptedPatch `json:",omitempty"`
+}
+
+type ConstantPatch struct {
 	Nectar               float64 // Maximum of available nectar [L].
-	NectarConcentration  float64 // Sucrose concentration in the nectar [mol/L].
 	Pollen               float64 // Maximum of available pollen [kg].
-	DistToColony         float64 // Distance to the colony [m].
+	NectarConcentration  float64 // Sucrose concentration in the nectar [mol/L].
 	DetectionProbability float64 // Detection probability, e.g. from BeeScout.
+}
+
+type SeasonalPatch struct {
+	SeasonShift int     // Shift of the season [d]
+	MaxNectar   float64 // Maximum of available nectar [L].
+	MaxPollen   float64 // Maximum of available pollen [kg].
+
+	NectarConcentration  float64 // Sucrose concentration in the nectar [mol/L].
+	DetectionProbability float64 // Detection probability, e.g. from BeeScout.
+}
+
+type ScriptedPatch struct {
+	Nectar               [][2]float64 // Maximum of available nectar [L].
+	Pollen               [][2]float64 // Maximum of available pollen [kg].
+	NectarConcentration  [][2]float64 // Sucrose concentration in the nectar [mol/L].
+	DetectionProbability [][2]float64 // Detection probability, e.g. from BeeScout.
+	Interpolation        interp.Interpolation
+}
+
+// PatchProperties component for flower patches.
+type PatchProperties struct {
+	MaxNectar            float64 // Maximum of available nectar [L].
+	NectarConcentration  float64 // Sucrose concentration in the nectar [mol/L].
+	MaxPollen            float64 // Maximum of available pollen [kg].
+	DetectionProbability float64 // Detection probability, e.g. from BeeScout.
+}
+
+// PatchDistance component for flower patches.
+type PatchDistance struct {
+	DistToColony float64 // Distance to the colony [m].
 }
 
 // Resource component for flower patches.

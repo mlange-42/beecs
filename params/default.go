@@ -123,18 +123,22 @@ func Default() DefaultParams {
 		InitialPatches: InitialPatches{
 			Patches: []comp.PatchConfig{
 				{
-					Nectar:               20,
-					NectarConcentration:  1.5,
-					Pollen:               1,
-					DistToColony:         1500,
-					DetectionProbability: 0.2,
+					DistToColony: 1500,
+					ConstantPatch: &comp.ConstantPatch{
+						Nectar:               20,
+						NectarConcentration:  1.5,
+						Pollen:               1,
+						DetectionProbability: 0.2,
+					},
 				},
 				{
-					Nectar:               20,
-					NectarConcentration:  1.5,
-					Pollen:               1,
-					DistToColony:         500,
-					DetectionProbability: 0.2,
+					DistToColony: 500,
+					ConstantPatch: &comp.ConstantPatch{
+						Nectar:               20,
+						NectarConcentration:  1.5,
+						Pollen:               1,
+						DetectionProbability: 0.2,
+					},
 				},
 			},
 		},

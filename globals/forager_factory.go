@@ -3,8 +3,8 @@ package globals
 import (
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
-	"github.com/mlange-42/beecs/activity"
 	"github.com/mlange-42/beecs/comp"
+	"github.com/mlange-42/beecs/enum/activity"
 	"golang.org/x/exp/rand"
 )
 

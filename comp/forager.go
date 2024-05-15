@@ -2,7 +2,7 @@ package comp
 
 import (
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs/activity"
+	"github.com/mlange-42/beecs/enum/activity"
 )
 
 // Milage component for forager squadrons.

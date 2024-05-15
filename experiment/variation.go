@@ -26,6 +26,9 @@ type ParameterVariation struct {
 	RandomBoolValues   *RandomBoolValues   `json:",omitempty"`
 	SequenceBoolValues *SequenceBoolValues `json:",omitempty"`
 
+	RandomStringValues   *RandomStringValues   `json:",omitempty"`
+	SequenceStringValues *SequenceStringValues `json:",omitempty"`
+
 	NoStride bool `json:",omitempty"`
 }
 
@@ -44,8 +47,8 @@ func NewParameterFunction(v ParameterVariation, stride int) (ParameterFunction, 
 	nonNin := 0
 	var function ParameterFunction
 	for _, ptr := range []ParameterFunction{
-		v.RandomBoolValues, v.RandomFloatRange, v.RandomFloatValues, v.RandomIntRange, v.RandomIntValues,
-		v.SequenceBoolValues, v.SequenceFloatRange, v.SequenceFloatValues, v.SequenceIntRange, v.SequenceIntValues,
+		v.RandomBoolValues, v.RandomFloatRange, v.RandomFloatValues, v.RandomIntRange, v.RandomIntValues, v.RandomStringValues,
+		v.SequenceBoolValues, v.SequenceFloatRange, v.SequenceFloatValues, v.SequenceIntRange, v.SequenceIntValues, v.SequenceStringValues,
 	} {
 		if !reflect.ValueOf(ptr).IsNil() {
 			nonNin++
@@ -65,6 +68,8 @@ func NewParameterFunction(v ParameterVariation, stride int) (ParameterFunction, 
 	case *SequenceIntValues:
 		f.stride = stride
 	case *SequenceBoolValues:
+		f.stride = stride
+	case *SequenceStringValues:
 		f.stride = stride
 	}
 
@@ -192,3 +197,26 @@ func (s *SequenceBoolValues) Next(index int, rng *rand.Rand) any {
 }
 
 func (s *SequenceBoolValues) Stride() int { return len(s.Values) }
+
+type RandomStringValues struct {
+	Values []string
+}
+
+func (r *RandomStringValues) Next(index int, rng *rand.Rand) any {
+	return r.Values[rng.Intn(len(r.Values))]
+}
+
+func (r *RandomStringValues) Stride() int { return 1 }
+
+type SequenceStringValues struct {
+	Values []string
+	stride int
+}
+
+func (s *SequenceStringValues) Next(index int, rng *rand.Rand) any {
+	numValues := len(s.Values)
+	idx := (index / s.stride) % numValues
+	return s.Values[idx]
+}
+
+func (s *SequenceStringValues) Stride() int { return len(s.Values) }

@@ -45,7 +45,7 @@ func (f *PatchFactory) CreatePatch(conf comp.PatchConfig) ecs.Entity {
 
 	if conf.SeasonalPatch != nil {
 		if anyPatch {
-			panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch")
+			panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch, has multiple")
 		}
 		f.seasonalPatchMapper.Assign(e, conf.SeasonalPatch)
 		anyPatch = true
@@ -53,10 +53,14 @@ func (f *PatchFactory) CreatePatch(conf comp.PatchConfig) ecs.Entity {
 
 	if conf.ScriptedPatch != nil {
 		if anyPatch {
-			panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch")
+			panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch, has multiple")
 		}
 		f.scriptedPatchMapper.Assign(e, conf.ScriptedPatch)
 		anyPatch = true
+	}
+
+	if !anyPatch {
+		panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch, has none")
 	}
 
 	return e

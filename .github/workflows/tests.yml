@@ -72,3 +72,4 @@ jobs:
         go run ./_examples/json_parameters
         go run ./_examples/observer
         go run ./_examples/patches
+        go run ./_examples/weather

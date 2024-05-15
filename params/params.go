@@ -20,6 +20,7 @@ type DefaultParams struct {
 	Nursing           Nursing
 	Foraging          Foraging
 	Foragers          Foragers
+	ForagingPeriod    ForagingPeriod
 	Dance             Dance
 	HandlingTime      HandlingTime
 	WorkerMortality   WorkerMortality
@@ -41,6 +42,8 @@ func (p *DefaultParams) FromJSON(path string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
+
 	decoder := json.NewDecoder(file)
 	decoder.DisallowUnknownFields()
 	return decoder.Decode(p)
@@ -65,6 +68,7 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 	ecs.AddResource(world, &p.AgeFirstForaging)
 	ecs.AddResource(world, &p.Foragers)
 	ecs.AddResource(world, &p.Foraging)
+	ecs.AddResource(world, &p.ForagingPeriod)
 	ecs.AddResource(world, &p.HandlingTime)
 	ecs.AddResource(world, &p.Dance)
 	ecs.AddResource(world, &p.Energy)

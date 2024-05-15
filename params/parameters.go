@@ -146,3 +146,9 @@ type InitialPatches struct {
 	File    string
 	Patches []comp.PatchConfig
 }
+
+type ForagingPeriod struct {
+	Files       []string
+	Builtin     bool
+	RandomYears bool
+}

@@ -61,6 +61,11 @@ func Default() DefaultParams {
 			StopProbability:     0.3,
 			AbandonPollenPerSec: 0.00002,
 		},
+		ForagingPeriod: ForagingPeriod{
+			Files:       []string{"data/foraging-period/berlin2000.txt"},
+			Builtin:     true,
+			RandomYears: false,
+		},
 		HandlingTime: HandlingTime{
 			NectarGathering:      1200,
 			PollenGathering:      600,

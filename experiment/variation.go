@@ -13,20 +13,20 @@ import (
 type ParameterVariation struct {
 	Parameter string
 
-	RandomFloatRange    *RandomFloatRange
-	RandomFloatValues   *RandomFloatValues
-	SequenceFloatRange  *SequenceFloatRange
-	SequenceFloatValues *SequenceFloatValues
+	RandomFloatRange    *RandomFloatRange    `json:",omitempty"`
+	RandomFloatValues   *RandomFloatValues   `json:",omitempty"`
+	SequenceFloatRange  *SequenceFloatRange  `json:",omitempty"`
+	SequenceFloatValues *SequenceFloatValues `json:",omitempty"`
 
-	RandomIntRange    *RandomIntRange
-	RandomIntValues   *RandomIntValues
-	SequenceIntRange  *SequenceIntRange
-	SequenceIntValues *SequenceIntValues
+	RandomIntRange    *RandomIntRange    `json:",omitempty"`
+	RandomIntValues   *RandomIntValues   `json:",omitempty"`
+	SequenceIntRange  *SequenceIntRange  `json:",omitempty"`
+	SequenceIntValues *SequenceIntValues `json:",omitempty"`
 
-	RandomBoolValues   *RandomBoolValues
-	SequenceBoolValues *SequenceBoolValues
+	RandomBoolValues   *RandomBoolValues   `json:",omitempty"`
+	SequenceBoolValues *SequenceBoolValues `json:",omitempty"`
 
-	NoStride bool
+	NoStride bool `json:",omitempty"`
 }
 
 // ParameterFunction interface for creating parameter values.

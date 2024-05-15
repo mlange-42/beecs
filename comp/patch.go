@@ -4,10 +4,10 @@ import "github.com/mlange-42/beecs/enum/interp"
 
 // PatchConfig for initialization of flower patches.
 type PatchConfig struct {
-	DistToColony  float64 // Distance to the colony [m].
-	ConstantPatch *ConstantPatch
-	SeasonalPatch *SeasonalPatch
-	ScriptedPatch *ScriptedPatch
+	DistToColony  float64        // Distance to the colony [m].
+	ConstantPatch *ConstantPatch `json:",omitempty"`
+	SeasonalPatch *SeasonalPatch `json:",omitempty"`
+	ScriptedPatch *ScriptedPatch `json:",omitempty"`
 }
 
 type ConstantPatch struct {

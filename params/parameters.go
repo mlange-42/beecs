@@ -143,5 +143,6 @@ type InitialStores struct {
 }
 
 type InitialPatches struct {
+	File    string
 	Patches []comp.PatchConfig
 }

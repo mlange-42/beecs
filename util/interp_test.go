@@ -22,6 +22,9 @@ func TestInterpolateStep(t *testing.T) {
 	assert.Equal(t, 3.0, util.InterpolateStep(values, 12))
 	assert.Equal(t, 4.0, util.InterpolateStep(values, 13))
 	assert.Equal(t, 4.0, util.InterpolateStep(values, 364))
+
+	assert.Equal(t, 1.0, util.InterpolateStep([][2]float64{{200, 1}}, 100))
+	assert.Equal(t, 1.0, util.InterpolateStep([][2]float64{{200, 1}}, 300))
 }
 
 func TestInterpolateLinear(t *testing.T) {
@@ -46,4 +49,7 @@ func TestInterpolateLinear(t *testing.T) {
 
 	assert.Equal(t, -1.0, util.InterpolateLinear(values, 361))
 	assert.Equal(t, -0.5, util.InterpolateLinear(values, 363))
+
+	assert.Equal(t, 1.0, util.InterpolateStep([][2]float64{{200, 1}}, 100))
+	assert.Equal(t, 1.0, util.InterpolateStep([][2]float64{{200, 1}}, 300))
 }

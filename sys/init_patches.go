@@ -1,9 +1,12 @@
 package sys
 
 import (
+	"fmt"
+
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
+	"github.com/mlange-42/beecs/util"
 )
 
 type InitPatchesList struct{}
@@ -14,6 +17,16 @@ func (s *InitPatchesList) Initialize(w *ecs.World) {
 
 	for _, p := range patches.Patches {
 		_ = fac.CreatePatch(p)
+	}
+
+	if patches.File != "" {
+		pch, err := util.PatchesFromFile(patches.File)
+		if err != nil {
+			panic(fmt.Errorf("error reading patches file '%s': %s", patches.File, err.Error()))
+		}
+		for _, p := range pch {
+			_ = fac.CreatePatch(p)
+		}
 	}
 }
 

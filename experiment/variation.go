@@ -7,6 +7,9 @@ import (
 	"golang.org/x/exp/rand"
 )
 
+// ParameterVariation definition.
+//
+// Only one of the pointer fields may be non-nil.
 type ParameterVariation struct {
 	Parameter string
 
@@ -26,11 +29,13 @@ type ParameterVariation struct {
 	NoStride bool
 }
 
+// ParameterFunction interface for creating parameter values.
 type ParameterFunction interface {
 	Next(index int, rng *rand.Rand) any
 	Stride() int
 }
 
+// NewParameterFunction creates a new ParameterFunction.
 func NewParameterFunction(v ParameterVariation, stride int) (ParameterFunction, error) {
 	if v.NoStride {
 		stride = 1

@@ -51,11 +51,7 @@ func main() {
 	fmt.Printf("Running experiment with %d parameter sets\n", sets)
 
 	for i := 0; i < sets; i++ {
-		// Get and print the parameter values for the current run.
-		values := exp.Values(i)
-		fmt.Printf("Running set %v\n", values)
-
-		// Initialize and run the model with the given parameters.
+		// Initialize and run the model.
 		run(m, &exp, i)
 	}
 }
@@ -66,8 +62,11 @@ func run(m *amodel.Model, exp *experiment.Experiment, idx int) {
 	// Create a model with the default sub-models.
 	m = model.Default(&p, m)
 
+	// Get parameter values for the current run.
+	values := exp.Values(idx)
+	fmt.Printf("Running set %v\n", values)
 	// Set/overwrite parameters from the experiment.
-	exp.ApplyValues(idx, &m.World)
+	exp.ApplyValues(values, &m.World)
 
 	// Add a CSV output system using observer [obs.WorkerCohorts].
 	m.AddSystem(&reporter.CSV{

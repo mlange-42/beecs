@@ -6,6 +6,7 @@ import (
 	"golang.org/x/exp/rand"
 )
 
+// Experiment definition.
 type Experiment struct {
 	rng           *rand.Rand
 	parameters    []string
@@ -13,6 +14,7 @@ type Experiment struct {
 	parameterSets int
 }
 
+// New creates a new Experiment with the given parameter variations and PRNG instance.
 func New(vars []ParameterVariation, rng *rand.Rand) (Experiment, error) {
 	pars := []string{}
 	f := []ParameterFunction{}
@@ -36,18 +38,23 @@ func New(vars []ParameterVariation, rng *rand.Rand) (Experiment, error) {
 	}, nil
 }
 
+// ParameterSets returns the number of unique parameter sets.
+// Random variations do not count towards the number of sets.
 func (e *Experiment) ParameterSets() int {
 	return e.parameterSets
 }
 
+// Parameters returns the names of the parameters varied in the experiment.
 func (e *Experiment) Parameters() []string {
 	return e.parameters
 }
 
+// Re-seeds the experiment's PRNG.
 func (e *Experiment) Seed(seed uint64) {
 	e.rng.Seed(seed)
 }
 
+// Values returns the parameter values for the given run index.
 func (e *Experiment) Values(idx int) []ParameterValue {
 	values := []ParameterValue{}
 	for i, par := range e.parameters {
@@ -57,8 +64,8 @@ func (e *Experiment) Values(idx int) []ParameterValue {
 	return values
 }
 
-func (e *Experiment) ApplyValues(idx int, world *ecs.World) error {
-	values := e.Values(idx)
+// ApplyValues applies the given parameter values to a model.
+func (e *Experiment) ApplyValues(values []ParameterValue, world *ecs.World) error {
 	for _, par := range values {
 		if err := model.SetParameter(world, par.Parameter, par.Value); err != nil {
 			return err
@@ -67,6 +74,7 @@ func (e *Experiment) ApplyValues(idx int, world *ecs.World) error {
 	return nil
 }
 
+// ParameterValue pair.
 type ParameterValue struct {
 	Parameter string
 	Value     any

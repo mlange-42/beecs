@@ -55,6 +55,7 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 	rand.Seed(uint64(p.RandomSeed.Seed))
 
 	// Resources
+	ecs.AddResource(world, &p.RandomSeed)
 	ecs.AddResource(world, &p.Termination)
 	ecs.AddResource(world, &p.WorkerDevelopment)
 	ecs.AddResource(world, &p.DroneDevelopment)

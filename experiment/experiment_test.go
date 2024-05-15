@@ -8,7 +8,7 @@ import (
 )
 
 func TestExperiment(t *testing.T) {
-	rng := rand.New(nil)
+	rng := rand.New(rand.NewSource(0))
 
 	vars := []ParameterVariation{
 		{

@@ -2,11 +2,11 @@ package params
 
 import (
 	"encoding/json"
-	"math/rand"
 	"os"
 
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
+	"golang.org/x/exp/rand"
 )
 
 type Params interface {

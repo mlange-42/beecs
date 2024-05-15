@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Create an experiment.
-	exp, err := experiment.New(vars, rand.New(nil))
+	exp, err := experiment.New(vars, rand.New(rand.NewSource(0)))
 	if err != nil {
 		log.Fatal(err)
 	}

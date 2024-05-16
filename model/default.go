@@ -66,3 +66,32 @@ func Default(p params.Params, m *model.Model) *model.Model {
 
 	return m
 }
+
+// Default sets up a beecs model with the given systems instead of the default ones.
+//
+// If the argument m is nil, a new model instance is created.
+// If it is non-nil, the model is reset and re-used, saving some time for initialization and memory allocation.
+func WithSystems(p params.Params, sys []model.System, m *model.Model) *model.Model {
+	if m == nil {
+		m = model.New()
+	} else {
+		m.Reset()
+	}
+
+	p.Apply(&m.World)
+
+	factory := globals.NewForagerFactory(&m.World)
+	ecs.AddResource(&m.World, &factory)
+
+	stats := globals.PopulationStats{}
+	ecs.AddResource(&m.World, &stats)
+
+	consumptionStats := globals.ConsumptionStats{}
+	ecs.AddResource(&m.World, &consumptionStats)
+
+	for _, s := range sys {
+		m.AddSystem(s)
+	}
+
+	return m
+}

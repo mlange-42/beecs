@@ -3,7 +3,6 @@ package sys
 import (
 	"math"
 
-	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
@@ -11,13 +10,13 @@ import (
 	"github.com/mlange-42/beecs/enum/activity"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
+	"github.com/mlange-42/beecs/util"
 	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
 type Foraging struct {
-	PatchUpdater model.System
-	rng          *rand.Rand
+	rng *rand.Rand
 
 	foragerParams      *params.Foragers
 	forageParams       *params.Foraging
@@ -48,6 +47,7 @@ type Foraging struct {
 	foragerFilterLoad   generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
 	foragerFilterSimple generic.Filter2[comp.Activity, comp.KnownPatch]
 	patchFilter         generic.Filter2[comp.Resource, comp.PatchProperties]
+	patchUpdateFilter   generic.Filter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
 
 	maxHoneyStore float64
 }
@@ -70,6 +70,7 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.foragerFilterLoad = *generic.NewFilter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]()
 	s.foragerFilterSimple = *generic.NewFilter2[comp.Activity, comp.KnownPatch]()
 	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchProperties]()
+	s.patchUpdateFilter = *generic.NewFilter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]()
 
 	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
 	s.patchDanceMapper = generic.NewMap2[comp.Resource, comp.Dance](w)
@@ -83,8 +84,6 @@ func (s *Foraging) Initialize(w *ecs.World) {
 
 	s.maxHoneyStore = storeParams.MaxHoneyStoreKg * 1000.0 * energyParams.Honey
 	s.rng = rand.New(ecs.GetResource[resource.Rand](w))
-
-	s.PatchUpdater.Initialize(w)
 }
 
 func (s *Foraging) Update(w *ecs.World) {
@@ -128,9 +127,7 @@ func (s *Foraging) Update(w *ecs.World) {
 	}
 }
 
-func (s *Foraging) Finalize(w *ecs.World) {
-	s.PatchUpdater.Finalize(w)
-}
+func (s *Foraging) Finalize(w *ecs.World) {}
 
 func (s *Foraging) calcForagingProb() float64 {
 	if s.stores.Pollen/s.stores.IdealPollen > 0.5 && s.stores.Honey/s.stores.DecentHoney > 1 {
@@ -153,8 +150,7 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 		probCollectPollen *= s.stores.Honey / s.stores.DecentHoney
 	}
 
-	s.PatchUpdater.Update(w)
-
+	s.updatePatches(w)
 	s.decisions(w, forageProb, probCollectPollen)
 	s.searching(w)
 	s.collecting(w)
@@ -163,6 +159,40 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 	s.dancing(w)
 	s.unloading(w)
 	return
+}
+
+func (s *Foraging) updatePatches(w *ecs.World) {
+	query := s.patchUpdateFilter.Query(w)
+	for query.Next() {
+		conf, dist, r, ht, trip, mort, dance := query.Get()
+
+		if s.handlingTimeParams.ConstantHandlingTime {
+			ht.Pollen = s.handlingTimeParams.PollenGathering
+			ht.Nectar = s.handlingTimeParams.NectarGathering
+		} else {
+			ht.Pollen = s.handlingTimeParams.PollenGathering * r.MaxPollen / r.Pollen
+			ht.Nectar = s.handlingTimeParams.NectarGathering * r.MaxNectar / r.Nectar
+		}
+
+		trip.CostNectar = (2 * dist.DistToColony * s.foragerParams.FlightCostPerM) +
+			(s.foragerParams.FlightCostPerM * ht.Nectar *
+				s.foragerParams.FlightVelocity * s.forageParams.EnergyOnFlower) // [kJ] = [m*kJ/m + kJ/m * s * m/s]
+
+		trip.CostPollen = (2 * dist.DistToColony * s.foragerParams.FlightCostPerM) +
+			(s.foragerParams.FlightCostPerM * ht.Pollen *
+				s.foragerParams.FlightVelocity * s.forageParams.EnergyOnFlower) // [kJ] = [m*kJ/m + kJ/m * s * m/s]
+
+		r.EnergyEfficiency = (conf.NectarConcentration*s.foragerParams.NectarLoad*s.energyParams.Scurose - trip.CostNectar) / trip.CostNectar
+
+		trip.DurationNectar = 2*dist.DistToColony/s.foragerParams.FlightVelocity + ht.Nectar
+		trip.DurationPollen = 2*dist.DistToColony/s.foragerParams.FlightVelocity + ht.Pollen
+
+		mort.Nectar = 1.0 - (math.Pow(1.0-s.forageParams.MortalityPerSec, trip.DurationNectar))
+		mort.Pollen = 1.0 - (math.Pow(1.0-s.forageParams.MortalityPerSec, trip.DurationPollen))
+
+		circ := r.EnergyEfficiency*s.danceParams.Slope + s.danceParams.Intercept
+		dance.Circuits = util.Clamp(circ, 0, float64(s.danceParams.MaxCircuits))
+	}
 }
 
 func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64) {

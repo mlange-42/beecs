@@ -54,9 +54,7 @@ func Default(p params.Params, m *model.Model) *model.Model {
 	m.AddSystem(&sys.MortalityCohorts{})
 	m.AddSystem(&sys.MortalityForagers{})
 
-	m.AddSystem(&sys.Foraging{
-		PatchUpdater: &sys.UpdatePatchesForaging{},
-	})
+	m.AddSystem(&sys.Foraging{})
 	m.AddSystem(&sys.HoneyConsumption{})
 	m.AddSystem(&sys.PollenConsumption{})
 

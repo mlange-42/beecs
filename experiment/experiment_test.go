@@ -29,7 +29,7 @@ func TestExperiment(t *testing.T) {
 		},
 	}
 
-	e, err := New(vars, rng)
+	e, err := New(vars, rng, 2)
 
 	assert.Nil(t, err)
 

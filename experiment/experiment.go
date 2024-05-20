@@ -11,11 +11,12 @@ type Experiment struct {
 	rng           *rand.Rand
 	parameters    []string
 	functions     []ParameterFunction
+	values        [][]any
 	parameterSets int
 }
 
 // New creates a new Experiment with the given parameter variations and PRNG instance.
-func New(vars []ParameterVariation, rng *rand.Rand) (Experiment, error) {
+func New(vars []ParameterVariation, rng *rand.Rand, runs int) (Experiment, error) {
 	pars := []string{}
 	f := []ParameterFunction{}
 
@@ -30,11 +31,21 @@ func New(vars []ParameterVariation, rng *rand.Rand) (Experiment, error) {
 		pars = append(pars, v.Parameter)
 	}
 
+	values := make([][]any, stride*runs)
+	for i := range values {
+		values[i] = make([]any, len(pars))
+		for j := range pars {
+			fn := f[j]
+			values[i][j] = fn.Next(i, rng)
+		}
+	}
+
 	return Experiment{
 		parameters:    pars,
 		functions:     f,
 		parameterSets: stride,
 		rng:           rng,
+		values:        values,
 	}, nil
 }
 
@@ -58,8 +69,7 @@ func (e *Experiment) Seed(seed uint64) {
 func (e *Experiment) Values(idx int) []ParameterValue {
 	values := []ParameterValue{}
 	for i, par := range e.parameters {
-		fn := e.functions[i]
-		values = append(values, ParameterValue{Parameter: par, Value: fn.Next(idx, e.rng)})
+		values = append(values, ParameterValue{Parameter: par, Value: e.values[idx][i]})
 	}
 	return values
 }

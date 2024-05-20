@@ -8,9 +8,7 @@ import (
 
 // Experiment definition.
 type Experiment struct {
-	rng           *rand.Rand
 	parameters    []string
-	functions     []ParameterFunction
 	values        [][]any
 	parameterSets int
 }
@@ -42,9 +40,7 @@ func New(vars []ParameterVariation, rng *rand.Rand, runs int) (Experiment, error
 
 	return Experiment{
 		parameters:    pars,
-		functions:     f,
 		parameterSets: stride,
-		rng:           rng,
 		values:        values,
 	}, nil
 }
@@ -58,11 +54,6 @@ func (e *Experiment) ParameterSets() int {
 // Parameters returns the names of the parameters varied in the experiment.
 func (e *Experiment) Parameters() []string {
 	return e.parameters
-}
-
-// Re-seeds the experiment's PRNG.
-func (e *Experiment) Seed(seed uint64) {
-	e.rng.Seed(seed)
 }
 
 // Values returns the parameter values for the given run index.

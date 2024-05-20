@@ -77,3 +77,13 @@ func TestExperiment(t *testing.T) {
 		{Parameter: "b", Value: 1},
 	}, res)
 }
+
+func TestExperimentNoSets(t *testing.T) {
+	rng := rand.New(rand.NewSource(0))
+	e, err := New([]ParameterVariation{}, rng, 5)
+	assert.Nil(t, err)
+
+	assert.Equal(t, 1, e.ParameterSets())
+	assert.Equal(t, 5, e.RunsPerSet())
+	assert.Equal(t, 5, e.TotalRuns())
+}

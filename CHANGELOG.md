@@ -10,6 +10,7 @@
 
 - Avoid drawing random parameters for experiments multiple times (#46)
 - Copy parameters when applying them to a model (#55)
+- Pre-calculate experiment parameter variations for reproducible randomization (#56)
 
 ### Other
 

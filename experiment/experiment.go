@@ -11,6 +11,7 @@ type Experiment struct {
 	parameters    []string
 	values        [][]any
 	parameterSets int
+	runsPerSet    int
 }
 
 // New creates a new Experiment with the given parameter variations and PRNG instance.
@@ -41,6 +42,7 @@ func New(vars []ParameterVariation, rng *rand.Rand, runs int) (Experiment, error
 	return Experiment{
 		parameters:    pars,
 		parameterSets: stride,
+		runsPerSet:    runs,
 		values:        values,
 	}, nil
 }
@@ -49,6 +51,17 @@ func New(vars []ParameterVariation, rng *rand.Rand, runs int) (Experiment, error
 // Random variations do not count towards the number of sets.
 func (e *Experiment) ParameterSets() int {
 	return e.parameterSets
+}
+
+// RunsPerSet returns the number of runs to perform per parameter sets.
+// Random variations do not count towards the number of sets.
+func (e *Experiment) RunsPerSet() int {
+	return e.runsPerSet
+}
+
+// TotalRuns returns the total number of runs of this experiment.
+func (e *Experiment) TotalRuns() int {
+	return e.parameterSets * e.runsPerSet
 }
 
 // Parameters returns the names of the parameters varied in the experiment.

@@ -44,15 +44,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Get the number of parameter sets in the experiment.
-	sets := exp.ParameterSets()
 
 	// Create an empty model.
 	m := amodel.New()
 
-	fmt.Printf("Running experiment with %d parameter sets\n", sets)
+	fmt.Printf("Running experiment with %d parameter sets\n", exp.ParameterSets())
 
-	for i := 0; i < sets; i++ {
+	runs := exp.TotalRuns()
+	for i := 0; i < runs; i++ {
 		// Initialize and run the model.
 		run(m, &exp, i)
 	}

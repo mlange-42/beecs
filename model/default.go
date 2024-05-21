@@ -33,12 +33,10 @@ func Default(p params.Params, m *model.Model) *model.Model {
 	// Initialization
 
 	m.AddSystem(&sys.InitStore{})
-
 	m.AddSystem(&sys.InitCohorts{})
-
 	m.AddSystem(&sys.InitPopulation{})
-
 	m.AddSystem(&sys.InitPatchesList{})
+	m.AddSystem(&sys.InitForagingPeriod{})
 
 	// Sub-models
 

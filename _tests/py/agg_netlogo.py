@@ -35,4 +35,4 @@ def agg_netlogo(file, out_file):
 
 
 if __name__ == "__main__":
-    agg_netlogo("out/netlogo.csv", "tests/default/netlogo.csv")
+    agg_netlogo("out/netlogo.csv", "_tests/default/netlogo.csv")

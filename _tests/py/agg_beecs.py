@@ -53,4 +53,4 @@ def agg_beecs(file_pattern, out_file):
 
 
 if __name__ == "__main__":
-    agg_beecs("out/beecs-%04d.csv", "tests/default/beecs.csv")
+    agg_beecs("out/beecs-%04d.csv", "_tests/default/beecs.csv")

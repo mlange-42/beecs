@@ -27,7 +27,7 @@ func main() {
 	fmt.Println(dur)
 }
 
-func run(m *amodel.Model, idx int, params *params.Params) {
+func run(m *amodel.Model, idx int, params params.Params) {
 	m = model.Default(params, m)
 
 	m.AddSystem(&reporter.CSV{

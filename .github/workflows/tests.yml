@@ -73,3 +73,19 @@ jobs:
         go run ./_examples/observer
         go run ./_examples/patches
         go run ./_examples/weather
+
+  comp_tests:
+    name: Run comparison tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.22.x'
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: go get ./...
+    - name: Run all comparison tests
+      run: |
+        go run ./_tests/default

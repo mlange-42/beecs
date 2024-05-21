@@ -4,7 +4,7 @@
 
 - Implements seasonal and "scripted" patch dynamics (#49)
 - Adds support for weather/foraging period from files (#50)
-- Adds a model initializer for using custom systems (53)
+- Adds a model initializer for using custom systems (#53)
 
 ### Bugfixes
 

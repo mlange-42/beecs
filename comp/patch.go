@@ -3,13 +3,22 @@ package comp
 import "github.com/mlange-42/beecs/enum/interp"
 
 // PatchConfig for initialization of flower patches.
+//
+// Exactly one of ConstantPatch, SeasonalPatch and ScriptedPatch must be non-nil.
 type PatchConfig struct {
-	DistToColony  float64        // Distance to the colony [m].
+	// Distance to the colony [m].
+	DistToColony float64
+	// Configuration for patches with constant resources.
 	ConstantPatch *ConstantPatch `json:",omitempty"`
+	// Configuration for patches with simple seasonal resource dynamics.
 	SeasonalPatch *SeasonalPatch `json:",omitempty"`
+	// Configuration for patches with scripted/arbitrary resource dynamics.
 	ScriptedPatch *ScriptedPatch `json:",omitempty"`
 }
 
+// ConstantPatch configuration for patches with constant resources.
+//
+// Used in [PatchConfig], not used as a component directly.
 type ConstantPatch struct {
 	Nectar               float64 // Maximum of available nectar [L].
 	Pollen               float64 // Maximum of available pollen [kg].
@@ -17,6 +26,9 @@ type ConstantPatch struct {
 	DetectionProbability float64 // Detection probability, e.g. from BeeScout.
 }
 
+// SeasonalPatch configuration for patches with simple seasonal resource dynamics.
+//
+// Used in [PatchConfig], not used as a component directly.
 type SeasonalPatch struct {
 	SeasonShift int     // Shift of the season [d]
 	MaxNectar   float64 // Maximum of available nectar [L].
@@ -26,6 +38,9 @@ type SeasonalPatch struct {
 	DetectionProbability float64 // Detection probability, e.g. from BeeScout.
 }
 
+// ScriptedPatch configuration for patches with scripted/arbitrary resource dynamics.
+//
+// Used in [PatchConfig], not used as a component directly.
 type ScriptedPatch struct {
 	Nectar               [][2]float64 // Maximum of available nectar [L].
 	Pollen               [][2]float64 // Maximum of available pollen [kg].

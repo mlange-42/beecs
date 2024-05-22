@@ -6,6 +6,10 @@ import (
 	"github.com/mlange-42/beecs/enum/interp"
 )
 
+// Interpolate the given data using an [interp.Interpolation].
+//
+// In each data row, the first entry is time/x, the second entry is y.
+// Data must be in ascending x order.
 func Interpolate(data [][2]float64, day float64, inter interp.Interpolation) float64 {
 	if inter == interp.Step {
 		return InterpolateStep(data, day)
@@ -13,6 +17,10 @@ func Interpolate(data [][2]float64, day float64, inter interp.Interpolation) flo
 	return InterpolateLinear(data, day)
 }
 
+// InterpolateLinear interpolates the given data using linear interpolation.
+//
+// In each data row, the first entry is time/x, the second entry is y.
+// Data must be in ascending x order.
 func InterpolateLinear(data [][2]float64, day float64) float64 {
 	dpy := 365.0
 	last := len(data) - 1
@@ -46,6 +54,10 @@ func InterpolateLinear(data [][2]float64, day float64) float64 {
 	panic(fmt.Sprintf("unable to do linear interpolation - code should not be reachable\n%v at %f", data, day))
 }
 
+// InterpolateStep interpolates the given data using step-wise interpolation.
+//
+// In each data row, the first entry is time/x, the second entry is y.
+// Data must be in ascending x order.
 func InterpolateStep(data [][2]float64, day float64) float64 {
 	if day < data[0][0] {
 		return data[len(data)-1][1]

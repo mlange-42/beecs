@@ -2,6 +2,7 @@ package util
 
 import "math"
 
+// Season from HoPoMo. Inverted using y=1-x.
 func Season(t int64) float64 {
 	d := float64(t % 365)
 	x1, x2, x3, x4, x5 := 385.0, 25.0, 36.0, 155.0, 30.0

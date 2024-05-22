@@ -8,10 +8,10 @@ import (
 	"github.com/mlange-42/beecs/util"
 )
 
-// ReplenishPatches replenishes flower patches to their current maximum nectar and pollen.
+// ReplenishPatches resets and replenishes flower patches to their current maximum nectar and pollen.
 type ReplenishPatches struct {
 	time   *resource.Tick
-	filter generic.Filter2[comp.PatchProperties, comp.Resource]
+	filter generic.Filter3[comp.PatchProperties, comp.Resource, comp.Visits]
 
 	constantFilter generic.Filter2[comp.PatchProperties, comp.ConstantPatch]
 	seasonalFilter generic.Filter2[comp.PatchProperties, comp.SeasonalPatch]
@@ -20,7 +20,7 @@ type ReplenishPatches struct {
 
 func (s *ReplenishPatches) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
-	s.filter = *generic.NewFilter2[comp.PatchProperties, comp.Resource]()
+	s.filter = *generic.NewFilter3[comp.PatchProperties, comp.Resource, comp.Visits]()
 
 	s.constantFilter = *generic.NewFilter2[comp.PatchProperties, comp.ConstantPatch]()
 	s.seasonalFilter = *generic.NewFilter2[comp.PatchProperties, comp.SeasonalPatch]()
@@ -66,13 +66,16 @@ func (s *ReplenishPatches) Update(w *ecs.World) {
 
 	query := s.filter.Query(w)
 	for query.Next() {
-		conf, res := query.Get()
+		conf, res, visits := query.Get()
 
 		res.MaxNectar = conf.MaxNectar * 1000 * 1000
 		res.MaxPollen = conf.MaxPollen * 1000
 
 		res.Nectar = res.MaxNectar
 		res.Pollen = res.MaxPollen
+
+		visits.Nectar = 0
+		visits.Pollen = 0
 	}
 }
 

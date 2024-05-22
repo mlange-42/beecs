@@ -78,6 +78,16 @@ func main() {
 		File:     "out/pollen.csv",
 	})
 
+	// Add a CSV outputs for patch nectar and pollen visits.
+	m.AddSystem(&reporter.CSV{
+		Observer: &obs.NectarVisits{},
+		File:     "out/nectar-visits.csv",
+	})
+	m.AddSystem(&reporter.CSV{
+		Observer: &obs.PollenVisits{},
+		File:     "out/pollen-visits.csv",
+	})
+
 	// Run the model.
 	m.Run()
 }

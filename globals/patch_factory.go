@@ -10,10 +10,11 @@ import (
 
 // PatchFactory is a helper resource for creating flower patch entities.
 type PatchFactory struct {
-	builder generic.Map8[
+	builder generic.Map9[
 		comp.PatchProperties, comp.Coords,
 		comp.PatchDistance, comp.Trip, comp.HandlingTime,
-		comp.Resource, comp.Mortality, comp.Dance]
+		comp.Resource, comp.Mortality, comp.Dance,
+		comp.Visits]
 
 	constantPatchMapper generic.Map1[comp.ConstantPatch]
 	seasonalPatchMapper generic.Map1[comp.SeasonalPatch]
@@ -23,10 +24,11 @@ type PatchFactory struct {
 // NewPatchFactory creates a new PatchFactory
 func NewPatchFactory(world *ecs.World) PatchFactory {
 	return PatchFactory{
-		builder: generic.NewMap8[
+		builder: generic.NewMap9[
 			comp.PatchProperties, comp.Coords,
 			comp.PatchDistance, comp.Trip, comp.HandlingTime,
-			comp.Resource, comp.Mortality, comp.Dance](world),
+			comp.Resource, comp.Mortality, comp.Dance,
+			comp.Visits](world),
 
 		constantPatchMapper: generic.NewMap1[comp.ConstantPatch](world),
 		seasonalPatchMapper: generic.NewMap1[comp.SeasonalPatch](world),
@@ -55,7 +57,7 @@ func (f *PatchFactory) createPatch(conf comp.PatchConfig, coords comp.Coords) {
 	e := f.builder.NewWith(
 		&comp.PatchProperties{}, &coords,
 		&comp.PatchDistance{DistToColony: conf.DistToColony}, &comp.Trip{}, &comp.HandlingTime{},
-		&comp.Resource{}, &comp.Mortality{}, &comp.Dance{})
+		&comp.Resource{}, &comp.Mortality{}, &comp.Dance{}, &comp.Visits{})
 
 	anyPatch := false
 

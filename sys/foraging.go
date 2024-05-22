@@ -37,6 +37,7 @@ type Foraging struct {
 	dances   []ecs.Entity
 
 	patchResourceMapper  generic.Map1[comp.Resource]
+	patchVisitsMapper    generic.Map2[comp.Resource, comp.Visits]
 	patchDanceMapper     generic.Map2[comp.Resource, comp.Dance]
 	patchTripMapper      generic.Map1[comp.Trip]
 	patchMortalityMapper generic.Map1[comp.Mortality]
@@ -75,6 +76,7 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.patchUpdateFilter = *generic.NewFilter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]()
 
 	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
+	s.patchVisitsMapper = generic.NewMap2[comp.Resource, comp.Visits](w)
 	s.patchDanceMapper = generic.NewMap2[comp.Resource, comp.Dance](w)
 	s.patchTripMapper = generic.NewMap1[comp.Trip](w)
 	s.patchMortalityMapper = generic.NewMap1[comp.Mortality](w)
@@ -308,8 +310,9 @@ func (s *Foraging) searching(w *ecs.World) {
 				if selected.HasPollen {
 					patch.Pollen = selected.Patch
 					act.Current = activity.BringPollen
-					res := s.patchResourceMapper.Get(selected.Patch)
+					res, vis := s.patchVisitsMapper.Get(selected.Patch)
 					res.Pollen -= s.foragerParams.PollenLoad * sz
+					vis.Pollen += s.foragerParams.SquadronSize
 				} else {
 					patch.Pollen = ecs.Entity{}
 				}
@@ -317,8 +320,9 @@ func (s *Foraging) searching(w *ecs.World) {
 				if selected.HasNectar {
 					patch.Nectar = selected.Patch
 					act.Current = activity.BringNectar
-					res := s.patchResourceMapper.Get(selected.Patch)
+					res, vis := s.patchVisitsMapper.Get(selected.Patch)
 					res.Nectar -= s.foragerParams.NectarLoad * sz
+					vis.Nectar += s.foragerParams.SquadronSize
 				} else {
 					patch.Nectar = ecs.Entity{}
 				}
@@ -332,9 +336,10 @@ func (s *Foraging) searching(w *ecs.World) {
 		if !act.PollenForager && !patch.Nectar.IsZero() {
 			success := false
 			if s.rng.Float64() < s.danceParams.FindProbability {
-				res := s.patchResourceMapper.Get(patch.Nectar)
+				res, vis := s.patchVisitsMapper.Get(patch.Nectar)
 				if res.Nectar >= s.foragerParams.NectarLoad*sz {
 					res.Nectar -= s.foragerParams.NectarLoad * sz
+					vis.Nectar += s.foragerParams.SquadronSize
 					act.Current = activity.BringNectar
 					success = true
 				}
@@ -348,9 +353,10 @@ func (s *Foraging) searching(w *ecs.World) {
 		if act.PollenForager && !patch.Pollen.IsZero() {
 			success := false
 			if s.rng.Float64() < s.danceParams.FindProbability {
-				res := s.patchResourceMapper.Get(patch.Pollen)
+				res, vis := s.patchVisitsMapper.Get(patch.Pollen)
 				if res.Pollen >= s.foragerParams.PollenLoad*sz {
 					res.Pollen -= s.foragerParams.PollenLoad * sz
+					vis.Pollen += s.foragerParams.SquadronSize
 					act.Current = activity.BringPollen
 					success = true
 				}
@@ -376,10 +382,11 @@ func (s *Foraging) collecting(w *ecs.World) {
 				if patch.Pollen.IsZero() {
 					act.Current = activity.Resting
 				} else {
-					res := s.patchResourceMapper.Get(patch.Pollen)
+					res, vis := s.patchVisitsMapper.Get(patch.Pollen)
 					if res.Pollen >= s.foragerParams.PollenLoad*sz {
 						act.Current = activity.BringPollen
 						res.Pollen -= s.foragerParams.PollenLoad * sz
+						vis.Pollen += s.foragerParams.SquadronSize
 					} else {
 						act.Current = activity.Searching
 						patch.Pollen = ecs.Entity{}
@@ -389,10 +396,11 @@ func (s *Foraging) collecting(w *ecs.World) {
 				if patch.Nectar.IsZero() {
 					act.Current = activity.Resting
 				} else {
-					res := s.patchResourceMapper.Get(patch.Nectar)
+					res, vis := s.patchVisitsMapper.Get(patch.Nectar)
 					if res.Nectar >= s.foragerParams.NectarLoad*sz {
 						act.Current = activity.BringNectar
 						res.Nectar -= s.foragerParams.NectarLoad * sz
+						vis.Nectar += s.foragerParams.SquadronSize
 					} else {
 						act.Current = activity.Searching
 						patch.Nectar = ecs.Entity{}

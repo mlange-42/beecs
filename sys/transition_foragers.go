@@ -7,6 +7,8 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// TransitionForagers transitions all in-hive bees of age equal or above [globals.AgeFirstForaging.Aff]
+// to forager squadrons.
 type TransitionForagers struct {
 	time    *resource.Tick
 	params  *params.Foragers

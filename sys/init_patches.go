@@ -10,6 +10,8 @@ import (
 	"github.com/mlange-42/beecs/util"
 )
 
+// InitPatchesList initializes flower patches based on the information
+// in [params.InitialPatches].
 type InitPatchesList struct{}
 
 func (s *InitPatchesList) Initialize(w *ecs.World) {

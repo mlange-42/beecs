@@ -8,6 +8,8 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// HoneyConsumption calculates the daily honey consumption
+// and removes it from the honey store in [globals.Stores].
 type HoneyConsumption struct {
 	needs        *params.HoneyNeeds
 	workerDev    *params.WorkerDevelopment

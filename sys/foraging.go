@@ -15,6 +15,8 @@ import (
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
+// Foraging performs the complete foraging process of each day.
+// It potentially performs multiple foraging rounds per day.
 type Foraging struct {
 	rng *rand.Rand
 

@@ -9,6 +9,10 @@ import (
 	"golang.org/x/exp/rand"
 )
 
+// MortalityForagers applies worker mortality, including
+//   - background mortality from [params.WorkerMortality.InHive]
+//   - removal of squadrons reaching [params.WorkerDevelopment.MaxLifespan]
+//   - removal of squadrons exceeding [params.WorkerMortality.MaxMilage]
 type MortalityForagers struct {
 	rng           *resource.Rand
 	time          *resource.Tick

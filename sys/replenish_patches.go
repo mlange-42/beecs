@@ -8,6 +8,7 @@ import (
 	"github.com/mlange-42/beecs/util"
 )
 
+// ReplenishPatches replenishes flower patches to their current maximum nectar and pollen.
 type ReplenishPatches struct {
 	time   *resource.Tick
 	filter generic.Filter2[comp.PatchProperties, comp.Resource]

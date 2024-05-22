@@ -8,6 +8,8 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// CountPopulation counts the population per developmental stage.
+// Results are written to a [globals.PopulationStats] resource.
 type CountPopulation struct {
 	params *params.Foragers
 

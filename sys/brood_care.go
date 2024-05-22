@@ -8,6 +8,7 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// BroodCare calculates and applies brood mortality based on food or nursing shortage.
 type BroodCare struct {
 	nurseParams *params.Nursing
 

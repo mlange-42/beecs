@@ -10,6 +10,8 @@ import (
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
+// MortalityCohorts applies background mortality to all cohort-based development stages
+// (i.e. all except foragers).
 type MortalityCohorts struct {
 	workerMort *params.WorkerMortality
 	droneMort  *params.DroneMortality

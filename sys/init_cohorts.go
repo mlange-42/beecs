@@ -6,6 +6,8 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// InitCohorts initializes and adds the resources
+// [globals.Eggs], [globals.Larvae], [globals.Pupae] and [globals.InHive].
 type InitCohorts struct {
 	eggs   globals.Eggs
 	larvae globals.Larvae

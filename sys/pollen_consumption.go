@@ -9,6 +9,8 @@ import (
 	"github.com/mlange-42/beecs/util"
 )
 
+// PollenConsumption calculates the daily pollen consumption
+// and removes it from the pollen store in [globals.Stores].
 type PollenConsumption struct {
 	needs       *params.PollenNeeds
 	storeParams *params.Stores

@@ -15,13 +15,13 @@ func main() {
 	// Use randomized builtin weather data.
 	p.ForagingPeriod = params.ForagingPeriod{
 		Files: []string{
-			"data/foraging-period/berlin2000.txt",
-			"data/foraging-period/berlin2001.txt",
-			"data/foraging-period/berlin2002.txt",
-			"data/foraging-period/berlin2003.txt",
-			"data/foraging-period/berlin2004.txt",
-			"data/foraging-period/berlin2005.txt",
-			"data/foraging-period/berlin2006.txt",
+			"foraging-period/berlin2000.txt",
+			"foraging-period/berlin2001.txt",
+			"foraging-period/berlin2002.txt",
+			"foraging-period/berlin2003.txt",
+			"foraging-period/berlin2004.txt",
+			"foraging-period/berlin2005.txt",
+			"foraging-period/berlin2006.txt",
 		},
 		Builtin:     true,
 		RandomYears: true,

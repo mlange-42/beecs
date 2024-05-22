@@ -5,6 +5,7 @@ import (
 	"github.com/mlange-42/arche/ecs"
 )
 
+// Pause the simulation at the given simulation step.
 type Pause struct {
 	sys   *model.Systems
 	Steps int64

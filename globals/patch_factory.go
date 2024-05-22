@@ -6,6 +6,7 @@ import (
 	"github.com/mlange-42/beecs/comp"
 )
 
+// PatchFactory is a helper resource for creating flower patch entities.
 type PatchFactory struct {
 	builder generic.Map7[
 		comp.PatchProperties,
@@ -17,6 +18,7 @@ type PatchFactory struct {
 	scriptedPatchMapper generic.Map1[comp.ScriptedPatch]
 }
 
+// NewPatchFactory creates a new PatchFactory
 func NewPatchFactory(world *ecs.World) PatchFactory {
 	return PatchFactory{
 		builder: generic.NewMap7[

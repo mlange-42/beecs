@@ -6,6 +6,8 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// InitStore initializes and adds [globals.Stores]
+// according to the settings in [params.InitialStores].
 type InitStore struct{}
 
 func (s *InitStore) Initialize(w *ecs.World) {

@@ -10,6 +10,8 @@ import (
 	"github.com/mlange-42/beecs/util"
 )
 
+// EggLaying produces new worker and drone eggs,
+// based on seasonal egg laying capacity and available nurse bees.
 type EggLaying struct {
 	time        *resource.Tick
 	eggs        *globals.Eggs

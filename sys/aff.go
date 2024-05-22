@@ -7,6 +7,8 @@ import (
 	"github.com/mlange-42/beecs/util"
 )
 
+// CalcAff calculates the age of first foraging,
+// based on population structure and stores of the hive.
 type CalcAff struct {
 	affParams    *params.AgeFirstForaging
 	energyParams *params.EnergyContent

@@ -7,6 +7,8 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// InitPopulation creates initial forager squadrons,
+// based on the settings in [params.InitialPopulation].
 type InitPopulation struct{}
 
 func (s *InitPopulation) Initialize(w *ecs.World) {

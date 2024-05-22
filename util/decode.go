@@ -9,6 +9,7 @@ import (
 	"github.com/mlange-42/beecs/comp"
 )
 
+// PatchesFromFile reads patch configurations from a JSON file.
 func PatchesFromFile(path string) ([]comp.PatchConfig, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -27,6 +28,7 @@ func PatchesFromFile(path string) ([]comp.PatchConfig, error) {
 	return patches, nil
 }
 
+// FloatArrayFromFile reads a slice of floats from a space-separated file.
 func FloatArrayFromFile(f fs.FS, path string) ([]float64, error) {
 	content, err := fs.ReadFile(f, path)
 	if err != nil {

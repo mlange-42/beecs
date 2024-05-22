@@ -20,7 +20,7 @@ func MaxInt(a, b int) int {
 	return b
 }
 
-// Clamp clamps a numeric value to the range low...high, inclusively.
+// Clamp a numeric value to the range low...high, inclusively.
 func Clamp[T numbers](v, low, high T) T {
 	if v < low {
 		return low

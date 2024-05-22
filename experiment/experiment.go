@@ -14,7 +14,8 @@ type Experiment struct {
 	runsPerSet    int
 }
 
-// New creates a new Experiment with the given parameter variations and PRNG instance.
+// New creates a new Experiment with the given parameter variations,
+// PRNG instance and number of runs per parameter set.
 func New(vars []ParameterVariation, rng *rand.Rand, runs int) (Experiment, error) {
 	pars := []string{}
 	f := []ParameterFunction{}

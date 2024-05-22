@@ -2,6 +2,7 @@ package params
 
 import "github.com/mlange-42/beecs/comp"
 
+// Default returns the complete default parameter set of BEEHAVE.
 func Default() DefaultParams {
 	return DefaultParams{
 		Termination: Termination{
@@ -42,7 +43,7 @@ func Default() DefaultParams {
 		},
 		Foragers: Foragers{
 			FlightVelocity: 6.5,      // [m/s]
-			FlightCostPerM: 0.000006, //[kJ/m]
+			FlightCostPerM: 0.000006, // [kJ/m]
 			NectarLoad:     50,       // [muL]
 			PollenLoad:     0.015,    // [g]
 			MaxKmPerDay:    7299,     // ???
@@ -62,7 +63,7 @@ func Default() DefaultParams {
 			AbandonPollenPerSec: 0.00002,
 		},
 		ForagingPeriod: ForagingPeriod{
-			Files:       []string{"data/foraging-period/berlin2000.txt"},
+			Files:       []string{"foraging-period/berlin2000.txt"},
 			Builtin:     true,
 			RandomYears: false,
 		},

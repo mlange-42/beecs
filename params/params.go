@@ -9,11 +9,17 @@ import (
 	"golang.org/x/exp/rand"
 )
 
+// Params is an interface for parameter sets.
 type Params interface {
+	// Apply the parameters to a world.
 	Apply(world *ecs.World)
+	// FromJSON fills the parameter set with values from a JSON file.
 	FromJSON(path string) error
 }
 
+// DefaultParams contains all default parameters of BEEHAVE.
+//
+// DefaultParams implements [Params].
 type DefaultParams struct {
 	Termination       Termination
 	InitialPatches    InitialPatches
@@ -37,6 +43,10 @@ type DefaultParams struct {
 	RandomSeed        RandomSeed
 }
 
+// FromJSON fills the parameter set with values from a JSON file.
+//
+// Only values present in the file are overwritten,
+// all other values remain unchanged.
 func (p *DefaultParams) FromJSON(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
@@ -49,6 +59,7 @@ func (p *DefaultParams) FromJSON(path string) error {
 	return decoder.Decode(p)
 }
 
+// Apply the parameters to a world by adding them as resources.
 func (p *DefaultParams) Apply(world *ecs.World) {
 	// Random seed
 	seed := p.RandomSeed

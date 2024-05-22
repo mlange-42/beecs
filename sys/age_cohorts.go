@@ -5,6 +5,9 @@ import (
 	"github.com/mlange-42/beecs/globals"
 )
 
+// AgeCohorts moves all cohort-based age classes to the next day's cohort.
+// It also handles transition from eggs to larvae, larvae to pupae and pupae to in-hive bees.
+// It does not handle transition from in-hive bees to foragers.
 type AgeCohorts struct {
 	eggs   *globals.Eggs
 	larvae *globals.Larvae

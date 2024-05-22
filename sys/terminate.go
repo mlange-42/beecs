@@ -6,6 +6,8 @@ import (
 	"github.com/mlange-42/beecs/params"
 )
 
+// FixedTermination terminates the simulation after the number of ticks
+// given in [params.Termination.MaxTicks].
 type FixedTermination struct {
 	termRes    *resource.Termination
 	termParams *params.Termination

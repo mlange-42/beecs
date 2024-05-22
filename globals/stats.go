@@ -1,5 +1,9 @@
 package globals
 
+// PopulationStats contains summarized population numbers for development stages.
+//
+// PopulationStats is updated at the end of each simulation step.
+// Thus, it contains stats of the previous step.
 type PopulationStats struct {
 	WorkerEggs      int
 	WorkerLarvae    int
@@ -17,6 +21,7 @@ type PopulationStats struct {
 	TotalPopulation int
 }
 
+// Reset all stats to zero.
 func (s *PopulationStats) Reset() {
 	s.WorkerEggs = 0
 	s.WorkerLarvae = 0
@@ -28,12 +33,18 @@ func (s *PopulationStats) Reset() {
 	s.DroneLarvae = 0
 	s.DronePupae = 0
 	s.DronesInHive = 0
+
+	s.TotalBrood = 0
+	s.TotalAdults = 0
+	s.TotalPopulation = 0
 }
 
+// ConsumptionStats contains statistics on daily consumption.
 type ConsumptionStats struct {
-	HoneyDaily float64 // [mg]
+	HoneyDaily float64 // Today's honey consumption [mg].
 }
 
+// Reset all stats to zero.
 func (s *ConsumptionStats) Reset() {
 	s.HoneyDaily = 0
 }

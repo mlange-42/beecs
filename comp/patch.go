@@ -108,3 +108,9 @@ type Coords struct {
 	X float64
 	Y float64
 }
+
+// Visits component holding daily forager visits.
+type Visits struct {
+	Nectar int // Nectar visits today.
+	Pollen int // Pollen visits today.
+}

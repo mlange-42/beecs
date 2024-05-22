@@ -7,6 +7,7 @@
 - Adds a model initializer for using custom systems (#53)
 - Foraging period files can contain multiple years of data (#60)
 - Patches have coordinates for visualization; calculated if not provided (#65)
+- Daily patch visits for pollen and nectar are counted, adds respective observers (#66)
 
 ### Bugfixes
 

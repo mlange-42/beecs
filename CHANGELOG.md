@@ -13,6 +13,10 @@
 - Copy parameters when applying them to a model (#55)
 - Pre-calculate experiment parameter variations for reproducible randomization (#56)
 
+### Documentation
+
+- All exported types and functions are now documented (#64)
+
 ### Other
 
 - Random seed is written to ECS resource for analysis (#43, #44, #45)

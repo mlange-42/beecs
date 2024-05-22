@@ -63,7 +63,7 @@ func Default() DefaultParams {
 			AbandonPollenPerSec: 0.00002,
 		},
 		ForagingPeriod: ForagingPeriod{
-			Files:       []string{"data/foraging-period/berlin2000.txt"},
+			Files:       []string{"foraging-period/berlin2000.txt"},
 			Builtin:     true,
 			RandomYears: false,
 		},

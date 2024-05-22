@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/beecs"
+	"github.com/mlange-42/beecs/data"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"github.com/mlange-42/beecs/util"
@@ -22,7 +22,7 @@ func (s *InitForagingPeriod) Initialize(w *ecs.World) {
 	ecs.AddResource(w, &s.periodData)
 
 	periodParams := ecs.GetResource[params.ForagingPeriod](w)
-	var fileSys fs.FS = beecs.Data
+	var fileSys fs.FS = data.ForagingPeriod
 	if !periodParams.Builtin {
 		fileSys = os.DirFS(".")
 	}

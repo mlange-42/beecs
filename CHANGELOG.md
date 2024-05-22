@@ -6,6 +6,7 @@
 - Adds support for weather/foraging period from files (#50)
 - Adds a model initializer for using custom systems (#53)
 - Foraging period files can contain multiple years of data (#60)
+- Patches have coordinates for visualization; calculated if not provided (#65)
 
 ### Bugfixes
 

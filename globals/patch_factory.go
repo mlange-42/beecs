@@ -1,6 +1,8 @@
 package globals
 
 import (
+	"math"
+
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"github.com/mlange-42/beecs/comp"
@@ -8,8 +10,8 @@ import (
 
 // PatchFactory is a helper resource for creating flower patch entities.
 type PatchFactory struct {
-	builder generic.Map7[
-		comp.PatchProperties,
+	builder generic.Map8[
+		comp.PatchProperties, comp.Coords,
 		comp.PatchDistance, comp.Trip, comp.HandlingTime,
 		comp.Resource, comp.Mortality, comp.Dance]
 
@@ -21,8 +23,8 @@ type PatchFactory struct {
 // NewPatchFactory creates a new PatchFactory
 func NewPatchFactory(world *ecs.World) PatchFactory {
 	return PatchFactory{
-		builder: generic.NewMap7[
-			comp.PatchProperties,
+		builder: generic.NewMap8[
+			comp.PatchProperties, comp.Coords,
 			comp.PatchDistance, comp.Trip, comp.HandlingTime,
 			comp.Resource, comp.Mortality, comp.Dance](world),
 
@@ -32,9 +34,26 @@ func NewPatchFactory(world *ecs.World) PatchFactory {
 	}
 }
 
-func (f *PatchFactory) CreatePatch(conf comp.PatchConfig) ecs.Entity {
+func (f *PatchFactory) CreatePatches(conf []comp.PatchConfig) {
+	cnt := len(conf)
+	ang := (2 * math.Pi) / float64(cnt)
+	for i, p := range conf {
+		var coords comp.Coords
+		if p.Coords == nil {
+			coords = comp.Coords{
+				X: math.Sin(ang*float64(i)) * p.DistToColony,
+				Y: math.Cos(ang*float64(i)) * p.DistToColony,
+			}
+		} else {
+			coords = *p.Coords
+		}
+		f.createPatch(p, coords)
+	}
+}
+
+func (f *PatchFactory) createPatch(conf comp.PatchConfig, coords comp.Coords) {
 	e := f.builder.NewWith(
-		&comp.PatchProperties{},
+		&comp.PatchProperties{}, &coords,
 		&comp.PatchDistance{DistToColony: conf.DistToColony}, &comp.Trip{}, &comp.HandlingTime{},
 		&comp.Resource{}, &comp.Mortality{}, &comp.Dance{})
 
@@ -64,6 +83,4 @@ func (f *PatchFactory) CreatePatch(conf comp.PatchConfig) ecs.Entity {
 	if !anyPatch {
 		panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch, has none")
 	}
-
-	return e
 }

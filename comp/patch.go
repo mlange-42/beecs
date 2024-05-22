@@ -3,6 +3,7 @@ package comp
 import "github.com/mlange-42/beecs/enum/interp"
 
 // PatchConfig for initialization of flower patches.
+// Not used as a component directly!
 //
 // Exactly one of ConstantPatch, SeasonalPatch and ScriptedPatch must be non-nil.
 type PatchConfig struct {
@@ -14,11 +15,11 @@ type PatchConfig struct {
 	SeasonalPatch *SeasonalPatch `json:",omitempty"`
 	// Configuration for patches with scripted/arbitrary resource dynamics.
 	ScriptedPatch *ScriptedPatch `json:",omitempty"`
+	// Optional coordinates for visualization. Calculated otherwise.
+	Coords *Coords `json:",omitempty"`
 }
 
 // ConstantPatch configuration for patches with constant resources.
-//
-// Used in [PatchConfig], not used as a component directly.
 type ConstantPatch struct {
 	Nectar               float64 // Maximum of available nectar [L].
 	Pollen               float64 // Maximum of available pollen [kg].
@@ -27,8 +28,6 @@ type ConstantPatch struct {
 }
 
 // SeasonalPatch configuration for patches with simple seasonal resource dynamics.
-//
-// Used in [PatchConfig], not used as a component directly.
 type SeasonalPatch struct {
 	SeasonShift int     // Shift of the season [d]
 	MaxNectar   float64 // Maximum of available nectar [L].
@@ -39,8 +38,6 @@ type SeasonalPatch struct {
 }
 
 // ScriptedPatch configuration for patches with scripted/arbitrary resource dynamics.
-//
-// Used in [PatchConfig], not used as a component directly.
 type ScriptedPatch struct {
 	Nectar               [][2]float64 // Maximum of available nectar [L].
 	Pollen               [][2]float64 // Maximum of available pollen [kg].
@@ -104,4 +101,10 @@ type Mortality struct {
 // Holds information on current dance circuits for the flower patch.
 type Dance struct {
 	Circuits float64 // Current number of dance circuits.
+}
+
+// Coords component holding flower patch coordinates for visualization.
+type Coords struct {
+	X float64
+	Y float64
 }

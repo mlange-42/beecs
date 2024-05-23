@@ -21,6 +21,12 @@ func main() {
 		File:     "out/worker-cohorts.csv",
 	})
 
+	// Add a CSV snapshot output system using observer [obs.ForagingStats].
+	m.AddSystem(&reporter.SnapshotCSV{
+		Observer:    &obs.ForagingStats{},
+		FilePattern: "out/foraging-%04d.csv",
+	})
+
 	// Run the model.
 	m.Run()
 }

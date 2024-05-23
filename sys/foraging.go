@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/mlange-42/arche-model/resource"
@@ -27,9 +28,10 @@ type Foraging struct {
 	energyParams       *params.EnergyContent
 	storeParams        *params.Stores
 
-	foragePeriod *globals.ForagingPeriod
-	stores       *globals.Stores
-	pop          *globals.PopulationStats
+	foragePeriod  *globals.ForagingPeriod
+	stores        *globals.Stores
+	popStats      *globals.PopulationStats
+	foragingStats *globals.ForagingStats
 
 	patches  []patchCandidate
 	toRemove []ecs.Entity
@@ -63,7 +65,8 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.energyParams = ecs.GetResource[params.EnergyContent](w)
 	s.storeParams = ecs.GetResource[params.Stores](w)
 
-	s.pop = ecs.GetResource[globals.PopulationStats](w)
+	s.popStats = ecs.GetResource[globals.PopulationStats](w)
+	s.foragingStats = ecs.GetResource[globals.ForagingStats](w)
 	s.foragePeriod = ecs.GetResource[globals.ForagingPeriod](w)
 	s.stores = ecs.GetResource[globals.Stores](w)
 
@@ -91,6 +94,8 @@ func (s *Foraging) Initialize(w *ecs.World) {
 }
 
 func (s *Foraging) Update(w *ecs.World) {
+	s.foragingStats.Reset()
+
 	if s.foragePeriod.SecondsToday <= 0 ||
 		(s.stores.Honey >= 0.95*s.maxHoneyStore && s.stores.Pollen >= s.stores.IdealPollen) {
 		return
@@ -104,6 +109,8 @@ func (s *Foraging) Update(w *ecs.World) {
 
 	hangAroundDuration := s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 	forageProb := s.calcForagingProb()
+
+	// TODO: Lazy winter bees.
 
 	round := 0
 	totalDuration := 0.0
@@ -162,6 +169,7 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 	s.mortality(w)
 	s.dancing(w)
 	s.unloading(w)
+	s.countForagers(w)
 	return
 }
 
@@ -609,6 +617,37 @@ func (s *Foraging) unloading(w *ecs.World) {
 			act.Current = activity.Experienced
 		}
 	}
+}
+
+func (s *Foraging) countForagers(w *ecs.World) {
+	sz := s.foragerParams.SquadronSize
+	round := globals.ForagingRound{}
+
+	query := s.activityFilter.Query(w)
+	for query.Next() {
+		act := query.Get()
+
+		switch act.Current {
+		case activity.Lazy:
+			round.Lazy += sz
+		case activity.Resting:
+			round.Resting += sz
+		case activity.Searching:
+			round.Searching += sz
+		case activity.Recruited:
+			round.Recruited += sz
+		case activity.Experienced:
+			if act.PollenForager {
+				round.Pollen += sz
+			} else {
+				round.Nectar += sz
+			}
+		default:
+			panic(fmt.Sprintf("forager activity %d invalid at the end of a foraging round", act.Current))
+		}
+	}
+
+	s.foragingStats.Rounds = append(s.foragingStats.Rounds, round)
 }
 
 type patchCandidate struct {

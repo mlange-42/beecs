@@ -84,5 +84,8 @@ func initializeModel(p params.Params, m *model.Model) *model.Model {
 	consumptionStats := globals.ConsumptionStats{}
 	ecs.AddResource(&m.World, &consumptionStats)
 
+	foragingStats := globals.ForagingStats{}
+	ecs.AddResource(&m.World, &foragingStats)
+
 	return m
 }

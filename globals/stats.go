@@ -48,3 +48,24 @@ type ConsumptionStats struct {
 func (s *ConsumptionStats) Reset() {
 	s.HoneyDaily = 0
 }
+
+// ForagingStats contains statistics on foraging per foraging round.
+type ForagingStats struct {
+	Rounds []ForagingRound
+}
+
+// Reset all stats.
+func (s *ForagingStats) Reset() {
+	s.Rounds = s.Rounds[:0]
+}
+
+// ForagingRound contains statistics for a single foraging round.
+// Not used as an ECS resource directly!
+type ForagingRound struct {
+	Lazy      int
+	Resting   int
+	Searching int
+	Recruited int
+	Nectar    int
+	Pollen    int
+}

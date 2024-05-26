@@ -3,6 +3,7 @@ package sys
 import (
 	"fmt"
 	"log"
+	"path"
 
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/beecs/comp"
@@ -21,7 +22,9 @@ func (s *InitPatchesList) Initialize(w *ecs.World) {
 
 	allPatches := append([]comp.PatchConfig{}, patches.Patches...)
 	if patches.File != "" {
-		pch, err := util.PatchesFromFile(patches.File)
+		wd := ecs.GetResource[params.WorkingDirectory](w).Path
+		path := path.Join(wd, patches.File)
+		pch, err := util.PatchesFromFile(path)
 		if err != nil {
 			log.Fatal(fmt.Errorf("error reading patches file '%s': %s", patches.File, err.Error()))
 		}

@@ -5,6 +5,9 @@ import "github.com/mlange-42/beecs/comp"
 // Default returns the complete default parameter set of BEEHAVE.
 func Default() DefaultParams {
 	return DefaultParams{
+		WorkingDirectory: WorkingDirectory{
+			Path: ".",
+		},
 		Termination: Termination{
 			MaxTicks: 365,
 		},

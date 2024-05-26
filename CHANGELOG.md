@@ -10,6 +10,7 @@
 - Daily patch visits for pollen and nectar are counted, adds respective observers (#66)
 - Stats for foraging rounds are recorded, adds respective table observer (#67)
 - Move `CustomParams` from beecs-cli to the core module (#68)
+- Adds `util.TickToDate` to convert model ticks to dates without leap years (#70)
 
 ### Bugfixes
 

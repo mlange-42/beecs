@@ -25,6 +25,9 @@ func (e entry) MarshalJSON() ([]byte, error) {
 	return e.Bytes, nil
 }
 
+// CustomParams contains all default parameters of BEEHAVE and a map of additional custom parameter resources.
+//
+// CustomParams implements [Params].
 type CustomParams struct {
 	Parameters DefaultParams
 	Custom     map[reflect.Type]any
@@ -35,6 +38,10 @@ type customParamsJs struct {
 	Custom     map[string]entry
 }
 
+// FromJSON fills the parameter set with values from a JSON file.
+//
+// Only values present in the file are overwritten,
+// all other values remain unchanged.
 func (p *CustomParams) FromJSON(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
@@ -76,6 +83,7 @@ func (p *CustomParams) FromJSON(path string) error {
 	return nil
 }
 
+// ToJSON marshals all parameters to JSON format.
 func (p *CustomParams) ToJSON() ([]byte, error) {
 	par := customParamsJs{
 		Parameters: p.Parameters,
@@ -97,6 +105,7 @@ func (p *CustomParams) ToJSON() ([]byte, error) {
 	return js, nil
 }
 
+// Apply the parameters to a world by adding them as resources.
 func (p *CustomParams) Apply(world *ecs.World) {
 	p.Parameters.Apply(world)
 

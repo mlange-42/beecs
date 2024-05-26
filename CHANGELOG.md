@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/beecs/compare/v0.2.0...main)
+
+### Documentation
+
+- Document package registry (#73)
+
 ## [[v0.2.0]](https://github.com/mlange-42/beecs/compare/v0.1.0...v0.2.0)
 
 ### Features

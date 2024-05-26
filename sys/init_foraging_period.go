@@ -24,7 +24,8 @@ func (s *InitForagingPeriod) Initialize(w *ecs.World) {
 	periodParams := ecs.GetResource[params.ForagingPeriod](w)
 	var fileSys fs.FS = data.ForagingPeriod
 	if !periodParams.Builtin {
-		fileSys = os.DirFS(".")
+		wd := ecs.GetResource[params.WorkingDirectory](w).Path
+		fileSys = os.DirFS(wd)
 	}
 
 	for _, f := range periodParams.Files {

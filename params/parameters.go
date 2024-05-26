@@ -2,6 +2,10 @@ package params
 
 import "github.com/mlange-42/beecs/comp"
 
+type WorkingDirectory struct {
+	Path string
+}
+
 // RandomSeed for the model run.
 type RandomSeed struct {
 	Seed int // The seed. A value <= 0 forces random seeding.

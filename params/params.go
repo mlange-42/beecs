@@ -21,6 +21,7 @@ type Params interface {
 //
 // DefaultParams implements [Params].
 type DefaultParams struct {
+	WorkingDirectory  WorkingDirectory
 	Termination       Termination
 	InitialPatches    InitialPatches
 	Nursing           Nursing
@@ -73,6 +74,7 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 
 	// Resources
 	ecs.AddResource(world, &seed)
+	ecs.AddResource(world, &pCopy.WorkingDirectory)
 	ecs.AddResource(world, &pCopy.Termination)
 	ecs.AddResource(world, &pCopy.WorkerDevelopment)
 	ecs.AddResource(world, &pCopy.DroneDevelopment)

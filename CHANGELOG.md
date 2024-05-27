@@ -2,7 +2,8 @@
 
 ### Features
 
-- Add option to terminate on extinction of all bees (#75)
+- Adds option to terminate on extinction of all bees (#75)
+- Adds observer `Extinction` to report the tick of colony extinction (#76)
 
 ### Documentation
 

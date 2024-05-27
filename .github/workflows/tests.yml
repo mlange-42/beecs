@@ -69,6 +69,7 @@ jobs:
       run: |
         go run ./_examples/csv_output
         go run ./_examples/experiment
+        go run ./_examples/extinction
         go run ./_examples/json_parameters
         go run ./_examples/observer
         go run ./_examples/patches

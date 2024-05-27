@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/beecs/compare/v0.2.0...main)
 
+### Features
+
+- Add option to terminate on extinction of all bees (#75)
+
 ### Documentation
 
 - Document package registry (#73)

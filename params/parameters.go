@@ -13,7 +13,8 @@ type RandomSeed struct {
 
 // Termination criteria.
 type Termination struct {
-	MaxTicks int // Maximum number of ticks to run [d].
+	MaxTicks     int  // Maximum number of ticks to run [d].
+	OnExtinction bool // Whether to terminate when there are no bees anymore.
 }
 
 // AgeFirstForaging (AFF) parameters.

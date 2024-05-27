@@ -1,7 +1,7 @@
 // Re-implementation of the [BEEHAVE] model
 // in [Go] using the [Arche] Entity Component System (ECS).
 //
-// # Most important packages:
+// Most important packages:
 //
 //   - [github.com/mlange-42/beecs/comp] -- Components
 //   - [github.com/mlange-42/beecs/sys] -- Systems / sub-models

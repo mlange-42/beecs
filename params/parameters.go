@@ -13,7 +13,8 @@ type RandomSeed struct {
 
 // Termination criteria.
 type Termination struct {
-	MaxTicks int // Maximum number of ticks to run [d].
+	MaxTicks     int  // Maximum number of ticks to run [d].
+	OnExtinction bool // Whether to terminate when there are no bees anymore.
 }
 
 // AgeFirstForaging (AFF) parameters.
@@ -136,7 +137,7 @@ type PollenNeeds struct {
 type Nursing struct {
 	MaxBroodNurseRatio         float64 // Maximum brood per nurse.
 	ForagerNursingContribution float64 // Contribution fraction of foragers to nursing.
-	MaxEggsPerDay              int     // Maximum eggs layed by a queen per day.
+	MaxEggsPerDay              int     // Maximum eggs laid by a queen per day.
 	DroneEggsProportion        float64 // Proportion of drone eggs.
 	EggNursingLimit            bool    // Whether to limit egg laying by the number of available nurses.
 	MaxBroodCells              int     // Maximum number of brood cells in the hive.

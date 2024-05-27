@@ -52,7 +52,8 @@ func Default() DefaultParams {
 			Path: ".",
 		},
 		Termination: Termination{
-			MaxTicks: 365,
+			MaxTicks:     365,
+			OnExtinction: false,
 		},
 		RandomSeed: RandomSeed{
 			Seed: 0,

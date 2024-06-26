@@ -15,7 +15,7 @@ func main() {
 	// Get the default parameters.
 	p := params.Default()
 	// Read JSON to modify some parameters.
-	err := p.FromJSON("_examples/json_parameters/params.json")
+	err := p.FromJSONFile("_examples/json_parameters/params.json")
 	if err != nil {
 		log.Fatal(err)
 	}

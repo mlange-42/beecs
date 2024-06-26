@@ -9,6 +9,7 @@
 - Adds option to terminate on extinction of all bees (#75)
 - Adds observer `Extinction` to report the tick of colony extinction (#76)
 - Adds `FromJSON([]byte)` for default and custom parameters (#77)
+- Daily foraging period can be provided directly, in addition to via files (#78)
 
 ### Documentation
 

@@ -38,24 +38,32 @@ type customParamsJs struct {
 	Custom     map[string]entry
 }
 
-// FromJSON fills the parameter set with values from a JSON file.
+// FromJSONFile fills the parameter set with values from a JSON file.
 //
 // Only values present in the file are overwritten,
 // all other values remain unchanged.
-func (p *CustomParams) FromJSON(path string) error {
-	file, err := os.Open(path)
+func (p *CustomParams) FromJSONFile(path string) error {
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 
-	decoder := json.NewDecoder(file)
+	return p.FromJSON(content)
+}
+
+// FromJSON fills the parameter set with values from JSON.
+//
+// Only values present in the file are overwritten,
+// all other values remain unchanged.
+func (p *CustomParams) FromJSON(data []byte) error {
+	reader := bytes.NewReader(data)
+	decoder := json.NewDecoder(reader)
 	decoder.DisallowUnknownFields()
 
 	pars := customParamsJs{
 		Parameters: p.Parameters,
 	}
-	err = decoder.Decode(&pars)
+	err := decoder.Decode(&pars)
 	if err != nil {
 		return err
 	}

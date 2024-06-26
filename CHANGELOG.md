@@ -1,9 +1,14 @@
 ## [[unpublished]](https://github.com/mlange-42/beecs/compare/v0.2.0...main)
 
+### Breaking changes
+
+* `FromJSON` for default and custom parameters renamed to `FromJSONFile` (#77)
+
 ### Features
 
 - Adds option to terminate on extinction of all bees (#75)
 - Adds observer `Extinction` to report the tick of colony extinction (#76)
+- Adds `FromJSON([]byte)` for default and custom parameters (#77)
 
 ### Documentation
 

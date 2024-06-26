@@ -1,6 +1,7 @@
 package params
 
 import (
+	"bytes"
 	"encoding/json"
 	"math/rand"
 	"os"
@@ -15,7 +16,9 @@ type Params interface {
 	// Apply the parameters to a world.
 	Apply(world *ecs.World)
 	// FromJSON fills the parameter set with values from a JSON file.
-	FromJSON(path string) error
+	FromJSONFile(path string) error
+	// FromJSON fills the parameter set with values from a JSON file.
+	FromJSON(data []byte) error
 }
 
 // DefaultParams contains all default parameters of BEEHAVE.
@@ -198,18 +201,26 @@ func Default() DefaultParams {
 	}
 }
 
-// FromJSON fills the parameter set with values from a JSON file.
+// unchanged fills the parameter set with values from a JSON file.
 //
 // Only values present in the file are overwritten,
 // all other values remain unchanged.
-func (p *DefaultParams) FromJSON(path string) error {
-	file, err := os.Open(path)
+func (p *DefaultParams) FromJSONFile(path string) error {
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 
-	decoder := json.NewDecoder(file)
+	return p.FromJSON(content)
+}
+
+// FromJSON fills the parameter set with values from JSON.
+//
+// Only values present in the file are overwritten,
+// all other values remain unchanged.
+func (p *DefaultParams) FromJSON(data []byte) error {
+	reader := bytes.NewReader(data)
+	decoder := json.NewDecoder(reader)
 	decoder.DisallowUnknownFields()
 	return decoder.Decode(p)
 }

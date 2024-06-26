@@ -28,6 +28,18 @@ func (s *InitForagingPeriod) Initialize(w *ecs.World) {
 		fileSys = os.DirFS(wd)
 	}
 
+	// fill from data provided directly
+	for _, arr := range periodParams.Years {
+		if len(arr)%365 != 0 {
+			log.Fatal(fmt.Errorf("foraging period entries requires multiple of 365 values, parameters have %d", len(arr)))
+		}
+		years := len(arr) / 365
+		for year := 0; year < years; year++ {
+			s.periodData.Years = append(s.periodData.Years, arr[year*365:(year+1)*365])
+		}
+	}
+
+	// fill from files
 	for _, f := range periodParams.Files {
 		arr, err := util.FloatArrayFromFile(fileSys, f)
 		if err != nil {

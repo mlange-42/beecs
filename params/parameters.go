@@ -175,8 +175,11 @@ type InitialPatches struct {
 }
 
 // ForagingPeriod parameters.
+//
+// Data read from files (field Files) is appended to data provided directly (field Years).
 type ForagingPeriod struct {
-	Files       []string // Files with daily foraging period data to use.
-	Builtin     bool     // Whether the used files are built-in. Use local files otherwise.
-	RandomYears bool     // Whether to randomize years.
+	Years       [][]float64 // Foraging period per day [h] as raw data. Each row must have a whole-numbered multiple of 365 entries.
+	Files       []string    // Files with daily foraging period data to use.
+	Builtin     bool        // Whether the used files are built-in. Use local files otherwise.
+	RandomYears bool        // Whether to randomize years.
 }

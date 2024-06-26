@@ -14,7 +14,8 @@ func main() {
 
 	// Use randomized builtin weather data.
 	p.ForagingPeriod = params.ForagingPeriod{
-		Files: []string{
+		Years: [][]float64{}, // Can be used to provide daily foraging hours directly.
+		Files: []string{ // Alternatively (or additionally), read data from text files.
 			"foraging-period/berlin2000.txt",
 			"foraging-period/berlin2001.txt",
 			"foraging-period/berlin2002.txt",

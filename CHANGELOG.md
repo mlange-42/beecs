@@ -1,3 +1,9 @@
+## [[v0.4.0]](https://github.com/mlange-42/beecs/compare/v0.3.0...v0.4.0)
+
+### Breaking changes
+
+* Renames `DefaultParams.Energy` to `DefaultParams.EnergyContent`, for consistency (#80)
+
 ## [[v0.3.0]](https://github.com/mlange-42/beecs/compare/v0.2.0...v0.3.0)
 
 ### Breaking changes

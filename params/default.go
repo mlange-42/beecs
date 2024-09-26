@@ -43,7 +43,7 @@ type DefaultParams struct {
 	DroneDevelopment  DroneDevelopment
 	InitialPopulation InitialPopulation
 	AgeFirstForaging  AgeFirstForaging
-	Energy            EnergyContent
+	EnergyContent     EnergyContent
 	InitialStores     InitialStores
 	RandomSeed        RandomSeed
 }
@@ -132,7 +132,7 @@ func Default() DefaultParams {
 			PollenDanceFollowers:        2,
 			MaxProportionPollenForagers: 0.8,
 		},
-		Energy: EnergyContent{
+		EnergyContent: EnergyContent{
 			Honey:   12.78,
 			Scurose: 0.00582,
 		},
@@ -251,7 +251,7 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 	ecs.AddResource(world, &pCopy.ForagingPeriod)
 	ecs.AddResource(world, &pCopy.HandlingTime)
 	ecs.AddResource(world, &pCopy.Dance)
-	ecs.AddResource(world, &pCopy.Energy)
+	ecs.AddResource(world, &pCopy.EnergyContent)
 	ecs.AddResource(world, &pCopy.Stores)
 	ecs.AddResource(world, &pCopy.HoneyNeeds)
 	ecs.AddResource(world, &pCopy.PollenNeeds)

@@ -1,3 +1,9 @@
+## [[v0.4.1]](https://github.com/mlange-42/beecs/compare/v0.4.0...v0.4.1)
+
+### Bugfixes
+
+* Fix for proper overwriting of default flower patches when reading from JSON (#81)
+
 ## [[v0.4.0]](https://github.com/mlange-42/beecs/compare/v0.3.0...v0.4.0)
 
 ### Breaking changes

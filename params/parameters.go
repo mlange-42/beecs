@@ -1,6 +1,11 @@
 package params
 
-import "github.com/mlange-42/beecs/comp"
+import (
+	"bytes"
+	"encoding/json"
+
+	"github.com/mlange-42/beecs/comp"
+)
 
 type WorkingDirectory struct {
 	Path string
@@ -172,6 +177,30 @@ type InitialStores struct {
 type InitialPatches struct {
 	Patches []comp.PatchConfig // Initial patches. Optional.
 	File    string             // File to read patches from. Applied after creating Patches.
+}
+
+// initialPatchesHelper is used to unmarshal the InitialPatches struct from JSON,
+// properly overwriting the default patches.
+type initialPatchesHelper struct {
+	Patches []comp.PatchConfig // Initial patches. Optional.
+	File    string             // File to read patches from. Applied after creating Patches.
+}
+
+func (p *InitialPatches) UnmarshalJSON(jsonData []byte) error {
+	helper := initialPatchesHelper{}
+	reader := bytes.NewReader(jsonData)
+	decoder := json.NewDecoder(reader)
+	decoder.DisallowUnknownFields()
+
+	err := decoder.Decode(&helper)
+	if err != nil {
+		return err
+	}
+
+	p.File = helper.File
+	p.Patches = helper.Patches
+
+	return nil
 }
 
 // ForagingPeriod parameters.

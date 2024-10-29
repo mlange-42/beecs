@@ -155,6 +155,7 @@ type Stores struct {
 	IdealPollenStoreDays int     // Number of days the pollen store should ideally last for [d].
 	MinIdealPollenStore  float64 // Minimum pollen store to consider ideal [g].
 	MaxHoneyStoreKg      float64 // Maximum honey store [kg].
+	DecentHoneyPerWorker float64 // Honey needed per worker to consider stores decent [g].
 	ProteinStoreNurse    float64 // Number of days nurse protein stores lasts [d].
 }
 

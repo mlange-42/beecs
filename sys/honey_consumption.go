@@ -15,6 +15,7 @@ type HoneyConsumption struct {
 	workerDev    *params.WorkerDevelopment
 	nurseParams  *params.Nursing
 	energyParams *params.EnergyContent
+	storesParams *params.Stores
 
 	stores *globals.Stores
 	pop    *globals.PopulationStats
@@ -26,6 +27,7 @@ func (s *HoneyConsumption) Initialize(w *ecs.World) {
 	s.workerDev = ecs.GetResource[params.WorkerDevelopment](w)
 	s.nurseParams = ecs.GetResource[params.Nursing](w)
 	s.energyParams = ecs.GetResource[params.EnergyContent](w)
+	s.storesParams = ecs.GetResource[params.Stores](w)
 
 	s.stores = ecs.GetResource[globals.Stores](w)
 	s.pop = ecs.GetResource[globals.PopulationStats](w)
@@ -43,7 +45,7 @@ func (s *HoneyConsumption) Update(w *ecs.World) {
 	consumptionEnergy := 0.001 * consumption * s.energyParams.Honey
 
 	s.stores.Honey = math.Max(s.stores.Honey-consumptionEnergy, 0)
-	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * 1.5 * s.energyParams.Honey
+	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * s.storesParams.DecentHoneyPerWorker * s.energyParams.Honey
 	s.cons.HoneyDaily = consumption
 }
 

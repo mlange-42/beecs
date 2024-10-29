@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/beecs/compare/v0.4.1...main)
+
+### Features
+
+* Make honey amount per worker considered decent a parameter (#82)
+
 ## [[v0.4.1]](https://github.com/mlange-42/beecs/compare/v0.4.0...v0.4.1)
 
 ### Bugfixes

@@ -139,8 +139,9 @@ func Default() DefaultParams {
 		Stores: Stores{
 			IdealPollenStoreDays: 7,
 			MinIdealPollenStore:  250.0,
-			MaxHoneyStoreKg:      50.0,
-			ProteinStoreNurse:    7, // [d]
+			MaxHoneyStoreKg:      50.0, // [kg]
+			DecentHoneyPerWorker: 1.5,  // [g]
+			ProteinStoreNurse:    7,    // [d]
 		},
 		HoneyNeeds: HoneyNeeds{
 			WorkerResting:    11.0,  // [mg/d]

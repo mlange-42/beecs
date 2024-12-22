@@ -1,8 +1,12 @@
-## [[unpublished]](https://github.com/mlange-42/beecs/compare/v0.4.1...main)
+## [[v0.5.0]](https://github.com/mlange-42/beecs/compare/v0.4.1...v0.5.0)
 
 ### Features
 
 * Make honey amount per worker considered decent a parameter (#82)
+
+### Bugfixes
+
+* Upgrade to Arche v0.14.0 to fix potential premature garbage collection of slices and pointers in components (#83)
 
 ## [[v0.4.1]](https://github.com/mlange-42/beecs/compare/v0.4.0...v0.4.1)
 

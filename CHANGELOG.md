@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/beecs/compare/v0.5.0...main)
+
+### Breaking changes
+
+* Renames misspelled parameter `EnergyContent.Scurose` to `Sucrose` (#85)
+
 ## [[v0.5.0]](https://github.com/mlange-42/beecs/compare/v0.4.1...v0.5.0)
 
 ### Features

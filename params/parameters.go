@@ -115,7 +115,7 @@ type DroneMortality struct {
 // EnergyContent parameters.
 type EnergyContent struct {
 	Honey   float64 // Energy content of honey [kJ/g].
-	Scurose float64 // Energy content of sucrose [kJ/micromol].
+	Sucrose float64 // Energy content of sucrose [kJ/micromol].
 }
 
 // HoneyNeeds parameters.

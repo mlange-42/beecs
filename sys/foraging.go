@@ -194,7 +194,7 @@ func (s *Foraging) updatePatches(w *ecs.World) {
 			(s.foragerParams.FlightCostPerM * ht.Pollen *
 				s.foragerParams.FlightVelocity * s.forageParams.EnergyOnFlower) // [kJ] = [m*kJ/m + kJ/m * s * m/s]
 
-		r.EnergyEfficiency = (conf.NectarConcentration*s.foragerParams.NectarLoad*s.energyParams.Scurose - trip.CostNectar) / trip.CostNectar
+		r.EnergyEfficiency = (conf.NectarConcentration*s.foragerParams.NectarLoad*s.energyParams.Sucrose - trip.CostNectar) / trip.CostNectar
 
 		trip.DurationNectar = 2*dist.DistToColony/s.foragerParams.FlightVelocity + ht.Nectar
 		trip.DurationPollen = 2*dist.DistToColony/s.foragerParams.FlightVelocity + ht.Pollen
@@ -419,7 +419,7 @@ func (s *Foraging) collecting(w *ecs.World) {
 
 		if act.Current == activity.BringNectar {
 			conf, trip := s.patchConfigMapper.Get(patch.Nectar)
-			load.Energy = conf.NectarConcentration * s.foragerParams.NectarLoad * s.energyParams.Scurose
+			load.Energy = conf.NectarConcentration * s.foragerParams.NectarLoad * s.energyParams.Sucrose
 			dist := trip.CostNectar / (s.foragerParams.FlightCostPerM * 1000)
 			milage.Today += float32(dist)
 			milage.Total += float32(dist)

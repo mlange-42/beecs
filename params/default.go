@@ -134,7 +134,7 @@ func Default() DefaultParams {
 		},
 		EnergyContent: EnergyContent{
 			Honey:   12.78,
-			Scurose: 0.00582,
+			Sucrose: 0.00582,
 		},
 		Stores: Stores{
 			IdealPollenStoreDays: 7,

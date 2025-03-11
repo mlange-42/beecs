@@ -1,8 +1,7 @@
 package sys
 
 import (
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
@@ -19,7 +18,7 @@ type CountPopulation struct {
 	inHive *globals.InHive
 	stats  *globals.PopulationStats
 
-	foragersFilter *generic.Filter0
+	foragersFilter *ecs.Filter0
 }
 
 func (s *CountPopulation) Initialize(w *ecs.World) {
@@ -31,7 +30,7 @@ func (s *CountPopulation) Initialize(w *ecs.World) {
 	s.inHive = ecs.GetResource[globals.InHive](w)
 	s.stats = ecs.GetResource[globals.PopulationStats](w)
 
-	s.foragersFilter = generic.NewFilter0().With(generic.T[comp.Age]())
+	s.foragersFilter = ecs.NewFilter0(w).With(ecs.C[comp.Age]())
 
 	s.count(w)
 }
@@ -55,7 +54,7 @@ func (s *CountPopulation) count(w *ecs.World) {
 	s.stats.DronePupae = countCohort(s.pupae.Drones)
 	s.stats.DronesInHive = countCohort(s.inHive.Drones)
 
-	query := s.foragersFilter.Query(w)
+	query := s.foragersFilter.Query()
 	s.stats.WorkersForagers = query.Count() * s.params.SquadronSize
 	query.Close()
 

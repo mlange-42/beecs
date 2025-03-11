@@ -3,7 +3,7 @@ package sys
 import (
 	"testing"
 
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/params"
 	"github.com/stretchr/testify/assert"
 )

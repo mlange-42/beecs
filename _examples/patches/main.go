@@ -2,7 +2,7 @@
 package main
 
 import (
-	"github.com/mlange-42/arche-model/reporter"
+	"github.com/mlange-42/ark-tools/reporter"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/enum/interp"
 	"github.com/mlange-42/beecs/model"

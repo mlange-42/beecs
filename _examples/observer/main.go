@@ -2,8 +2,8 @@
 package main
 
 import (
-	"github.com/mlange-42/arche-model/reporter"
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark-tools/reporter"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/params"

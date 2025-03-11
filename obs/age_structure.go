@@ -3,9 +3,8 @@ package obs
 import (
 	"math"
 
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
@@ -27,7 +26,7 @@ type AgeStructure struct {
 	params *params.Foragers
 
 	data   [][]float64
-	filter generic.Filter1[comp.Age]
+	filter ecs.Filter1[comp.Age]
 }
 
 func (o *AgeStructure) Initialize(w *ecs.World) {
@@ -39,7 +38,7 @@ func (o *AgeStructure) Initialize(w *ecs.World) {
 	o.time = ecs.GetResource[resource.Tick](w)
 	o.params = ecs.GetResource[params.Foragers](w)
 
-	o.filter = *generic.NewFilter1[comp.Age]()
+	o.filter = *ecs.NewFilter1[comp.Age](w)
 
 	maxAge := ecs.GetResource[params.WorkerDevelopment](w).MaxLifespan
 	ln := len(o.eggs.Workers) + len(o.larvae.Workers) + len(o.pupae.Workers) + maxAge + 1
@@ -93,7 +92,7 @@ func (o *AgeStructure) Values(w *ecs.World) [][]float64 {
 		o.data[i][4] = math.NaN()
 	}
 
-	query := o.filter.Query(w)
+	query := o.filter.Query()
 	for query.Next() {
 		a := query.Get()
 		x := offset + int(o.time.Tick) - a.DayOfBirth

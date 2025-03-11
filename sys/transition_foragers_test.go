@@ -3,9 +3,8 @@ package sys
 import (
 	"testing"
 
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
@@ -48,8 +47,8 @@ func TestTransitionForagers(t *testing.T) {
 
 	assert.Equal(t, []int{0, 0, 2025, 0, 0, 0}, init.inHive.Workers)
 
-	filter := *generic.NewFilter1[comp.Milage]()
-	query := filter.Query(&world)
+	filter := *ecs.NewFilter1[comp.Milage](&world)
+	query := filter.Query()
 	assert.Equal(t, 11, query.Count())
 
 	query.Close()

@@ -1,12 +1,12 @@
 module github.com/mlange-42/beecs
 
-go 1.22.0
+go 1.24.0
 
 require (
-	github.com/mlange-42/arche v0.14.0
-	github.com/mlange-42/arche-model v0.9.0
-	github.com/stretchr/testify v1.9.0
-	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa
+	github.com/mlange-42/ark v0.3.1-0.20250311114501-f1a1df3dea57
+	github.com/mlange-42/ark-tools v0.1.2
+	github.com/stretchr/testify v1.10.0
+	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
 	gonum.org/v1/gonum v0.15.0
 )
 

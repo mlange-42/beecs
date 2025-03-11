@@ -1,7 +1,7 @@
 package experiment
 
 import (
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/model"
 	"golang.org/x/exp/rand"
 )

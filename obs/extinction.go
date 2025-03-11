@@ -1,8 +1,8 @@
 package obs
 
 import (
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/globals"
 )
 

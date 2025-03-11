@@ -1,20 +1,20 @@
 package sys
 
 import (
-	"github.com/mlange-42/arche-model/model"
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark-tools/app"
+	"github.com/mlange-42/ark/ecs"
 )
 
 // Pause the simulation at the given simulation step.
 type Pause struct {
-	sys   *model.Systems
+	sys   *app.Systems
 	Steps int64
 	step  int64
 }
 
 // Initialize the system
 func (s *Pause) Initialize(w *ecs.World) {
-	s.sys = ecs.GetResource[model.Systems](w)
+	s.sys = ecs.GetResource[app.Systems](w)
 	s.step = 0
 }
 

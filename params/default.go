@@ -3,11 +3,11 @@ package params
 import (
 	"bytes"
 	"encoding/json"
-	"math/rand"
+	"math/rand/v2"
 	"os"
 
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 )
 
@@ -202,7 +202,7 @@ func Default() DefaultParams {
 	}
 }
 
-// unchanged fills the parameter set with values from a JSON file.
+// FromJSONFile fills the parameter set with values from a JSON file.
 //
 // Only values present in the file are overwritten,
 // all other values remain unchanged.
@@ -231,10 +231,10 @@ func (p *DefaultParams) Apply(world *ecs.World) {
 	// Random seed
 	seed := p.RandomSeed
 	if seed.Seed <= 0 {
-		seed.Seed = int(rand.Int31())
+		seed.Seed = int(rand.Int32())
 	}
 	rng := ecs.GetResource[resource.Rand](world)
-	rng.Seed(uint64(seed.Seed))
+	rng.Source = rand.NewPCG(0, uint64(seed.Seed))
 
 	pCopy := *p
 

@@ -3,9 +3,8 @@ package sys
 import (
 	"testing"
 
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
@@ -58,8 +57,8 @@ func TestMortalityForagers(t *testing.T) {
 
 	mort.Update(&world)
 
-	f := generic.NewFilter1[comp.Milage]()
-	q := f.Query(&world)
+	f := ecs.NewFilter1[comp.Milage](&world)
+	q := f.Query()
 	cnt := q.Count()
 	q.Close()
 
@@ -69,7 +68,7 @@ func TestMortalityForagers(t *testing.T) {
 	time.Tick = 400
 	mort.Update(&world)
 
-	q = f.Query(&world)
+	q = f.Query()
 	cnt = q.Count()
 	q.Close()
 

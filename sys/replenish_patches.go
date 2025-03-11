@@ -1,9 +1,8 @@
 package sys
 
 import (
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/util"
 )
@@ -11,24 +10,24 @@ import (
 // ReplenishPatches resets and replenishes flower patches to their current maximum nectar and pollen.
 type ReplenishPatches struct {
 	time   *resource.Tick
-	filter generic.Filter3[comp.PatchProperties, comp.Resource, comp.Visits]
+	filter ecs.Filter3[comp.PatchProperties, comp.Resource, comp.Visits]
 
-	constantFilter generic.Filter2[comp.PatchProperties, comp.ConstantPatch]
-	seasonalFilter generic.Filter2[comp.PatchProperties, comp.SeasonalPatch]
-	scriptedFilter generic.Filter2[comp.PatchProperties, comp.ScriptedPatch]
+	constantFilter ecs.Filter2[comp.PatchProperties, comp.ConstantPatch]
+	seasonalFilter ecs.Filter2[comp.PatchProperties, comp.SeasonalPatch]
+	scriptedFilter ecs.Filter2[comp.PatchProperties, comp.ScriptedPatch]
 }
 
 func (s *ReplenishPatches) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
-	s.filter = *generic.NewFilter3[comp.PatchProperties, comp.Resource, comp.Visits]()
+	s.filter = *ecs.NewFilter3[comp.PatchProperties, comp.Resource, comp.Visits](w)
 
-	s.constantFilter = *generic.NewFilter2[comp.PatchProperties, comp.ConstantPatch]()
-	s.seasonalFilter = *generic.NewFilter2[comp.PatchProperties, comp.SeasonalPatch]()
-	s.scriptedFilter = *generic.NewFilter2[comp.PatchProperties, comp.ScriptedPatch]()
+	s.constantFilter = *ecs.NewFilter2[comp.PatchProperties, comp.ConstantPatch](w)
+	s.seasonalFilter = *ecs.NewFilter2[comp.PatchProperties, comp.SeasonalPatch](w)
+	s.scriptedFilter = *ecs.NewFilter2[comp.PatchProperties, comp.ScriptedPatch](w)
 }
 
 func (s *ReplenishPatches) Update(w *ecs.World) {
-	constQuery := s.constantFilter.Query(w)
+	constQuery := s.constantFilter.Query()
 	for constQuery.Next() {
 		props, con := constQuery.Get()
 
@@ -38,7 +37,7 @@ func (s *ReplenishPatches) Update(w *ecs.World) {
 		props.NectarConcentration = con.NectarConcentration
 	}
 
-	seasonalQuery := s.seasonalFilter.Query(w)
+	seasonalQuery := s.seasonalFilter.Query()
 	for seasonalQuery.Next() {
 		props, seas := seasonalQuery.Get()
 
@@ -53,7 +52,7 @@ func (s *ReplenishPatches) Update(w *ecs.World) {
 	}
 
 	day := s.time.Tick % 365
-	scriptedQuery := s.scriptedFilter.Query(w)
+	scriptedQuery := s.scriptedFilter.Query()
 	for scriptedQuery.Next() {
 		props, scr := scriptedQuery.Get()
 
@@ -64,7 +63,7 @@ func (s *ReplenishPatches) Update(w *ecs.World) {
 		props.NectarConcentration = util.Interpolate(scr.NectarConcentration, float64(day), scr.Interpolation)
 	}
 
-	query := s.filter.Query(w)
+	query := s.filter.Query()
 	for query.Next() {
 		conf, res, visits := query.Get()
 

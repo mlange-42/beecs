@@ -26,7 +26,7 @@ type AgeStructure struct {
 	params *params.Foragers
 
 	data   [][]float64
-	filter ecs.Filter1[comp.Age]
+	filter *ecs.Filter1[comp.Age]
 }
 
 func (o *AgeStructure) Initialize(w *ecs.World) {
@@ -38,7 +38,7 @@ func (o *AgeStructure) Initialize(w *ecs.World) {
 	o.time = ecs.GetResource[resource.Tick](w)
 	o.params = ecs.GetResource[params.Foragers](w)
 
-	o.filter = *ecs.NewFilter1[comp.Age](w)
+	o.filter = o.filter.New(w)
 
 	maxAge := ecs.GetResource[params.WorkerDevelopment](w).MaxLifespan
 	ln := len(o.eggs.Workers) + len(o.larvae.Workers) + len(o.pupae.Workers) + maxAge + 1

@@ -10,7 +10,7 @@ import (
 
 // ForagerFactory is a helper resource for creating forager squadron entities.
 type ForagerFactory struct {
-	builder ecs.Map5[comp.Activity, comp.KnownPatch, comp.Age, comp.Milage, comp.NectarLoad]
+	builder *ecs.Map5[comp.Activity, comp.KnownPatch, comp.Age, comp.Milage, comp.NectarLoad]
 }
 
 // NewForagerFactory creates a new ForagerFactory

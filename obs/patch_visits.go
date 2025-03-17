@@ -9,14 +9,14 @@ import (
 
 // NectarVisits is a row observer for the number of nectar visits of all patches.
 type NectarVisits struct {
-	patchMapper ecs.Map1[comp.Visits]
+	patchMapper *ecs.Map1[comp.Visits]
 	data        []float64
 	patches     []ecs.Entity
 	header      []string
 }
 
 func (o *NectarVisits) Initialize(w *ecs.World) {
-	o.patchMapper = ecs.NewMap1[comp.Visits](w)
+	o.patchMapper = o.patchMapper.New(w)
 
 	patchFilter := *ecs.NewFilter1[comp.Visits](w)
 	query := patchFilter.Query()
@@ -45,14 +45,14 @@ func (o *NectarVisits) Values(w *ecs.World) []float64 {
 
 // NectarVisits is a row observer for the number of pollen visits of all patches.
 type PollenVisits struct {
-	patchMapper ecs.Map1[comp.Visits]
+	patchMapper *ecs.Map1[comp.Visits]
 	data        []float64
 	patches     []ecs.Entity
 	header      []string
 }
 
 func (o *PollenVisits) Initialize(w *ecs.World) {
-	o.patchMapper = ecs.NewMap1[comp.Visits](w)
+	o.patchMapper = o.patchMapper.New(w)
 
 	patchFilter := *ecs.NewFilter1[comp.Visits](w)
 	query := patchFilter.Query()

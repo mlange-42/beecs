@@ -37,21 +37,21 @@ type Foraging struct {
 	resting  []ecs.Entity
 	dances   []ecs.Entity
 
-	patchResourceMapper  ecs.Map1[comp.Resource]
-	patchVisitsMapper    ecs.Map2[comp.Resource, comp.Visits]
-	patchDanceMapper     ecs.Map2[comp.Resource, comp.Dance]
-	patchTripMapper      ecs.Map1[comp.Trip]
-	patchMortalityMapper ecs.Map1[comp.Mortality]
-	patchConfigMapper    ecs.Map2[comp.PatchProperties, comp.Trip]
-	foragerMapper        ecs.Map2[comp.Activity, comp.KnownPatch]
+	patchResourceMapper  *ecs.Map1[comp.Resource]
+	patchVisitsMapper    *ecs.Map2[comp.Resource, comp.Visits]
+	patchDanceMapper     *ecs.Map2[comp.Resource, comp.Dance]
+	patchTripMapper      *ecs.Map1[comp.Trip]
+	patchMortalityMapper *ecs.Map1[comp.Mortality]
+	patchConfigMapper    *ecs.Map2[comp.PatchProperties, comp.Trip]
+	foragerMapper        *ecs.Map2[comp.Activity, comp.KnownPatch]
 
-	activityFilter      ecs.Filter1[comp.Activity]
-	loadFilter          ecs.Filter2[comp.Activity, comp.NectarLoad]
-	foragerFilter       ecs.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
-	foragerFilterLoad   ecs.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
-	foragerFilterSimple ecs.Filter2[comp.Activity, comp.KnownPatch]
-	patchFilter         ecs.Filter2[comp.Resource, comp.PatchProperties]
-	patchUpdateFilter   ecs.Filter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
+	activityFilter      *ecs.Filter1[comp.Activity]
+	loadFilter          *ecs.Filter2[comp.Activity, comp.NectarLoad]
+	foragerFilter       *ecs.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	foragerFilterLoad   *ecs.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
+	foragerFilterSimple *ecs.Filter2[comp.Activity, comp.KnownPatch]
+	patchFilter         *ecs.Filter2[comp.Resource, comp.PatchProperties]
+	patchUpdateFilter   *ecs.Filter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
 
 	maxHoneyStore float64
 }
@@ -69,21 +69,21 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.foragePeriod = ecs.GetResource[globals.ForagingPeriod](w)
 	s.stores = ecs.GetResource[globals.Stores](w)
 
-	s.activityFilter = *ecs.NewFilter1[comp.Activity](w)
-	s.loadFilter = *ecs.NewFilter2[comp.Activity, comp.NectarLoad](w)
-	s.foragerFilter = *ecs.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage](w)
-	s.foragerFilterLoad = *ecs.NewFilter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad](w)
-	s.foragerFilterSimple = *ecs.NewFilter2[comp.Activity, comp.KnownPatch](w)
-	s.patchFilter = *ecs.NewFilter2[comp.Resource, comp.PatchProperties](w)
-	s.patchUpdateFilter = *ecs.NewFilter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance](w)
+	s.activityFilter = s.activityFilter.New(w)
+	s.loadFilter = s.loadFilter.New(w)
+	s.foragerFilter = s.foragerFilter.New(w)
+	s.foragerFilterLoad = s.foragerFilterLoad.New(w)
+	s.foragerFilterSimple = s.foragerFilterSimple.New(w)
+	s.patchFilter = s.patchFilter.New(w)
+	s.patchUpdateFilter = s.patchUpdateFilter.New(w)
 
-	s.patchResourceMapper = ecs.NewMap1[comp.Resource](w)
-	s.patchVisitsMapper = ecs.NewMap2[comp.Resource, comp.Visits](w)
-	s.patchDanceMapper = ecs.NewMap2[comp.Resource, comp.Dance](w)
-	s.patchTripMapper = ecs.NewMap1[comp.Trip](w)
-	s.patchMortalityMapper = ecs.NewMap1[comp.Mortality](w)
-	s.patchConfigMapper = ecs.NewMap2[comp.PatchProperties, comp.Trip](w)
-	s.foragerMapper = ecs.NewMap2[comp.Activity, comp.KnownPatch](w)
+	s.patchResourceMapper = s.patchResourceMapper.New(w)
+	s.patchVisitsMapper = s.patchVisitsMapper.New(w)
+	s.patchDanceMapper = s.patchDanceMapper.New(w)
+	s.patchTripMapper = s.patchTripMapper.New(w)
+	s.patchMortalityMapper = s.patchMortalityMapper.New(w)
+	s.patchConfigMapper = s.patchConfigMapper.New(w)
+	s.foragerMapper = s.foragerMapper.New(w)
 
 	storeParams := ecs.GetResource[params.Stores](w)
 	energyParams := ecs.GetResource[params.EnergyContent](w)

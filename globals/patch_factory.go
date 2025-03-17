@@ -9,16 +9,16 @@ import (
 
 // PatchFactory is a helper resource for creating flower patch entities.
 type PatchFactory struct {
-	builder ecs.Map9[
+	builder *ecs.Map9[
 		comp.PatchProperties, comp.Coords,
 		comp.PatchDistance, comp.Trip, comp.HandlingTime,
 		comp.Resource, comp.Mortality, comp.Dance,
 		comp.Visits]
-	initMapper ecs.Map2[comp.Coords, comp.PatchDistance]
+	initMapper *ecs.Map2[comp.Coords, comp.PatchDistance]
 
-	constantPatchMapper ecs.Map1[comp.ConstantPatch]
-	seasonalPatchMapper ecs.Map1[comp.SeasonalPatch]
-	scriptedPatchMapper ecs.Map1[comp.ScriptedPatch]
+	constantPatchMapper *ecs.Map1[comp.ConstantPatch]
+	seasonalPatchMapper *ecs.Map1[comp.SeasonalPatch]
+	scriptedPatchMapper *ecs.Map1[comp.ScriptedPatch]
 }
 
 // NewPatchFactory creates a new PatchFactory

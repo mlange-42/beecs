@@ -3,8 +3,8 @@ module github.com/mlange-42/beecs
 go 1.24.0
 
 require (
-	github.com/mlange-42/ark v0.3.1-0.20250311114501-f1a1df3dea57
-	github.com/mlange-42/ark-tools v0.1.2
+	github.com/mlange-42/ark v0.3.1-0.20250317181027-d6493674ddcf
+	github.com/mlange-42/ark-tools v0.1.3-0.20250317161302-e50332bf35e8
 	github.com/stretchr/testify v1.10.0
 	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394
 	gonum.org/v1/gonum v0.15.0

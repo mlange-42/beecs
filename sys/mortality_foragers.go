@@ -19,7 +19,7 @@ type MortalityForagers struct {
 	workerMort    *params.WorkerMortality
 	workerDev     *params.WorkerDevelopment
 	toRemove      []ecs.Entity
-	foragerFilter ecs.Filter2[comp.Age, comp.Milage]
+	foragerFilter *ecs.Filter2[comp.Age, comp.Milage]
 }
 
 func (s *MortalityForagers) Initialize(w *ecs.World) {
@@ -27,7 +27,7 @@ func (s *MortalityForagers) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
 	s.workerMort = ecs.GetResource[params.WorkerMortality](w)
 	s.workerDev = ecs.GetResource[params.WorkerDevelopment](w)
-	s.foragerFilter = *ecs.NewFilter2[comp.Age, comp.Milage](w)
+	s.foragerFilter = s.foragerFilter.New(w)
 }
 
 func (s *MortalityForagers) Update(w *ecs.World) {

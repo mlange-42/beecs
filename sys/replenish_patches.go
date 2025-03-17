@@ -10,20 +10,20 @@ import (
 // ReplenishPatches resets and replenishes flower patches to their current maximum nectar and pollen.
 type ReplenishPatches struct {
 	time   *resource.Tick
-	filter ecs.Filter3[comp.PatchProperties, comp.Resource, comp.Visits]
+	filter *ecs.Filter3[comp.PatchProperties, comp.Resource, comp.Visits]
 
-	constantFilter ecs.Filter2[comp.PatchProperties, comp.ConstantPatch]
-	seasonalFilter ecs.Filter2[comp.PatchProperties, comp.SeasonalPatch]
-	scriptedFilter ecs.Filter2[comp.PatchProperties, comp.ScriptedPatch]
+	constantFilter *ecs.Filter2[comp.PatchProperties, comp.ConstantPatch]
+	seasonalFilter *ecs.Filter2[comp.PatchProperties, comp.SeasonalPatch]
+	scriptedFilter *ecs.Filter2[comp.PatchProperties, comp.ScriptedPatch]
 }
 
 func (s *ReplenishPatches) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
-	s.filter = *ecs.NewFilter3[comp.PatchProperties, comp.Resource, comp.Visits](w)
+	s.filter = s.filter.New(w)
 
-	s.constantFilter = *ecs.NewFilter2[comp.PatchProperties, comp.ConstantPatch](w)
-	s.seasonalFilter = *ecs.NewFilter2[comp.PatchProperties, comp.SeasonalPatch](w)
-	s.scriptedFilter = *ecs.NewFilter2[comp.PatchProperties, comp.ScriptedPatch](w)
+	s.constantFilter = s.constantFilter.New(w)
+	s.seasonalFilter = s.seasonalFilter.New(w)
+	s.scriptedFilter = s.scriptedFilter.New(w)
 }
 
 func (s *ReplenishPatches) Update(w *ecs.World) {

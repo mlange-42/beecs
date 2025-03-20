@@ -30,11 +30,11 @@ func main() {
 func run(app *app.App, idx int, params params.Params) {
 	app = model.Default(params, app)
 
-	m.AddSystem(&reporter.CSV{
+	app.AddSystem(&reporter.CSV{
 		Observer: &obs.Debug{},
 		File:     fmt.Sprintf("out/beecs-%04d.csv", idx),
 		Sep:      ";",
 	})
 
-	m.Run()
+	app.Run()
 }

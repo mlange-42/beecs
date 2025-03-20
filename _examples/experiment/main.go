@@ -12,6 +12,7 @@ import (
 	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/ark-tools/reporter"
 	"github.com/mlange-42/beecs/experiment"
+	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/params"
 	"golang.org/x/exp/rand"
@@ -60,13 +61,13 @@ func run(app *app.App, exp *experiment.Experiment, idx int) {
 	// Get the default parameters.
 	p := params.Default()
 	// Create a model with the default sub-models.
-	app = app.Default(&p, app)
+	m := model.Default(&p, app)
 
 	// Get parameter values for the current run.
 	values := exp.Values(idx)
 	fmt.Printf("Running set %v\n", values)
 	// Set/overwrite parameters from the experiment.
-	exp.ApplyValues(values, &app.World)
+	exp.ApplyValues(values, &m.World)
 
 	// Add a CSV output system using observer [obs.WorkerCohorts].
 	m.AddSystem(&reporter.CSV{

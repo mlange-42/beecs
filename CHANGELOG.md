@@ -2,35 +2,40 @@
 
 ### Breaking changes
 
-* Renames misspelled parameter `EnergyContent.Scurose` to `Sucrose` (#85)
+- Renames misspelled parameter `EnergyContent.Scurose` to `Sucrose` (#85)
+
+### Other
+
+- Migrates from Arche to Ark as ECS package (#86)
+- Migrates to the new `math/rand/v2` package (#86)
 
 ## [[v0.5.0]](https://github.com/mlange-42/beecs/compare/v0.4.1...v0.5.0)
 
 ### Features
 
-* Make honey amount per worker considered decent a parameter (#82)
+- Make honey amount per worker considered decent a parameter (#82)
 
 ### Bugfixes
 
-* Upgrade to Arche v0.14.0 to fix potential premature garbage collection of slices and pointers in components (#83)
+- Upgrade to Arche v0.14.0 to fix potential premature garbage collection of slices and pointers in components (#83)
 
 ## [[v0.4.1]](https://github.com/mlange-42/beecs/compare/v0.4.0...v0.4.1)
 
 ### Bugfixes
 
-* Fix for proper overwriting of default flower patches when reading from JSON (#81)
+- Fix for proper overwriting of default flower patches when reading from JSON (#81)
 
 ## [[v0.4.0]](https://github.com/mlange-42/beecs/compare/v0.3.0...v0.4.0)
 
 ### Breaking changes
 
-* Renames `DefaultParams.Energy` to `DefaultParams.EnergyContent`, for consistency (#80)
+- Renames `DefaultParams.Energy` to `DefaultParams.EnergyContent`, for consistency (#80)
 
 ## [[v0.3.0]](https://github.com/mlange-42/beecs/compare/v0.2.0...v0.3.0)
 
 ### Breaking changes
 
-* `FromJSON` for default and custom parameters renamed to `FromJSONFile` (#77)
+- `FromJSON` for default and custom parameters renamed to `FromJSONFile` (#77)
 
 ### Features
 

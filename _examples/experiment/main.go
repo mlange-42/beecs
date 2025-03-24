@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Create an RNG.
-	rng := rand.New(rand.NewSource(0))
+	rng := rand.New(rand.NewPCG(0, 0))
 	// Create an experiment for one run per parameter set.
 	exp, err := experiment.New(vars, rng, 1)
 	if err != nil {

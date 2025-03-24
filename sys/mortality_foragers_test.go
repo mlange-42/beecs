@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"math/rand/v2"
 	"testing"
 
 	"github.com/mlange-42/ark-tools/resource"
@@ -9,7 +10,6 @@ import (
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/rand"
 )
 
 func TestMortalityForagers(t *testing.T) {
@@ -19,7 +19,7 @@ func TestMortalityForagers(t *testing.T) {
 
 	time := resource.Tick{}
 	ecs.AddResource(&world, &time)
-	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
+	ecs.AddResource(&world, &resource.Rand{Source: rand.NewPCG(0, 0)})
 	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
 	ecs.AddResource(&world, &params.WorkerDevelopment{
 		EggTime:     2,

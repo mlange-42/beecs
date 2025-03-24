@@ -1,19 +1,19 @@
 package sys
 
 import (
+	"math/rand/v2"
 	"testing"
 
 	"github.com/mlange-42/ark-tools/resource"
 	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/params"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/rand"
 )
 
 func TestMortalityCohorts(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
+	ecs.AddResource(&world, &resource.Rand{Source: rand.NewPCG(0, 0)})
 	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
 	ecs.AddResource(&world, &params.WorkerDevelopment{
 		EggTime:     2,

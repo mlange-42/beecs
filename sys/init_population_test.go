@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"math/rand/v2"
 	"testing"
 
 	"github.com/mlange-42/ark-tools/resource"
@@ -9,7 +10,6 @@ import (
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/rand"
 )
 
 func TestInitPopulation(t *testing.T) {
@@ -18,7 +18,7 @@ func TestInitPopulation(t *testing.T) {
 	fac := globals.NewForagerFactory(&world)
 	ecs.AddResource(&world, &fac)
 	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
-	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
+	ecs.AddResource(&world, &resource.Rand{Source: rand.NewPCG(0, 0)})
 	ecs.AddResource(&world, &params.InitialPopulation{
 		Count:     10_000,
 		MinAge:    100,

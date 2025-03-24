@@ -8,6 +8,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand/v2"
 
 	"github.com/mlange-42/ark-tools/app"
 	"github.com/mlange-42/ark-tools/reporter"
@@ -15,7 +16,6 @@ import (
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
 func main() {

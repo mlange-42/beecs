@@ -3,16 +3,15 @@ package sys
 import (
 	"fmt"
 	"math"
+	"math/rand/v2"
 
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/enum/activity"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"github.com/mlange-42/beecs/util"
-	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
@@ -38,21 +37,21 @@ type Foraging struct {
 	resting  []ecs.Entity
 	dances   []ecs.Entity
 
-	patchResourceMapper  generic.Map1[comp.Resource]
-	patchVisitsMapper    generic.Map2[comp.Resource, comp.Visits]
-	patchDanceMapper     generic.Map2[comp.Resource, comp.Dance]
-	patchTripMapper      generic.Map1[comp.Trip]
-	patchMortalityMapper generic.Map1[comp.Mortality]
-	patchConfigMapper    generic.Map2[comp.PatchProperties, comp.Trip]
-	foragerMapper        generic.Map2[comp.Activity, comp.KnownPatch]
+	patchResourceMapper  *ecs.Map1[comp.Resource]
+	patchVisitsMapper    *ecs.Map2[comp.Resource, comp.Visits]
+	patchDanceMapper     *ecs.Map2[comp.Resource, comp.Dance]
+	patchTripMapper      *ecs.Map1[comp.Trip]
+	patchMortalityMapper *ecs.Map1[comp.Mortality]
+	patchConfigMapper    *ecs.Map2[comp.PatchProperties, comp.Trip]
+	foragerMapper        *ecs.Map2[comp.Activity, comp.KnownPatch]
 
-	activityFilter      generic.Filter1[comp.Activity]
-	loadFilter          generic.Filter2[comp.Activity, comp.NectarLoad]
-	foragerFilter       generic.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
-	foragerFilterLoad   generic.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
-	foragerFilterSimple generic.Filter2[comp.Activity, comp.KnownPatch]
-	patchFilter         generic.Filter2[comp.Resource, comp.PatchProperties]
-	patchUpdateFilter   generic.Filter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
+	activityFilter      *ecs.Filter1[comp.Activity]
+	loadFilter          *ecs.Filter2[comp.Activity, comp.NectarLoad]
+	foragerFilter       *ecs.Filter3[comp.Activity, comp.KnownPatch, comp.Milage]
+	foragerFilterLoad   *ecs.Filter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]
+	foragerFilterSimple *ecs.Filter2[comp.Activity, comp.KnownPatch]
+	patchFilter         *ecs.Filter2[comp.Resource, comp.PatchProperties]
+	patchUpdateFilter   *ecs.Filter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
 
 	maxHoneyStore float64
 }
@@ -70,21 +69,21 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.foragePeriod = ecs.GetResource[globals.ForagingPeriod](w)
 	s.stores = ecs.GetResource[globals.Stores](w)
 
-	s.activityFilter = *generic.NewFilter1[comp.Activity]()
-	s.loadFilter = *generic.NewFilter2[comp.Activity, comp.NectarLoad]()
-	s.foragerFilter = *generic.NewFilter3[comp.Activity, comp.KnownPatch, comp.Milage]()
-	s.foragerFilterLoad = *generic.NewFilter4[comp.Activity, comp.KnownPatch, comp.Milage, comp.NectarLoad]()
-	s.foragerFilterSimple = *generic.NewFilter2[comp.Activity, comp.KnownPatch]()
-	s.patchFilter = *generic.NewFilter2[comp.Resource, comp.PatchProperties]()
-	s.patchUpdateFilter = *generic.NewFilter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]()
+	s.activityFilter = s.activityFilter.New(w)
+	s.loadFilter = s.loadFilter.New(w)
+	s.foragerFilter = s.foragerFilter.New(w)
+	s.foragerFilterLoad = s.foragerFilterLoad.New(w)
+	s.foragerFilterSimple = s.foragerFilterSimple.New(w)
+	s.patchFilter = s.patchFilter.New(w)
+	s.patchUpdateFilter = s.patchUpdateFilter.New(w)
 
-	s.patchResourceMapper = generic.NewMap1[comp.Resource](w)
-	s.patchVisitsMapper = generic.NewMap2[comp.Resource, comp.Visits](w)
-	s.patchDanceMapper = generic.NewMap2[comp.Resource, comp.Dance](w)
-	s.patchTripMapper = generic.NewMap1[comp.Trip](w)
-	s.patchMortalityMapper = generic.NewMap1[comp.Mortality](w)
-	s.patchConfigMapper = generic.NewMap2[comp.PatchProperties, comp.Trip](w)
-	s.foragerMapper = generic.NewMap2[comp.Activity, comp.KnownPatch](w)
+	s.patchResourceMapper = s.patchResourceMapper.New(w)
+	s.patchVisitsMapper = s.patchVisitsMapper.New(w)
+	s.patchDanceMapper = s.patchDanceMapper.New(w)
+	s.patchTripMapper = s.patchTripMapper.New(w)
+	s.patchMortalityMapper = s.patchMortalityMapper.New(w)
+	s.patchConfigMapper = s.patchConfigMapper.New(w)
+	s.foragerMapper = s.foragerMapper.New(w)
 
 	storeParams := ecs.GetResource[params.Stores](w)
 	energyParams := ecs.GetResource[params.EnergyContent](w)
@@ -101,7 +100,7 @@ func (s *Foraging) Update(w *ecs.World) {
 		return
 	}
 
-	query := s.foragerFilter.Query(w)
+	query := s.foragerFilter.Query()
 	for query.Next() {
 		_, _, milage := query.Get()
 		milage.Today = 0
@@ -131,7 +130,7 @@ func (s *Foraging) Update(w *ecs.World) {
 		round++
 	}
 
-	query = s.foragerFilter.Query(w)
+	query = s.foragerFilter.Query()
 	for query.Next() {
 		act, _, _ := query.Get()
 		act.Current = activity.Resting
@@ -174,7 +173,7 @@ func (s *Foraging) foragingRound(w *ecs.World, forageProb float64) (duration flo
 }
 
 func (s *Foraging) updatePatches(w *ecs.World) {
-	query := s.patchUpdateFilter.Query(w)
+	query := s.patchUpdateFilter.Query()
 	for query.Next() {
 		conf, dist, r, ht, trip, mort, dance := query.Get()
 
@@ -208,7 +207,7 @@ func (s *Foraging) updatePatches(w *ecs.World) {
 }
 
 func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64) {
-	query := s.foragerFilter.Query(w)
+	query := s.foragerFilter.Query()
 	for query.Next() {
 		act, patch, milage := query.Get()
 
@@ -275,7 +274,7 @@ func (s *Foraging) searching(w *ecs.World) {
 	nonDetectionProb := 1.0
 
 	sz := float64(s.foragerParams.SquadronSize)
-	patchQuery := s.patchFilter.Query(w)
+	patchQuery := s.patchFilter.Query()
 	for patchQuery.Next() {
 		res, conf := patchQuery.Get()
 		hasNectar := res.Nectar >= s.foragerParams.NectarLoad*sz
@@ -296,7 +295,7 @@ func (s *Foraging) searching(w *ecs.World) {
 	detectionProb := 1.0 - nonDetectionProb
 
 	// TODO: shuffle foragers
-	foragerQuery := s.foragerFilterSimple.Query(w)
+	foragerQuery := s.foragerFilterSimple.Query()
 	for foragerQuery.Next() {
 		act, patch := foragerQuery.Get()
 
@@ -381,7 +380,7 @@ func (s *Foraging) searching(w *ecs.World) {
 
 func (s *Foraging) collecting(w *ecs.World) {
 	sz := float64(s.foragerParams.SquadronSize)
-	foragerQuery := s.foragerFilterLoad.Query(w)
+	foragerQuery := s.foragerFilterLoad.Query()
 	for foragerQuery.Next() {
 		act, patch, milage, load := foragerQuery.Get()
 
@@ -438,7 +437,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 	duration = 0.0
 	foragers = 0
 
-	query := s.foragerFilter.Query(w)
+	query := s.foragerFilter.Query()
 	for query.Next() {
 		act, patch, milage := query.Get()
 
@@ -451,7 +450,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 			s.stores.Honey -= en * float64(s.foragerParams.SquadronSize)
 
 			duration += s.forageParams.SearchLength / s.foragerParams.FlightVelocity
-			foragers += 1
+			foragers++
 		} else if act.Current == activity.BringNectar || act.Current == activity.BringPollen {
 			en := 0.0
 			if act.PollenForager {
@@ -464,7 +463,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 				en = trip.CostNectar
 			}
 			s.stores.Honey -= en * float64(s.foragerParams.SquadronSize)
-			foragers += 1
+			foragers++
 		}
 	}
 
@@ -474,7 +473,7 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 func (s *Foraging) mortality(w *ecs.World) {
 	searchDuration := s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 
-	foragerQuery := s.foragerFilterSimple.Query(w)
+	foragerQuery := s.foragerFilterSimple.Query()
 	for foragerQuery.Next() {
 		act, patch := foragerQuery.Get()
 
@@ -502,7 +501,7 @@ func (s *Foraging) mortality(w *ecs.World) {
 }
 
 func (s *Foraging) dancing(w *ecs.World) {
-	activityQuery := s.activityFilter.Query(w)
+	activityQuery := s.activityFilter.Query()
 	for activityQuery.Next() {
 		act := activityQuery.Get()
 		if act.Current == activity.Resting {
@@ -526,7 +525,7 @@ func (s *Foraging) dancing(w *ecs.World) {
 			danceEEF := patchRes.EnergyEfficiency
 
 			rPoisson := distuv.Poisson{
-				Src:    s.rng,
+				Src:    &util.RandWrapper{Src: s.rng},
 				Lambda: dance.Circuits * 0.05,
 			}
 			danceFollowers := int(rPoisson.Rand())
@@ -602,7 +601,7 @@ func (s *Foraging) dancing(w *ecs.World) {
 }
 
 func (s *Foraging) unloading(w *ecs.World) {
-	query := s.loadFilter.Query(w)
+	query := s.loadFilter.Query()
 	for query.Next() {
 		act, load := query.Get()
 		if act.Current == activity.BringNectar {
@@ -623,7 +622,7 @@ func (s *Foraging) countForagers(w *ecs.World) {
 	sz := s.foragerParams.SquadronSize
 	round := globals.ForagingRound{}
 
-	query := s.activityFilter.Query(w)
+	query := s.activityFilter.Query()
 	for query.Next() {
 		act := query.Get()
 

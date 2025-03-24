@@ -1,16 +1,15 @@
 package sys
 
 import (
+	"math/rand/v2"
 	"testing"
 
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/rand"
 )
 
 func TestInitPopulation(t *testing.T) {
@@ -19,7 +18,7 @@ func TestInitPopulation(t *testing.T) {
 	fac := globals.NewForagerFactory(&world)
 	ecs.AddResource(&world, &fac)
 	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
-	ecs.AddResource(&world, &resource.Rand{Source: rand.NewSource(0)})
+	ecs.AddResource(&world, &resource.Rand{Source: rand.NewPCG(0, 0)})
 	ecs.AddResource(&world, &params.InitialPopulation{
 		Count:     10_000,
 		MinAge:    100,
@@ -31,8 +30,8 @@ func TestInitPopulation(t *testing.T) {
 	s := InitPopulation{}
 	s.Initialize(&world)
 
-	filter := generic.NewFilter2[comp.Milage, comp.Age]()
-	query := filter.Query(&world)
+	filter := ecs.NewFilter2[comp.Milage, comp.Age](&world)
+	query := filter.Query()
 	assert.Equal(t, 100, query.Count())
 
 	for query.Next() {

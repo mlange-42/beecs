@@ -3,36 +3,38 @@ package globals
 import (
 	"math"
 
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 )
 
 // PatchFactory is a helper resource for creating flower patch entities.
 type PatchFactory struct {
-	builder generic.Map9[
+	builder *ecs.Map9[
 		comp.PatchProperties, comp.Coords,
 		comp.PatchDistance, comp.Trip, comp.HandlingTime,
 		comp.Resource, comp.Mortality, comp.Dance,
 		comp.Visits]
+	initMapper *ecs.Map2[comp.Coords, comp.PatchDistance]
 
-	constantPatchMapper generic.Map1[comp.ConstantPatch]
-	seasonalPatchMapper generic.Map1[comp.SeasonalPatch]
-	scriptedPatchMapper generic.Map1[comp.ScriptedPatch]
+	constantPatchMapper *ecs.Map1[comp.ConstantPatch]
+	seasonalPatchMapper *ecs.Map1[comp.SeasonalPatch]
+	scriptedPatchMapper *ecs.Map1[comp.ScriptedPatch]
 }
 
 // NewPatchFactory creates a new PatchFactory
 func NewPatchFactory(world *ecs.World) PatchFactory {
 	return PatchFactory{
-		builder: generic.NewMap9[
+		builder: ecs.NewMap9[
 			comp.PatchProperties, comp.Coords,
 			comp.PatchDistance, comp.Trip, comp.HandlingTime,
 			comp.Resource, comp.Mortality, comp.Dance,
 			comp.Visits](world),
 
-		constantPatchMapper: generic.NewMap1[comp.ConstantPatch](world),
-		seasonalPatchMapper: generic.NewMap1[comp.SeasonalPatch](world),
-		scriptedPatchMapper: generic.NewMap1[comp.ScriptedPatch](world),
+		initMapper: ecs.NewMap2[comp.Coords, comp.PatchDistance](world),
+
+		constantPatchMapper: ecs.NewMap1[comp.ConstantPatch](world),
+		seasonalPatchMapper: ecs.NewMap1[comp.SeasonalPatch](world),
+		scriptedPatchMapper: ecs.NewMap1[comp.ScriptedPatch](world),
 	}
 }
 
@@ -54,15 +56,16 @@ func (f *PatchFactory) CreatePatches(conf []comp.PatchConfig) {
 }
 
 func (f *PatchFactory) createPatch(conf comp.PatchConfig, coords comp.Coords) {
-	e := f.builder.NewWith(
-		&comp.PatchProperties{}, &coords,
-		&comp.PatchDistance{DistToColony: conf.DistToColony}, &comp.Trip{}, &comp.HandlingTime{},
-		&comp.Resource{}, &comp.Mortality{}, &comp.Dance{}, &comp.Visits{})
+	e := f.builder.NewEntityFn(nil)
+
+	co, dist := f.initMapper.Get(e)
+	*co = coords
+	dist.DistToColony = conf.DistToColony
 
 	anyPatch := false
 
 	if conf.ConstantPatch != nil {
-		f.constantPatchMapper.Assign(e, conf.ConstantPatch)
+		f.constantPatchMapper.Add(e, conf.ConstantPatch)
 		anyPatch = true
 	}
 
@@ -70,7 +73,7 @@ func (f *PatchFactory) createPatch(conf comp.PatchConfig, coords comp.Coords) {
 		if anyPatch {
 			panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch, has multiple")
 		}
-		f.seasonalPatchMapper.Assign(e, conf.SeasonalPatch)
+		f.seasonalPatchMapper.Add(e, conf.SeasonalPatch)
 		anyPatch = true
 	}
 
@@ -78,7 +81,7 @@ func (f *PatchFactory) createPatch(conf comp.PatchConfig, coords comp.Coords) {
 		if anyPatch {
 			panic("each patch must have exactly one of ConstantPatch, SeasonalPatch or ScriptedPatch, has multiple")
 		}
-		f.scriptedPatchMapper.Assign(e, conf.ScriptedPatch)
+		f.scriptedPatchMapper.Add(e, conf.ScriptedPatch)
 		anyPatch = true
 	}
 

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark/ecs"
 )
 
 // SetParameter sets a parameter of the model from it's string identifier.

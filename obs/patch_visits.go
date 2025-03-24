@@ -3,24 +3,23 @@ package obs
 import (
 	"fmt"
 
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 )
 
 // NectarVisits is a row observer for the number of nectar visits of all patches.
 type NectarVisits struct {
-	patchMapper generic.Map1[comp.Visits]
+	patchMapper *ecs.Map1[comp.Visits]
 	data        []float64
 	patches     []ecs.Entity
 	header      []string
 }
 
 func (o *NectarVisits) Initialize(w *ecs.World) {
-	o.patchMapper = generic.NewMap1[comp.Visits](w)
+	o.patchMapper = o.patchMapper.New(w)
 
-	patchFilter := *generic.NewFilter1[comp.Visits]()
-	query := patchFilter.Query(w)
+	patchFilter := *ecs.NewFilter1[comp.Visits](w)
+	query := patchFilter.Query()
 	for query.Next() {
 		e := query.Entity()
 		o.patches = append(o.patches, e)
@@ -46,17 +45,17 @@ func (o *NectarVisits) Values(w *ecs.World) []float64 {
 
 // NectarVisits is a row observer for the number of pollen visits of all patches.
 type PollenVisits struct {
-	patchMapper generic.Map1[comp.Visits]
+	patchMapper *ecs.Map1[comp.Visits]
 	data        []float64
 	patches     []ecs.Entity
 	header      []string
 }
 
 func (o *PollenVisits) Initialize(w *ecs.World) {
-	o.patchMapper = generic.NewMap1[comp.Visits](w)
+	o.patchMapper = o.patchMapper.New(w)
 
-	patchFilter := *generic.NewFilter1[comp.Visits]()
-	query := patchFilter.Query(w)
+	patchFilter := *ecs.NewFilter1[comp.Visits](w)
+	query := patchFilter.Query()
 	for query.Next() {
 		e := query.Entity()
 		o.patches = append(o.patches, e)

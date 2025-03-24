@@ -1,8 +1,8 @@
 package model
 
 import (
-	"github.com/mlange-42/arche-model/model"
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark-tools/app"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"github.com/mlange-42/beecs/sys"
@@ -12,80 +12,80 @@ import (
 //
 // If the argument m is nil, a new model instance is created.
 // If it is non-nil, the model is reset and re-used, saving some time for initialization and memory allocation.
-func Default(p params.Params, m *model.Model) *model.Model {
+func Default(p params.Params, app *app.App) *app.App {
 
 	// Add parameters and other resources
 
-	m = initializeModel(p, m)
+	app = initializeModel(p, app)
 
 	// Initialization
 
-	m.AddSystem(&sys.InitStore{})
-	m.AddSystem(&sys.InitCohorts{})
-	m.AddSystem(&sys.InitPopulation{})
-	m.AddSystem(&sys.InitPatchesList{})
-	m.AddSystem(&sys.InitForagingPeriod{})
+	app.AddSystem(&sys.InitStore{})
+	app.AddSystem(&sys.InitCohorts{})
+	app.AddSystem(&sys.InitPopulation{})
+	app.AddSystem(&sys.InitPatchesList{})
+	app.AddSystem(&sys.InitForagingPeriod{})
 
 	// Sub-models
 
-	m.AddSystem(&sys.CalcAff{})
-	m.AddSystem(&sys.CalcForagingPeriod{})
-	m.AddSystem(&sys.ReplenishPatches{})
+	app.AddSystem(&sys.CalcAff{})
+	app.AddSystem(&sys.CalcForagingPeriod{})
+	app.AddSystem(&sys.ReplenishPatches{})
 
-	m.AddSystem(&sys.BroodCare{}) // Moved before any other population changes for now, to avoid counting more than once.
-	m.AddSystem(&sys.AgeCohorts{})
-	m.AddSystem(&sys.TransitionForagers{})
-	m.AddSystem(&sys.EggLaying{})
+	app.AddSystem(&sys.BroodCare{}) // Moved before any other population changes for now, to avoid counting more than once.
+	app.AddSystem(&sys.AgeCohorts{})
+	app.AddSystem(&sys.TransitionForagers{})
+	app.AddSystem(&sys.EggLaying{})
 
-	m.AddSystem(&sys.MortalityCohorts{})
-	m.AddSystem(&sys.MortalityForagers{})
+	app.AddSystem(&sys.MortalityCohorts{})
+	app.AddSystem(&sys.MortalityForagers{})
 
-	m.AddSystem(&sys.Foraging{})
-	m.AddSystem(&sys.HoneyConsumption{})
-	m.AddSystem(&sys.PollenConsumption{})
+	app.AddSystem(&sys.Foraging{})
+	app.AddSystem(&sys.HoneyConsumption{})
+	app.AddSystem(&sys.PollenConsumption{})
 
-	m.AddSystem(&sys.CountPopulation{})
+	app.AddSystem(&sys.CountPopulation{})
 
-	m.AddSystem(&sys.FixedTermination{})
+	app.AddSystem(&sys.FixedTermination{})
 
-	return m
+	return app
 }
 
-// Default sets up a beecs model with the given systems instead of the default ones.
+// WithSystems sets up a beecs model with the given systems instead of the default ones.
 //
 // If the argument m is nil, a new model instance is created.
 // If it is non-nil, the model is reset and re-used, saving some time for initialization and memory allocation.
-func WithSystems(p params.Params, sys []model.System, m *model.Model) *model.Model {
+func WithSystems(p params.Params, sys []app.System, app *app.App) *app.App {
 
-	m = initializeModel(p, m)
+	app = initializeModel(p, app)
 
 	for _, s := range sys {
-		m.AddSystem(s)
+		app.AddSystem(s)
 	}
 
-	return m
+	return app
 }
 
-func initializeModel(p params.Params, m *model.Model) *model.Model {
-	if m == nil {
-		m = model.New()
+func initializeModel(p params.Params, a *app.App) *app.App {
+	if a == nil {
+		a = app.New()
 	} else {
-		m.Reset()
+		a.Reset()
 	}
 
-	p.Apply(&m.World)
+	p.Apply(&a.World)
 
-	factory := globals.NewForagerFactory(&m.World)
-	ecs.AddResource(&m.World, &factory)
+	factory := globals.NewForagerFactory(&a.World)
+	ecs.AddResource(&a.World, &factory)
 
 	stats := globals.PopulationStats{}
-	ecs.AddResource(&m.World, &stats)
+	ecs.AddResource(&a.World, &stats)
 
 	consumptionStats := globals.ConsumptionStats{}
-	ecs.AddResource(&m.World, &consumptionStats)
+	ecs.AddResource(&a.World, &consumptionStats)
 
 	foragingStats := globals.ForagingStats{}
-	ecs.AddResource(&m.World, &foragingStats)
+	ecs.AddResource(&a.World, &foragingStats)
 
-	return m
+	return a
 }

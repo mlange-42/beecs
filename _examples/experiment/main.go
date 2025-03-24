@@ -8,14 +8,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"math/rand/v2"
 
-	amodel "github.com/mlange-42/arche-model/model"
-	"github.com/mlange-42/arche-model/reporter"
+	"github.com/mlange-42/ark-tools/app"
+	"github.com/mlange-42/ark-tools/reporter"
 	"github.com/mlange-42/beecs/experiment"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
 func main() {
@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Create an RNG.
-	rng := rand.New(rand.NewSource(0))
+	rng := rand.New(rand.NewPCG(0, 0))
 	// Create an experiment for one run per parameter set.
 	exp, err := experiment.New(vars, rng, 1)
 	if err != nil {
@@ -46,22 +46,22 @@ func main() {
 	}
 
 	// Create an empty model.
-	m := amodel.New()
+	app := app.New()
 
 	fmt.Printf("Running experiment with %d parameter sets\n", exp.ParameterSets())
 
 	runs := exp.TotalRuns()
 	for i := 0; i < runs; i++ {
 		// Initialize and run the model.
-		run(m, &exp, i)
+		run(app, &exp, i)
 	}
 }
 
-func run(m *amodel.Model, exp *experiment.Experiment, idx int) {
+func run(app *app.App, exp *experiment.Experiment, idx int) {
 	// Get the default parameters.
 	p := params.Default()
 	// Create a model with the default sub-models.
-	m = model.Default(&p, m)
+	m := model.Default(&p, app)
 
 	// Get parameter values for the current run.
 	values := exp.Values(idx)
@@ -76,5 +76,5 @@ func run(m *amodel.Model, exp *experiment.Experiment, idx int) {
 	})
 
 	// Run the model.
-	m.Run()
+	app.Run()
 }

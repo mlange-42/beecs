@@ -3,24 +3,23 @@ package obs
 import (
 	"fmt"
 
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 )
 
 // PatchNectar is a row observer for the nectar availability of all patches in L (liters).
 type PatchNectar struct {
-	patchMapper generic.Map1[comp.Resource]
+	patchMapper *ecs.Map1[comp.Resource]
 	data        []float64
 	patches     []ecs.Entity
 	header      []string
 }
 
 func (o *PatchNectar) Initialize(w *ecs.World) {
-	o.patchMapper = generic.NewMap1[comp.Resource](w)
+	o.patchMapper = o.patchMapper.New(w)
 
-	patchFilter := *generic.NewFilter1[comp.Resource]()
-	query := patchFilter.Query(w)
+	patchFilter := *ecs.NewFilter1[comp.Resource](w)
+	query := patchFilter.Query()
 	for query.Next() {
 		e := query.Entity()
 		o.patches = append(o.patches, e)
@@ -46,17 +45,17 @@ func (o *PatchNectar) Values(w *ecs.World) []float64 {
 
 // PatchPollen is a row observer for the pollen availability of all patches, in g (grams).
 type PatchPollen struct {
-	patchMapper generic.Map1[comp.Resource]
+	patchMapper *ecs.Map1[comp.Resource]
 	data        []float64
 	patches     []ecs.Entity
 	header      []string
 }
 
 func (o *PatchPollen) Initialize(w *ecs.World) {
-	o.patchMapper = generic.NewMap1[comp.Resource](w)
+	o.patchMapper = o.patchMapper.New(w)
 
-	patchFilter := *generic.NewFilter1[comp.Resource]()
-	query := patchFilter.Query(w)
+	patchFilter := ecs.NewFilter1[comp.Resource](w)
+	query := patchFilter.Query()
 	for query.Next() {
 		e := query.Entity()
 		o.patches = append(o.patches, e)

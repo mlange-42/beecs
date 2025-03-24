@@ -4,7 +4,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/mlange-42/arche-model/reporter"
+	"github.com/mlange-42/ark-tools/reporter"
 	"github.com/mlange-42/beecs/model"
 	"github.com/mlange-42/beecs/obs"
 	"github.com/mlange-42/beecs/params"

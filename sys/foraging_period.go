@@ -1,11 +1,12 @@
 package sys
 
 import (
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
+	"math/rand/v2"
+
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
 type CalcForagingPeriod struct {
@@ -14,7 +15,7 @@ type CalcForagingPeriod struct {
 	periodData   *globals.ForagingPeriodData
 	period       globals.ForagingPeriod
 
-	rng rand.Rand
+	rng *rand.Rand
 }
 
 func (s *CalcForagingPeriod) Initialize(w *ecs.World) {
@@ -26,7 +27,7 @@ func (s *CalcForagingPeriod) Initialize(w *ecs.World) {
 	ecs.AddResource(w, &s.period)
 
 	src := ecs.GetResource[resource.Rand](w)
-	s.rng = *rand.New(src)
+	s.rng = rand.New(src)
 
 }
 
@@ -34,7 +35,7 @@ func (s *CalcForagingPeriod) Update(w *ecs.World) {
 	dayOfYear := int(s.time.Tick % 365)
 	if dayOfYear == 0 {
 		if s.periodParams.RandomYears {
-			s.periodData.CurrentYear = s.rng.Intn(len(s.periodData.Years))
+			s.periodData.CurrentYear = s.rng.IntN(len(s.periodData.Years))
 		} else {
 			s.periodData.CurrentYear = int(s.time.Tick/365) % len(s.periodData.Years)
 		}

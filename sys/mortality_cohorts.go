@@ -1,12 +1,13 @@
 package sys
 
 import (
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
+	"math/rand/v2"
+
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 	"github.com/mlange-42/beecs/util"
-	"golang.org/x/exp/rand"
 	"gonum.org/v1/gonum/stat/distuv"
 )
 
@@ -54,7 +55,7 @@ func applyMortality(coh []int, m float64, rng rand.Source) {
 	for i := range coh {
 		num := coh[i]
 		rng := distuv.Poisson{
-			Src:    rng,
+			Src:    &util.RandWrapper{Src: rng},
 			Lambda: m * float64(num),
 		}
 		toDie := int(rng.Rand())

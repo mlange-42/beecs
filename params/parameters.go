@@ -7,6 +7,7 @@ import (
 	"github.com/mlange-42/beecs/comp"
 )
 
+// WorkingDirectory for file I/O.
 type WorkingDirectory struct {
 	Path string
 }
@@ -87,6 +88,7 @@ type WorkerDevelopment struct {
 	MaxLifespan int // Maximum lifespan of adult bees [d].
 }
 
+// DroneDevelopment parameters.
 type DroneDevelopment struct {
 	EggTime     int // Time spent as eggs [d].
 	LarvaeTime  int // Time spent as larvae [d].
@@ -187,6 +189,7 @@ type initialPatchesHelper struct {
 	File    string             // File to read patches from. Applied after creating Patches.
 }
 
+// UnmarshalJSON de-serializes initial patches from JSON.
 func (p *InitialPatches) UnmarshalJSON(jsonData []byte) error {
 	helper := initialPatchesHelper{}
 	reader := bytes.NewReader(jsonData)

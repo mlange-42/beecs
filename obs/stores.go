@@ -3,7 +3,7 @@ package obs
 import (
 	"fmt"
 
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
 )

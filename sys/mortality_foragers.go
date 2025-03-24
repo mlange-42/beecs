@@ -1,12 +1,12 @@
 package sys
 
 import (
-	"github.com/mlange-42/arche-model/resource"
-	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
+	"math/rand/v2"
+
+	"github.com/mlange-42/ark-tools/resource"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/comp"
 	"github.com/mlange-42/beecs/params"
-	"golang.org/x/exp/rand"
 )
 
 // MortalityForagers applies worker mortality, including
@@ -19,7 +19,7 @@ type MortalityForagers struct {
 	workerMort    *params.WorkerMortality
 	workerDev     *params.WorkerDevelopment
 	toRemove      []ecs.Entity
-	foragerFilter generic.Filter2[comp.Age, comp.Milage]
+	foragerFilter *ecs.Filter2[comp.Age, comp.Milage]
 }
 
 func (s *MortalityForagers) Initialize(w *ecs.World) {
@@ -27,12 +27,12 @@ func (s *MortalityForagers) Initialize(w *ecs.World) {
 	s.time = ecs.GetResource[resource.Tick](w)
 	s.workerMort = ecs.GetResource[params.WorkerMortality](w)
 	s.workerDev = ecs.GetResource[params.WorkerDevelopment](w)
-	s.foragerFilter = *generic.NewFilter2[comp.Age, comp.Milage]()
+	s.foragerFilter = s.foragerFilter.New(w)
 }
 
 func (s *MortalityForagers) Update(w *ecs.World) {
 	r := rand.New(s.rng)
-	query := s.foragerFilter.Query(w)
+	query := s.foragerFilter.Query()
 	for query.Next() {
 		a, m := query.Get()
 		if int(s.time.Tick)-a.DayOfBirth >= s.workerDev.MaxLifespan ||

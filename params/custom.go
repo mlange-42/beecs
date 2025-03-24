@@ -7,7 +7,7 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/registry"
 	"github.com/mlange-42/beecs/util"
 )

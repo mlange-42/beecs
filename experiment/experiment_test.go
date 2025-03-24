@@ -1,14 +1,14 @@
 package experiment
 
 import (
+	"math/rand/v2"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/exp/rand"
 )
 
 func TestExperiment(t *testing.T) {
-	rng := rand.New(rand.NewSource(0))
+	rng := rand.New(rand.NewPCG(0, 0))
 
 	vars := []ParameterVariation{
 		{
@@ -79,7 +79,7 @@ func TestExperiment(t *testing.T) {
 }
 
 func TestExperimentNoSets(t *testing.T) {
-	rng := rand.New(rand.NewSource(0))
+	rng := rand.New(rand.NewPCG(0, 0))
 	e, err := New([]ParameterVariation{}, rng, 5)
 	assert.Nil(t, err)
 

@@ -31,6 +31,10 @@ type Foraging struct {
 	stores        *globals.Stores
 	popStats      *globals.PopulationStats
 	foragingStats *globals.ForagingStats
+	pop           *globals.PopulationStats
+	newCohorts    *globals.NewCohorts
+	aff           *globals.AgeFirstForaging
+	factory       *globals.ForagerFactory
 
 	patches  []patchCandidate
 	toRemove []ecs.Entity
@@ -57,6 +61,7 @@ type Foraging struct {
 	patchUpdateFilter   *ecs.Filter7[comp.PatchProperties, comp.PatchDistance, comp.Resource, comp.HandlingTime, comp.Trip, comp.Mortality, comp.Dance]
 
 	maxHoneyStore float64
+	time          *resource.Tick
 }
 
 func (s *Foraging) Initialize(w *ecs.World) {
@@ -71,6 +76,10 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.foragingStats = ecs.GetResource[globals.ForagingStats](w)
 	s.foragePeriod = ecs.GetResource[globals.ForagingPeriod](w)
 	s.stores = ecs.GetResource[globals.Stores](w)
+	s.pop = ecs.GetResource[globals.PopulationStats](w)
+	s.newCohorts = ecs.GetResource[globals.NewCohorts](w)
+	s.aff = ecs.GetResource[globals.AgeFirstForaging](w)
+	s.factory = ecs.GetResource[globals.ForagerFactory](w)
 
 	s.activityFilter = s.activityFilter.New(w)
 	s.loadFilter = s.loadFilter.New(w)
@@ -94,10 +103,14 @@ func (s *Foraging) Initialize(w *ecs.World) {
 
 	s.maxHoneyStore = storeParams.MaxHoneyStoreKg * 1000.0 * energyParams.Honey
 	s.rng = rand.New(ecs.GetResource[resource.Rand](w))
+	s.time = ecs.GetResource[resource.Tick](w)
 }
 
 func (s *Foraging) Update(w *ecs.World) {
 	s.foragingStats.Reset()
+
+	s.newForagers(w)                                                                                                                                   // here the foragers get initialized now; mimics BEEHAVE exactly.
+	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * s.storeParams.DecentHoneyPerWorker * s.energyParams.Honey // added this here, because Netlogo recalculates this in foragingRound and a countingproc happened since last calc
 
 	if s.foragePeriod.SecondsToday <= 0 ||
 		(s.stores.Honey >= 0.95*s.maxHoneyStore && s.stores.Pollen >= s.stores.IdealPollen) {
@@ -142,6 +155,13 @@ func (s *Foraging) Update(w *ecs.World) {
 }
 
 func (s *Foraging) Finalize(w *ecs.World) {}
+
+func (s *Foraging) newForagers(w *ecs.World) {
+	if s.newCohorts.Foragers > 0 {
+		s.factory.CreateSquadrons(s.newCohorts.Foragers, int(s.time.Tick)-s.aff.Aff)
+	}
+	s.newCohorts.Foragers = 0
+}
 
 func (s *Foraging) calcForagingProb() float64 {
 	if s.stores.Pollen/s.stores.IdealPollen > 0.5 && s.stores.Honey/s.stores.DecentHoney > 1 {

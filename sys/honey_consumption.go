@@ -45,7 +45,6 @@ func (s *HoneyConsumption) Update(w *ecs.World) {
 	consumptionEnergy := 0.001 * consumption * s.energyParams.Honey
 
 	s.stores.Honey = math.Max(s.stores.Honey-consumptionEnergy, 0)
-	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * s.storesParams.DecentHoneyPerWorker * s.energyParams.Honey
 	s.cons.HoneyDaily = consumption
 }
 

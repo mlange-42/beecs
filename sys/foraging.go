@@ -32,11 +32,12 @@ type Foraging struct {
 	popStats      *globals.PopulationStats
 	foragingStats *globals.ForagingStats
 
-	patches        []patchCandidate
-	toRemove       []ecs.Entity
-	resting        []ecs.Entity
-	dances         []ecs.Entity
-	foragershuffle []ecs.Entity
+	patches  []patchCandidate
+	toRemove []ecs.Entity
+	resting  []ecs.Entity
+	dances   []ecs.Entity
+	searches []ecs.Entity
+	recruits []ecs.Entity
 
 	patchResourceMapper  *ecs.Map1[comp.Resource]
 	patchVisitsMapper    *ecs.Map2[comp.Resource, comp.Visits]
@@ -211,7 +212,6 @@ func (s *Foraging) updatePatches(w *ecs.World) {
 
 func (s *Foraging) decisions(w *ecs.World, probForage, probCollectPollen float64) {
 	query := s.foragerFilter.Query()
-	// no shuffling necessary here as the order of entities does not make a difference for any of these decisions
 	for query.Next() {
 		act, patch, milage := query.Get()
 
@@ -298,22 +298,21 @@ func (s *Foraging) searching(w *ecs.World) {
 	}
 	detectionProb := 1.0 - nonDetectionProb
 
-	// implemented the shuffling of all all searching or recruited foragers here to get closer to Netlogo "ask" primitive
+	// decoupled reruits from searchers and implemented shuffling via two separate sclices to imitate BEEHAVE more closely.
 	activityQuery := s.activityFilter.Query()
 	for activityQuery.Next() {
 		act := activityQuery.Get()
-		if act.Current == activity.Searching || act.Current == activity.Recruited {
-			s.foragershuffle = append(s.foragershuffle, activityQuery.Entity())
+		if act.Current == activity.Searching {
+			s.searches = append(s.searches, activityQuery.Entity())
+		} else if act.Current == activity.Recruited {
+			s.recruits = append(s.recruits, activityQuery.Entity())
 		}
 	}
-	s.rng.Shuffle(len(s.foragershuffle), func(i, j int) { s.foragershuffle[i], s.foragershuffle[j] = s.foragershuffle[j], s.foragershuffle[i] })
+	s.rng.Shuffle(len(s.searches), func(i, j int) { s.searches[i], s.searches[j] = s.searches[j], s.searches[i] })
 
-	for _, e := range s.foragershuffle {
+	for _, e := range s.searches {
 		act, patch := s.foragerMapper.Get(e)
 
-		if act.Current != activity.Searching { // added this to speed up the for loop
-			continue
-		}
 		if s.rng.Float64() >= detectionProb {
 			continue
 		}
@@ -349,14 +348,10 @@ func (s *Foraging) searching(w *ecs.World) {
 			}
 		}
 	}
-	// and split up into two for loops, because there can be a tiny little difference in the amount of foragers searching or recruited if both for loops are combined
-	// Netlogo has these ask queries split up as well
-	for _, e := range s.foragershuffle {
-		act, patch := s.foragerMapper.Get(e)
 
-		if act.Current != activity.Recruited {
-			continue
-		}
+	s.rng.Shuffle(len(s.recruits), func(i, j int) { s.recruits[i], s.recruits[j] = s.recruits[j], s.recruits[i] })
+	for _, e := range s.recruits {
+		act, patch := s.foragerMapper.Get(e)
 
 		if !act.PollenForager && !patch.Nectar.IsZero() {
 			success := false
@@ -394,23 +389,16 @@ func (s *Foraging) searching(w *ecs.World) {
 	}
 
 	s.patches = s.patches[:0]
-	s.foragershuffle = s.foragershuffle[:0]
+	s.searches = s.searches[:0]
+	s.recruits = s.recruits[:0]
 }
 
 func (s *Foraging) collecting(w *ecs.World) {
 	sz := float64(s.foragerParams.SquadronSize)
-	activityQuery := s.activityFilter.Query()
-	for activityQuery.Next() {
-		act := activityQuery.Get()
-		if act.Current == activity.Experienced || act.Current == activity.BringPollen || act.Current == activity.BringNectar {
-			s.foragershuffle = append(s.foragershuffle, activityQuery.Entity())
-		}
-	}
-	s.rng.Shuffle(len(s.foragershuffle), func(i, j int) { s.foragershuffle[i], s.foragershuffle[j] = s.foragershuffle[j], s.foragershuffle[i] })
-	// this shuffle is not strictly necessary and can be ignored in favour of performance. It does not change how many forager collect resources, it only changes which experienced foragers get asked first
-	// and can thus impact which foragers get their milage increased when bringing resources. Without shuffling the first foragers will get more milage IF the patch ever runs out of resources.
-	for _, e := range s.foragershuffle {
-		act, patch, milage, load := s.loadMapper.Get(e)
+	foragerQuery := s.foragerFilterLoad.Query()
+	// reverted optional shuffling here. If foragers ever were to die because of max milage while some flowerpatches get depleted, shullfing here should be reconsidered.
+	for foragerQuery.Next() {
+		act, patch, milage, load := foragerQuery.Get()
 
 		if act.Current == activity.Experienced {
 			if act.PollenForager {
@@ -459,14 +447,12 @@ func (s *Foraging) collecting(w *ecs.World) {
 			milage.Total += float32(dist)
 		}
 	}
-	s.foragershuffle = s.foragershuffle[:0]
 }
 
 func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 	duration = 0.0
 	foragers = 0
 
-	// shuffling will not change anything whatsoever here and is thus not implemented
 	query := s.foragerFilter.Query()
 	for query.Next() {
 		act, patch, milage := query.Get()
@@ -503,7 +489,6 @@ func (s *Foraging) flightCost(w *ecs.World) (duration float64, foragers int) {
 func (s *Foraging) mortality(w *ecs.World) {
 	searchDuration := s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 
-	// shuffling will not change anything whatsoever here and is thus not implemented
 	foragerQuery := s.foragerFilterSimple.Query()
 	for foragerQuery.Next() {
 		act, patch := foragerQuery.Get()

@@ -8,6 +8,7 @@
 
 - Migrates from Arche to Ark as ECS package (#86)
 - Migrates to the new `math/rand/v2` package (#86)
+- Introduces shuffling of foragers to imitate BEEHAVE more closely (#88 by [fzeitner](https://github.com/fzeitner))
 
 ## [[v0.5.0]](https://github.com/mlange-42/beecs/compare/v0.4.1...v0.5.0)
 

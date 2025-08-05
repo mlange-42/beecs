@@ -43,7 +43,7 @@ def agg_beecs(file_pattern, out_file):
             column + "_Q95",
         ]
         for col in cols:
-            out[col] = 0
+            out[col] = 0.
         for tick in ticks:
             values = data[column][data.ticks == tick]
             q = np.quantile(values, [0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95])
@@ -53,4 +53,4 @@ def agg_beecs(file_pattern, out_file):
 
 
 if __name__ == "__main__":
-    agg_beecs("out/beecs-%04d.csv", "_tests/default/beecs.csv")
+    agg_beecs("_tests/default/out/beecs-%04d.csv", "_tests/default/beecs.csv")

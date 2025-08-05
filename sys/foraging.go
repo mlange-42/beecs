@@ -110,7 +110,8 @@ func (s *Foraging) Update(w *ecs.World) {
 	s.foragingStats.Reset()
 
 	s.newForagers(w)                                                                                                                                   // here the foragers get initialized now; mimics BEEHAVE exactly.
-	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * s.storeParams.DecentHoneyPerWorker * s.energyParams.Honey // added this here, because Netlogo recalculates this in foragingRound and a countingproc happened since last calc
+	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * s.storeParams.DecentHoneyPerWorker * s.energyParams.Honey // added this here, because Netlogo recalculates this in foragingRound and a countingproc happened since last calc.
+	// Because the foragers just got initiated, these new foragers do not count towards pop.WorkersForagers in the calc above. Seems a little weird/off but original BEEHAVE works this same way. If we want to recreate instead of enhance this should stay.
 
 	if s.foragePeriod.SecondsToday <= 0 ||
 		(s.stores.Honey >= 0.95*s.maxHoneyStore && s.stores.Pollen >= s.stores.IdealPollen) {

@@ -28,10 +28,10 @@ func (s *TransitionForagers) Initialize(w *ecs.World) {
 }
 
 // TransitionForagers now only calculates the foragers that are to be transitioned and "kills" those cohorts.
-// These new squadrons are saved and will be initialized in the foraging module before foraging activity starts as to not appear in searches beforehand.
+// These new squadrons are saved and will be initialized in the foraging module before foraging activity starts as to not appear in the countingstats beforehand.
 // To more closely mimic BEEHAVE dynamics squadons and remainder now also get calculated per cohort; this can make a difference if aff decreased this timestep, because
 // then 2 cohorts would have been added up in NewForagers to then calculate squadrons/remainder. The old way seems to make more sense biologically, but can overestimate
-// the amount of squadrons to be created by 1 compared to BEEHAVE behavior.
+// the amount of squadrons to be created by 1 compared to original BEEHAVE behavior.
 func (s *TransitionForagers) Update(w *ecs.World) {
 	aff := s.aff.Aff
 	squadrons := 0

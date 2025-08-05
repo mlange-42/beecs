@@ -9,7 +9,7 @@ def plot_quantiles(netlogo_file, beecs_file, out_dir, format):
     data_beecs = pd.read_csv(beecs_file, delimiter=";")
 
     columns = list(data_beehave.columns)[1:]
-    columns = pd.unique([c[:-4] for c in columns])
+    columns = pd.unique(pd.Series(c[:-4] for c in columns))
     quantiles = [
         ("Q05", 5),
         ("Q10", 10),
@@ -59,6 +59,6 @@ if __name__ == "__main__":
         "_tests/default/beehave.csv",
         "_tests/default/beecs.csv",
         "_tests/default",
-        #"png",
-        "svg",
+        "png",
+        #"svg",
     )

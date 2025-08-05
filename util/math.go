@@ -12,7 +12,7 @@ func MinInt(a, b int) int {
 	return b
 }
 
-// MinInt returns the larger one of two int values.
+// MaxInt returns the larger one of two int values.
 func MaxInt(a, b int) int {
 	if a > b {
 		return a

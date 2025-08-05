@@ -37,16 +37,16 @@ func Default(p params.Params, app *app.App) *app.App {
 	app.AddSystem(&sys.EggLaying{})          // unchanged, just relocated here
 	app.AddSystem(&sys.TransitionForagers{}) // now does not actually initiate and fully transition foragers anymore. Only calculates how many foragers are to be initiated and decreases IHbee count
 
-	app.AddSystem(&sys.CountPopulation{}) // included additional countingproc here to capture mortality effects and decrease of IHbees through TransitionForagers on BroodCare. Original BEEHAVE works this exact way.
+	app.AddSystem(&sys.CountPopulation{}) // included additional countingproc here to capture mortality effects and decrease of IHbees through TransitionForagers on BroodCare. Original BEEHAVE works this exact way. Importance: NECESSARY FOR ACCURATE FUNCTION
 	app.AddSystem(&sys.BroodCare{})       // Moved in between the creation of new cohorts and the population decrease from the transition of cohorts to the next lifestage/job. BEEHAVE works this way.
 
 	app.AddSystem(&sys.NewCohorts{})      // included this new subsystem to initialize the new cohorts, that were calculated in AgeCohorts. IHbees and Drones now get initiated here (mimics Netlogo exactly)
-	app.AddSystem(&sys.CountPopulation{}) // included yet an additional countingproc here to capture NewCohorts and brood changes. Does not have a large effect; only necessary here because Foraging now recalculates decent honey for foraging decisionmaking
+	app.AddSystem(&sys.CountPopulation{}) // included yet an additional countingproc here to capture NewCohorts and brood changes. Does not have a large effect; only necessary here because Foraging now recalculates decent honey for foraging decisionmaking. Could potentially be omitted, but BEEHAVE has it.
 
 	app.AddSystem(&sys.Foraging{})          // remains largely unchanged, but initializes the new foragers from TransitionForagers now. Also introduced the calculation of decent honey to mimic the original model even closer
 	app.AddSystem(&sys.MortalityForagers{}) // put this behind Foraging subsystem, because Netlogo also runs this at the end of the foraging IBM subsystem
 
-	app.AddSystem(&sys.CountPopulation{})   // last counting proc that counts "final" amounts for feeding and next timestep. Moved before ConsumptionProcs because forager/cohort amounts affect consumption and MortalityForager has changed foragercount
+	app.AddSystem(&sys.CountPopulation{})   // last counting proc that counts "final" amounts for feeding and next timestep. Moved before ConsumptionProcs because forager/cohort amounts affect consumption and MortalityForager has changed foragercount. Importance: NECESSARY FOR ACCURATE FUNCTION
 	app.AddSystem(&sys.HoneyConsumption{})  // deactivated DecentHoney calculation here, as this gets updated in Foraging now (as is the case in BEEHAVE).
 	app.AddSystem(&sys.PollenConsumption{}) // unchanged
 

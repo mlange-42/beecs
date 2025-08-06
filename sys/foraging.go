@@ -29,7 +29,6 @@ type Foraging struct {
 
 	foragePeriod  *globals.ForagingPeriod
 	stores        *globals.Stores
-	popStats      *globals.PopulationStats
 	foragingStats *globals.ForagingStats
 	pop           *globals.PopulationStats
 	newCohorts    *globals.NewCohorts
@@ -72,7 +71,6 @@ func (s *Foraging) Initialize(w *ecs.World) {
 	s.energyParams = ecs.GetResource[params.EnergyContent](w)
 	s.storeParams = ecs.GetResource[params.Stores](w)
 
-	s.popStats = ecs.GetResource[globals.PopulationStats](w)
 	s.foragingStats = ecs.GetResource[globals.ForagingStats](w)
 	s.foragePeriod = ecs.GetResource[globals.ForagingPeriod](w)
 	s.stores = ecs.GetResource[globals.Stores](w)

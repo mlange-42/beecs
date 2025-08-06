@@ -31,11 +31,15 @@ func TestAgeCohorts(t *testing.T) {
 	age := AgeCohorts{}
 	age.Initialize(&world)
 
+	new := NewCohorts{}
+	new.Initialize(&world)
+
 	init.eggs.Workers[0] = 10
 	init.eggs.Drones[0] = 20
 
 	for i := 0; i < 13; i++ {
 		age.Update(&world)
+		new.Update(&world)
 	}
 
 	assert.Equal(t, []int{0, 0}, init.eggs.Workers)

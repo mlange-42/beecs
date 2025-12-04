@@ -107,14 +107,7 @@ func (s *Foraging) Initialize(w *ecs.World) {
 func (s *Foraging) Update(w *ecs.World) {
 	s.foragingStats.Reset()
 
-	s.newForagers(w)                                                                                                                                   // here the foragers get initialized now; mimics BEEHAVE exactly.
-	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * s.storeParams.DecentHoneyPerWorker * s.energyParams.Honey // added this here, because Netlogo recalculates this in foragingRound and a countingproc happened since last calc.
-	// Because the foragers just got initiated, these new foragers do not count towards pop.WorkersForagers in the calc above. Seems a little weird/off but original BEEHAVE works this same way. If we want to recreate instead of enhance this should stay.
-
-	if s.foragePeriod.SecondsToday <= 0 ||
-		(s.stores.Honey >= 0.95*s.maxHoneyStore && s.stores.Pollen >= s.stores.IdealPollen) {
-		return
-	}
+	s.newForagers(w) // here the foragers get initialized now; mimics BEEHAVE exactly.
 
 	query := s.foragerFilter.Query()
 	for query.Next() {
@@ -124,6 +117,13 @@ func (s *Foraging) Update(w *ecs.World) {
 
 	hangAroundDuration := s.forageParams.SearchLength / s.foragerParams.FlightVelocity
 	forageProb := s.calcForagingProb()
+	s.stores.DecentHoney = math.Max(float64(s.pop.WorkersInHive+s.pop.WorkersForagers), 1) * s.storeParams.DecentHoneyPerWorker * s.energyParams.Honey // added this here, because Netlogo recalculates this in every foragingRound, but the metrics do not change within a
+	// foraging round. The value gets used in calcForagingProb() though, therefore this calculation needs to happen after calcForagingProb() and before foragingRound() to not needlessly recalculate this every foragingRound.
+
+	if s.foragePeriod.SecondsToday <= 0 ||
+		(s.stores.Honey >= 0.95*s.maxHoneyStore && s.stores.Pollen >= s.stores.IdealPollen) {
+		return
+	}
 
 	// TODO: Lazy winter bees.
 

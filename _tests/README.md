@@ -6,13 +6,13 @@ The plots below show simulation results for one year. Lines are medians of 100 s
 
 ## Colony structure
 
-![TotalEggs](https://github.com/mlange-42/beecs/assets/44003176/1df9cc1c-5905-4266-bc55-3a141770b0c3)
-![TotalLarvae](https://github.com/mlange-42/beecs/assets/44003176/75ee584a-07cd-40b6-9a2c-8a78344bd801)
-![TotalPupae](https://github.com/mlange-42/beecs/assets/44003176/e1df9b15-43b3-4f41-8a81-4de1c54d18ee)
-![TotalIHBees](https://github.com/mlange-42/beecs/assets/44003176/45da836d-169d-43f7-bb1a-6cd98d59d54f)
-![TotalForagers](https://github.com/mlange-42/beecs/assets/44003176/254f9d73-813f-49f9-a90e-ac019339b4f9)
+![TotalEggs](https://github.com/user-attachments/assets/2a41dc7a-f592-45d8-9a3f-df9f60dd2b39)
+![TotalLarvae](https://github.com/user-attachments/assets/7cfc20d0-c1f7-4825-950b-c5784481a2b9)
+![TotalPupae](https://github.com/user-attachments/assets/66e1f177-ea1c-45b0-a2af-d10e4a49fe12)
+![TotalIHBees](https://github.com/user-attachments/assets/7a9775a2-9c28-4fea-9aae-966ce7c69d69)
+![TotalForagers](https://github.com/user-attachments/assets/71d61c41-531f-400a-9f09-6b6015a264d0)
 
 ## Honey and pollen stores
 
-![HoneyEnergyStore](https://github.com/mlange-42/beecs/assets/44003176/4327160f-07d9-489b-bb3f-0949e1cd6d5c)
-![PollenStore_g](https://github.com/mlange-42/beecs/assets/44003176/b99a9373-d96d-439c-8c39-5fe48d335485)
+![HoneyEnergyStore](https://github.com/user-attachments/assets/0300e386-1a15-4609-b95c-94bc3cd7a2c5)
+![PollenStore_g](https://github.com/user-attachments/assets/c486904f-d7b0-4359-b90c-77f044b62317)

@@ -12,10 +12,17 @@ type InitStore struct{}
 
 func (s *InitStore) Initialize(w *ecs.World) {
 	init := ecs.GetResource[params.InitialStores](w)
+	initpop := ecs.GetResource[params.InitialPopulation](w)
+	storeParams := ecs.GetResource[params.Stores](w)
 	energyParams := ecs.GetResource[params.EnergyContent](w)
+
 	stores := globals.Stores{
-		Honey:               init.Honey * 1000.0 * energyParams.Honey,
-		Pollen:              init.Pollen,
+		Honey:  init.Honey * 1000.0 * energyParams.Honey,
+		Pollen: init.Pollen,
+
+		DecentHoney: float64(initpop.Count) * storeParams.DecentHoneyPerWorker * energyParams.Honey, // now gets initialized and updated exactly the same way as in BEEHAVE
+		IdealPollen: init.Pollen,                                                                    // now gets initialized and updated exactly the same way as in BEEHAVE
+
 		ProteinFactorNurses: 1.0,
 	}
 

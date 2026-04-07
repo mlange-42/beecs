@@ -23,3 +23,9 @@ type InHive struct {
 	Workers []int // In-hive workers per day of age since emergence.
 	Drones  []int // Drones per day of age since emergence.
 }
+
+type NewCohorts struct {
+	IHbees   int // number of new IHbees this day as to not be counted by counting proc to more closely resemble netlogo code
+	Drones   int // number of new Drones this day as to not be counted by counting proc to more closely resemble netlogo code
+	Foragers int // number of new Foragers this day as to not be counted by counting proc to more closely resemble netlogo code
+}

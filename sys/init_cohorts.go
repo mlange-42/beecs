@@ -9,10 +9,11 @@ import (
 // InitCohorts initializes and adds the resources
 // [globals.Eggs], [globals.Larvae], [globals.Pupae] and [globals.InHive].
 type InitCohorts struct {
-	eggs   globals.Eggs
-	larvae globals.Larvae
-	pupae  globals.Pupae
-	inHive globals.InHive
+	eggs       globals.Eggs
+	larvae     globals.Larvae
+	pupae      globals.Pupae
+	inHive     globals.InHive
+	newCohorts globals.NewCohorts
 }
 
 func (s *InitCohorts) Initialize(w *ecs.World) {
@@ -44,6 +45,14 @@ func (s *InitCohorts) Initialize(w *ecs.World) {
 		Drones:  make([]int, droneDev.MaxLifespan),
 	}
 	ecs.AddResource(w, &s.inHive)
+
+	s.newCohorts = globals.NewCohorts{
+		IHbees:   0,
+		Drones:   0,
+		Foragers: 0,
+	}
+	ecs.AddResource(w, &s.newCohorts)
+
 }
 
 func (s *InitCohorts) Update(w *ecs.World) {}

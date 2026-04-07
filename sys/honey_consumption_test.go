@@ -4,6 +4,7 @@ import (
 	"math"
 	"testing"
 
+	"github.com/mlange-42/ark-tools/resource"
 	"github.com/mlange-42/ark/ecs"
 	"github.com/mlange-42/beecs/globals"
 	"github.com/mlange-42/beecs/params"
@@ -73,6 +74,20 @@ func TestHoneyConsumption(t *testing.T) {
 	cons := HoneyConsumption{}
 	cons.Initialize(&world)
 
+	ecs.AddResource(&world, &params.Foraging{})
+	ecs.AddResource(&world, &params.HandlingTime{})
+	ecs.AddResource(&world, &params.Dance{})
+
+	ecs.AddResource(&world, &globals.ForagingStats{})
+	ecs.AddResource(&world, &globals.ForagingPeriod{})
+	ecs.AddResource(&world, &globals.AgeFirstForaging{})
+	ecs.AddResource(&world, &globals.ForagerFactory{})
+	ecs.AddResource(&world, &resource.Rand{})
+	ecs.AddResource(&world, &resource.Tick{})
+
+	foraging := Foraging{}
+	foraging.Initialize(&world)
+
 	init.eggs.Workers[1] = 10
 	init.eggs.Drones[1] = 20
 
@@ -89,6 +104,7 @@ func TestHoneyConsumption(t *testing.T) {
 
 	pop.Update(&world)
 	cons.Update(&world)
+	foraging.Update(&world)
 
 	expected := float64(30*7+40*7+80*9+160*3+(210/3)*2) * 0.001 * 12.78
 	actual := 100_000.0 - stores.Honey

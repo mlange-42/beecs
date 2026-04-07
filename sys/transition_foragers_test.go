@@ -31,6 +31,18 @@ func TestTransitionForagers(t *testing.T) {
 		MaxLifespan: 6,
 	})
 
+	ecs.AddResource(&world, &params.Foraging{})
+	ecs.AddResource(&world, &params.HandlingTime{})
+	ecs.AddResource(&world, &params.Dance{})
+	ecs.AddResource(&world, &params.EnergyContent{})
+	ecs.AddResource(&world, &params.Stores{})
+
+	ecs.AddResource(&world, &globals.PopulationStats{})
+	ecs.AddResource(&world, &globals.ForagingStats{})
+	ecs.AddResource(&world, &globals.ForagingPeriod{})
+	ecs.AddResource(&world, &globals.Stores{})
+	ecs.AddResource(&world, &resource.Rand{})
+
 	fac := globals.NewForagerFactory(&world)
 	ecs.AddResource(&world, &fac)
 
@@ -40,10 +52,14 @@ func TestTransitionForagers(t *testing.T) {
 	transition := TransitionForagers{}
 	transition.Initialize(&world)
 
+	newFors := Foraging{}
+	newFors.Initialize(&world)
+
 	assert.Equal(t, 6, len(init.inHive.Workers))
 	init.inHive.Workers = []int{0, 0, 2000, 1000, 100, 25}
 
 	transition.Update(&world)
+	newFors.newForagers(&world)
 
 	assert.Equal(t, []int{0, 0, 2025, 0, 0, 0}, init.inHive.Workers)
 

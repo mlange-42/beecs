@@ -20,33 +20,37 @@ func Default(p params.Params, app *app.App) *app.App {
 
 	// Initialization
 
-	app.AddSystem(&sys.InitStore{})
-	app.AddSystem(&sys.InitCohorts{})
-	app.AddSystem(&sys.InitPopulation{})
-	app.AddSystem(&sys.InitPatchesList{})
-	app.AddSystem(&sys.InitForagingPeriod{})
+	app.AddSystem(&sys.InitStore{})          // initializes DecentHoney and IdealPollen now to mimic BEEHAVE more closely.
+	app.AddSystem(&sys.InitCohorts{})        // initializes NewCohort-global now. Needed to introduce this somewhere, seemed to make the most sense here.
+	app.AddSystem(&sys.InitPopulation{})     // unchanged
+	app.AddSystem(&sys.InitPatchesList{})    // unchanged
+	app.AddSystem(&sys.InitForagingPeriod{}) // unchanged
 
 	// Sub-models
 
-	app.AddSystem(&sys.CalcAff{})
-	app.AddSystem(&sys.CalcForagingPeriod{})
-	app.AddSystem(&sys.ReplenishPatches{})
+	app.AddSystem(&sys.CalcAff{})            // unchanged
+	app.AddSystem(&sys.CalcForagingPeriod{}) // unchanged
+	app.AddSystem(&sys.ReplenishPatches{})   // unchanged
 
-	app.AddSystem(&sys.BroodCare{}) // Moved before any other population changes for now, to avoid counting more than once.
-	app.AddSystem(&sys.AgeCohorts{})
-	app.AddSystem(&sys.TransitionForagers{})
-	app.AddSystem(&sys.EggLaying{})
+	app.AddSystem(&sys.MortalityCohorts{})   // moved to the beginning, because this happens while ageing in Netlogo. Does not "take effect" in the model until next CountPopulation
+	app.AddSystem(&sys.AgeCohorts{})         // happens with mortality in Netlogo and has to happen before new cohorts (including eggs) get initiated
+	app.AddSystem(&sys.EggLaying{})          // unchanged, just relocated here
+	app.AddSystem(&sys.TransitionForagers{}) // now does not actually initiate and fully transition foragers anymore. Only calculates how many foragers are to be initiated and decreases IHbee count
 
-	app.AddSystem(&sys.MortalityCohorts{})
-	app.AddSystem(&sys.MortalityForagers{})
+	app.AddSystem(&sys.CountPopulation{}) // included additional countingproc here to capture mortality effects and decrease of IHbees through TransitionForagers on BroodCare. Original BEEHAVE works this exact way. Importance: NECESSARY FOR ACCURATE FUNCTION
+	app.AddSystem(&sys.BroodCare{})       // Moved in between the creation of new cohorts and the population decrease from the transition of cohorts to the next lifestage/job. BEEHAVE works this way.
 
-	app.AddSystem(&sys.Foraging{})
-	app.AddSystem(&sys.HoneyConsumption{})
-	app.AddSystem(&sys.PollenConsumption{})
+	app.AddSystem(&sys.NewCohorts{})      // included this new subsystem to initialize the new cohorts, that were calculated in AgeCohorts. IHbees and Drones now get initiated here (mimics Netlogo exactly)
+	app.AddSystem(&sys.CountPopulation{}) // included yet an additional countingproc here to capture NewCohorts and brood changes. Does not have a large effect; only necessary here because Foraging now recalculates decent honey for foraging decisionmaking. Could potentially be omitted, but BEEHAVE has it.
 
-	app.AddSystem(&sys.CountPopulation{})
+	app.AddSystem(&sys.Foraging{})          // remains largely unchanged, but initializes the new foragers from TransitionForagers now. Also introduced the calculation of decent honey to mimic the original model even closer
+	app.AddSystem(&sys.MortalityForagers{}) // put this behind Foraging subsystem, because Netlogo also runs this at the end of the foraging IBM subsystem
 
-	app.AddSystem(&sys.FixedTermination{})
+	app.AddSystem(&sys.CountPopulation{})   // last counting proc that counts "final" amounts for feeding and next timestep. Moved before ConsumptionProcs because forager/cohort amounts affect consumption and MortalityForager has changed foragercount. Importance: NECESSARY FOR ACCURATE FUNCTION
+	app.AddSystem(&sys.HoneyConsumption{})  // deactivated DecentHoney calculation here, as this gets updated in Foraging now (as is the case in BEEHAVE).
+	app.AddSystem(&sys.PollenConsumption{}) // unchanged
+
+	app.AddSystem(&sys.FixedTermination{}) // unchanged
 
 	return app
 }

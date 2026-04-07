@@ -14,22 +14,22 @@ import (
 func TestHoneyConsumption(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &params.Foragers{SquadronSize: 10})
-	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
-	ecs.AddResource(&world, &params.WorkerDevelopment{
+	ecs.AddResource(world, &params.Foragers{SquadronSize: 10})
+	ecs.AddResource(world, &params.AgeFirstForaging{Max: 5})
+	ecs.AddResource(world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
 		PupaeTime:   4,
 		MaxLifespan: 100,
 	})
-	ecs.AddResource(&world, &params.DroneDevelopment{
+	ecs.AddResource(world, &params.DroneDevelopment{
 		EggTime:     3,
 		LarvaeTime:  4,
 		PupaeTime:   5,
 		MaxLifespan: 6,
 	})
 
-	ecs.AddResource(&world, &params.HoneyNeeds{
+	ecs.AddResource(world, &params.HoneyNeeds{
 		WorkerResting:    3,
 		WorkerNurse:      5,
 		WorkerLarvaTotal: 21, // -> 7/d
@@ -37,7 +37,7 @@ func TestHoneyConsumption(t *testing.T) {
 		Drone:            9,
 	})
 
-	ecs.AddResource(&world, &params.Stores{
+	ecs.AddResource(world, &params.Stores{
 		IdealPollenStoreDays: 7,
 		MinIdealPollenStore:  250.0,
 		MaxHoneyStoreKg:      50.0,
@@ -49,44 +49,44 @@ func TestHoneyConsumption(t *testing.T) {
 		Honey:  100_000,
 		Pollen: 100_000,
 	}
-	ecs.AddResource(&world, &stores)
+	ecs.AddResource(world, &stores)
 
-	ecs.AddResource(&world, &params.EnergyContent{
+	ecs.AddResource(world, &params.EnergyContent{
 		Honey:   12.78,
 		Sucrose: 0.00582,
 	})
-	ecs.AddResource(&world, &params.Nursing{
+	ecs.AddResource(world, &params.Nursing{
 		MaxBroodNurseRatio: 3.0,
 	})
-	ecs.AddResource(&world, &globals.ConsumptionStats{})
+	ecs.AddResource(world, &globals.ConsumptionStats{})
 
 	stats := globals.PopulationStats{}
-	ecs.AddResource(&world, &stats)
+	ecs.AddResource(world, &stats)
 
-	fac := globals.NewForagerFactory(&world)
+	fac := globals.NewForagerFactory(world)
 
 	init := InitCohorts{}
-	init.Initialize(&world)
+	init.Initialize(world)
 
 	pop := CountPopulation{}
-	pop.Initialize(&world)
+	pop.Initialize(world)
 
 	cons := HoneyConsumption{}
-	cons.Initialize(&world)
+	cons.Initialize(world)
 
-	ecs.AddResource(&world, &params.Foraging{})
-	ecs.AddResource(&world, &params.HandlingTime{})
-	ecs.AddResource(&world, &params.Dance{})
+	ecs.AddResource(world, &params.Foraging{})
+	ecs.AddResource(world, &params.HandlingTime{})
+	ecs.AddResource(world, &params.Dance{})
 
-	ecs.AddResource(&world, &globals.ForagingStats{})
-	ecs.AddResource(&world, &globals.ForagingPeriod{})
-	ecs.AddResource(&world, &globals.AgeFirstForaging{})
-	ecs.AddResource(&world, &globals.ForagerFactory{})
-	ecs.AddResource(&world, &resource.Rand{})
-	ecs.AddResource(&world, &resource.Tick{})
+	ecs.AddResource(world, &globals.ForagingStats{})
+	ecs.AddResource(world, &globals.ForagingPeriod{})
+	ecs.AddResource(world, &globals.AgeFirstForaging{})
+	ecs.AddResource(world, &globals.ForagerFactory{})
+	ecs.AddResource(world, &resource.Rand{})
+	ecs.AddResource(world, &resource.Tick{})
 
 	foraging := Foraging{}
-	foraging.Initialize(&world)
+	foraging.Initialize(world)
 
 	init.eggs.Workers[1] = 10
 	init.eggs.Drones[1] = 20
@@ -102,9 +102,9 @@ func TestHoneyConsumption(t *testing.T) {
 
 	fac.CreateSquadrons(9, 0)
 
-	pop.Update(&world)
-	cons.Update(&world)
-	foraging.Update(&world)
+	pop.Update(world)
+	cons.Update(world)
+	foraging.Update(world)
 
 	expected := float64(30*7+40*7+80*9+160*3+(210/3)*2) * 0.001 * 12.78
 	actual := 100_000.0 - stores.Honey

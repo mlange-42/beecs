@@ -15,11 +15,11 @@ import (
 func TestInitPopulation(t *testing.T) {
 	world := ecs.NewWorld()
 
-	fac := globals.NewForagerFactory(&world)
-	ecs.AddResource(&world, &fac)
-	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
-	ecs.AddResource(&world, &resource.Rand{Source: rand.NewPCG(0, 0)})
-	ecs.AddResource(&world, &params.InitialPopulation{
+	fac := globals.NewForagerFactory(world)
+	ecs.AddResource(world, &fac)
+	ecs.AddResource(world, &params.Foragers{SquadronSize: 100})
+	ecs.AddResource(world, &resource.Rand{Source: rand.NewPCG(0, 0)})
+	ecs.AddResource(world, &params.InitialPopulation{
 		Count:     10_000,
 		MinAge:    100,
 		MaxAge:    160,
@@ -28,9 +28,9 @@ func TestInitPopulation(t *testing.T) {
 	})
 
 	s := InitPopulation{}
-	s.Initialize(&world)
+	s.Initialize(world)
 
-	filter := ecs.NewFilter2[comp.Milage, comp.Age](&world)
+	filter := ecs.NewFilter2[comp.Milage, comp.Age](world)
 	query := filter.Query()
 	assert.Equal(t, 100, query.Count())
 

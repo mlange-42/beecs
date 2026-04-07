@@ -13,28 +13,28 @@ import (
 func TestMortalityCohorts(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &resource.Rand{Source: rand.NewPCG(0, 0)})
-	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
-	ecs.AddResource(&world, &params.WorkerDevelopment{
+	ecs.AddResource(world, &resource.Rand{Source: rand.NewPCG(0, 0)})
+	ecs.AddResource(world, &params.AgeFirstForaging{Max: 5})
+	ecs.AddResource(world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
 		PupaeTime:   4,
 		MaxLifespan: 390,
 	})
-	ecs.AddResource(&world, &params.DroneDevelopment{
+	ecs.AddResource(world, &params.DroneDevelopment{
 		EggTime:     3,
 		LarvaeTime:  4,
 		PupaeTime:   5,
 		MaxLifespan: 6,
 	})
-	ecs.AddResource(&world, &params.WorkerMortality{
+	ecs.AddResource(world, &params.WorkerMortality{
 		Eggs:      0.5,
 		Larvae:    0.5,
 		Pupae:     0.5,
 		InHive:    0.5,
 		MaxMilage: 200,
 	})
-	ecs.AddResource(&world, &params.DroneMortality{
+	ecs.AddResource(world, &params.DroneMortality{
 		Eggs:   0.5,
 		Larvae: 0.5,
 		Pupae:  0.5,
@@ -42,10 +42,10 @@ func TestMortalityCohorts(t *testing.T) {
 	})
 
 	init := InitCohorts{}
-	init.Initialize(&world)
+	init.Initialize(world)
 
 	mort := MortalityCohorts{}
-	mort.Initialize(&world)
+	mort.Initialize(world)
 
 	fillCohorts(init.eggs.Workers, 10000)
 	fillCohorts(init.eggs.Drones, 10000)
@@ -59,7 +59,7 @@ func TestMortalityCohorts(t *testing.T) {
 	fillCohorts(init.inHive.Workers, 10000)
 	fillCohorts(init.inHive.Drones, 10000)
 
-	mort.Update(&world)
+	mort.Update(world)
 
 	checkCohorts(t, init.eggs.Workers, 0, 10000)
 	checkCohorts(t, init.eggs.Drones, 0, 10000)

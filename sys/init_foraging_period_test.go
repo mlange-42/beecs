@@ -12,16 +12,16 @@ import (
 
 func TestInitForagingPeriod(t *testing.T) {
 	world := ecs.NewWorld()
-	ecs.AddResource(&world, &params.WorkingDirectory{})
-	ecs.AddResource(&world, &params.ForagingPeriod{
+	ecs.AddResource(world, &params.WorkingDirectory{})
+	ecs.AddResource(world, &params.ForagingPeriod{
 		Years: [][]float64{
 			make([]float64, 730),
 		},
 	})
 
 	s := sys.InitForagingPeriod{}
-	s.Initialize(&world)
+	s.Initialize(world)
 
-	p := ecs.GetResource[globals.ForagingPeriodData](&world)
+	p := ecs.GetResource[globals.ForagingPeriodData](world)
 	assert.Equal(t, 2, len(p.Years))
 }

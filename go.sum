@@ -1,7 +1,7 @@
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/mlange-42/ark v0.4.0 h1:4OcVIpeu0Pm8l76JqWOzWh/LxIoEFBIeYPXu0IMSF9o=
-github.com/mlange-42/ark v0.4.0/go.mod h1:47KXHr5HLftLn4iyL8w04iv7KJUNUoDymEIotD41f3o=
+github.com/mlange-42/ark v0.8.0 h1:8VzpLNTrcYcYZolcaZ/NHHv9fWdgbI98v86CenHILwA=
+github.com/mlange-42/ark v0.8.0/go.mod h1:gkS9cuklENPTmSjL2z4DcJgJsIVqF1yNwFlx48Hz/Sw=
 github.com/mlange-42/ark-tools v0.1.3 h1:I3QGOgqFYEmq2cQBafPfyLza/OqyMBao5C4qeZ92qu8=
 github.com/mlange-42/ark-tools v0.1.3/go.mod h1:+uS2tMZrMXRtPfRRN0S6F/ou7XbivqcFV/Lc214XRCQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

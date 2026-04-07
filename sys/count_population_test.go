@@ -12,15 +12,15 @@ import (
 func TestCountPopulation(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
-	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
-	ecs.AddResource(&world, &params.WorkerDevelopment{
+	ecs.AddResource(world, &params.Foragers{SquadronSize: 100})
+	ecs.AddResource(world, &params.AgeFirstForaging{Max: 5})
+	ecs.AddResource(world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
 		PupaeTime:   4,
 		MaxLifespan: 100,
 	})
-	ecs.AddResource(&world, &params.DroneDevelopment{
+	ecs.AddResource(world, &params.DroneDevelopment{
 		EggTime:     3,
 		LarvaeTime:  4,
 		PupaeTime:   5,
@@ -28,15 +28,15 @@ func TestCountPopulation(t *testing.T) {
 	})
 
 	stats := globals.PopulationStats{}
-	ecs.AddResource(&world, &stats)
+	ecs.AddResource(world, &stats)
 
-	fac := globals.NewForagerFactory(&world)
+	fac := globals.NewForagerFactory(world)
 
 	init := InitCohorts{}
-	init.Initialize(&world)
+	init.Initialize(world)
 
 	pop := CountPopulation{}
-	pop.Initialize(&world)
+	pop.Initialize(world)
 
 	assert.Equal(t, globals.PopulationStats{}, stats)
 
@@ -54,7 +54,7 @@ func TestCountPopulation(t *testing.T) {
 
 	fac.CreateSquadrons(9, 0)
 
-	pop.Update(&world)
+	pop.Update(world)
 	assert.Equal(t, globals.PopulationStats{
 		WorkerEggs:      10,
 		WorkerLarvae:    30,

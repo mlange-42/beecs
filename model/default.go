@@ -77,19 +77,19 @@ func initializeModel(p params.Params, a *app.App) *app.App {
 		a.Reset()
 	}
 
-	p.Apply(&a.World)
+	p.Apply(a.World)
 
-	factory := globals.NewForagerFactory(&a.World)
-	ecs.AddResource(&a.World, &factory)
+	factory := globals.NewForagerFactory(a.World)
+	ecs.AddResource(a.World, &factory)
 
 	stats := globals.PopulationStats{}
-	ecs.AddResource(&a.World, &stats)
+	ecs.AddResource(a.World, &stats)
 
 	consumptionStats := globals.ConsumptionStats{}
-	ecs.AddResource(&a.World, &consumptionStats)
+	ecs.AddResource(a.World, &consumptionStats)
 
 	foragingStats := globals.ForagingStats{}
-	ecs.AddResource(&a.World, &foragingStats)
+	ecs.AddResource(a.World, &foragingStats)
 
 	return a
 }

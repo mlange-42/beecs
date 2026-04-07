@@ -67,7 +67,7 @@ func run(app *app.App, exp *experiment.Experiment, idx int) {
 	values := exp.Values(idx)
 	fmt.Printf("Running set %v\n", values)
 	// Set/overwrite parameters from the experiment.
-	exp.ApplyValues(values, &m.World)
+	exp.ApplyValues(values, m.World)
 
 	// Add a CSV output system using observer [obs.WorkerCohorts].
 	m.AddSystem(&reporter.CSV{

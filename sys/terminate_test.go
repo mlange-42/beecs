@@ -13,46 +13,46 @@ import (
 func TestFixedTermination(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &params.Termination{MaxTicks: 10})
-	ecs.AddResource(&world, &globals.PopulationStats{TotalPopulation: 100})
+	ecs.AddResource(world, &params.Termination{MaxTicks: 10})
+	ecs.AddResource(world, &globals.PopulationStats{TotalPopulation: 100})
 
 	termRes := resource.Termination{}
-	ecs.AddResource(&world, &termRes)
+	ecs.AddResource(world, &termRes)
 
 	term := FixedTermination{}
 
-	term.Initialize(&world)
+	term.Initialize(world)
 
 	for i := 0; i < 9; i++ {
-		term.Update(&world)
+		term.Update(world)
 	}
 	assert.False(t, termRes.Terminate)
 
-	term.Update(&world)
+	term.Update(world)
 	assert.True(t, termRes.Terminate)
 }
 
 func TestExtinctionTermination(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &params.Termination{OnExtinction: true})
+	ecs.AddResource(world, &params.Termination{OnExtinction: true})
 
 	pop := globals.PopulationStats{TotalPopulation: 100}
-	ecs.AddResource(&world, &pop)
+	ecs.AddResource(world, &pop)
 
 	termRes := resource.Termination{}
-	ecs.AddResource(&world, &termRes)
+	ecs.AddResource(world, &termRes)
 
 	term := FixedTermination{}
 
-	term.Initialize(&world)
+	term.Initialize(world)
 
 	for i := 0; i < 10; i++ {
-		term.Update(&world)
+		term.Update(world)
 	}
 	assert.False(t, termRes.Terminate)
 
 	pop.TotalPopulation = 0
-	term.Update(&world)
+	term.Update(world)
 	assert.True(t, termRes.Terminate)
 }

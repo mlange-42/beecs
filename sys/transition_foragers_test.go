@@ -14,56 +14,56 @@ import (
 func TestTransitionForagers(t *testing.T) {
 	world := ecs.NewWorld()
 
-	ecs.AddResource(&world, &resource.Tick{})
-	ecs.AddResource(&world, &params.Foragers{SquadronSize: 100})
-	ecs.AddResource(&world, &params.AgeFirstForaging{Max: 5})
-	ecs.AddResource(&world, &globals.AgeFirstForaging{Aff: 3})
-	ecs.AddResource(&world, &params.WorkerDevelopment{
+	ecs.AddResource(world, &resource.Tick{})
+	ecs.AddResource(world, &params.Foragers{SquadronSize: 100})
+	ecs.AddResource(world, &params.AgeFirstForaging{Max: 5})
+	ecs.AddResource(world, &globals.AgeFirstForaging{Aff: 3})
+	ecs.AddResource(world, &params.WorkerDevelopment{
 		EggTime:     2,
 		LarvaeTime:  3,
 		PupaeTime:   4,
 		MaxLifespan: 390,
 	})
-	ecs.AddResource(&world, &params.DroneDevelopment{
+	ecs.AddResource(world, &params.DroneDevelopment{
 		EggTime:     3,
 		LarvaeTime:  4,
 		PupaeTime:   5,
 		MaxLifespan: 6,
 	})
 
-	ecs.AddResource(&world, &params.Foraging{})
-	ecs.AddResource(&world, &params.HandlingTime{})
-	ecs.AddResource(&world, &params.Dance{})
-	ecs.AddResource(&world, &params.EnergyContent{})
-	ecs.AddResource(&world, &params.Stores{})
+	ecs.AddResource(world, &params.Foraging{})
+	ecs.AddResource(world, &params.HandlingTime{})
+	ecs.AddResource(world, &params.Dance{})
+	ecs.AddResource(world, &params.EnergyContent{})
+	ecs.AddResource(world, &params.Stores{})
 
-	ecs.AddResource(&world, &globals.PopulationStats{})
-	ecs.AddResource(&world, &globals.ForagingStats{})
-	ecs.AddResource(&world, &globals.ForagingPeriod{})
-	ecs.AddResource(&world, &globals.Stores{})
-	ecs.AddResource(&world, &resource.Rand{})
+	ecs.AddResource(world, &globals.PopulationStats{})
+	ecs.AddResource(world, &globals.ForagingStats{})
+	ecs.AddResource(world, &globals.ForagingPeriod{})
+	ecs.AddResource(world, &globals.Stores{})
+	ecs.AddResource(world, &resource.Rand{})
 
-	fac := globals.NewForagerFactory(&world)
-	ecs.AddResource(&world, &fac)
+	fac := globals.NewForagerFactory(world)
+	ecs.AddResource(world, &fac)
 
 	init := InitCohorts{}
-	init.Initialize(&world)
+	init.Initialize(world)
 
 	transition := TransitionForagers{}
-	transition.Initialize(&world)
+	transition.Initialize(world)
 
 	newFors := Foraging{}
-	newFors.Initialize(&world)
+	newFors.Initialize(world)
 
 	assert.Equal(t, 6, len(init.inHive.Workers))
 	init.inHive.Workers = []int{0, 0, 2000, 1000, 100, 25}
 
-	transition.Update(&world)
-	newFors.newForagers(&world)
+	transition.Update(world)
+	newFors.newForagers(world)
 
 	assert.Equal(t, []int{0, 0, 2025, 0, 0, 0}, init.inHive.Workers)
 
-	filter := *ecs.NewFilter1[comp.Milage](&world)
+	filter := *ecs.NewFilter1[comp.Milage](world)
 	query := filter.Query()
 	assert.Equal(t, 11, query.Count())
 

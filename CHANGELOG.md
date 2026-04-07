@@ -3,6 +3,7 @@
 ### Breaking changes
 
 - Renames misspelled parameter `EnergyContent.Scurose` to `Sucrose` (#85)
+- Upgrades to Ark v0.8.0 (ECS world is pointer instead of value) (#94)
 
 ### Other
 

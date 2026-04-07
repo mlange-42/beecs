@@ -6,7 +6,7 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/beecs)
 
 Re-implementation of the [BEEHAVE](https://beehave-model.net) model
-in [Go](https://go.dev) using the [Arche](https://github.com/mlange-42/arche) Entity Component System (ECS).
+in [Go](https://go.dev) using the [Ark](https://github.com/mlange-42/ark) Entity Component System (ECS).
 
 All the hard work to develop, parameterize and validate the original BEEHAVE model was done by Dr. Matthias Becher and co-workers.
 I was not involved in that development in any way, and just re-implement the model following its ODD Protocol and the NetLogo code.

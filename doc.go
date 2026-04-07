@@ -1,5 +1,5 @@
 // Re-implementation of the [BEEHAVE] model
-// in [Go] using the [Arche] Entity Component System (ECS).
+// in [Go] using the [Ark] Entity Component System (ECS).
 //
 // Most important packages:
 //
@@ -10,5 +10,5 @@
 //
 // [BEEHAVE]: https://beehave-model.net
 // [Go]: https://go.dev
-// [Arche]: https://github.com/mlange-42/arche
+// [Ark]: https://github.com/mlange-42/ark
 package beecs

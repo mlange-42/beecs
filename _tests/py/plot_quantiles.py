@@ -59,6 +59,6 @@ if __name__ == "__main__":
         "_tests/default/beehave.csv",
         "_tests/default/beecs.csv",
         "_tests/default",
-        "png",
-        #"svg",
+        # "png",
+        "svg",
     )

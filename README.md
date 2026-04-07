@@ -5,14 +5,14 @@
 [![Go Reference](https://img.shields.io/badge/reference-%23007D9C?logo=go&logoColor=white&labelColor=gray)](https://pkg.go.dev/github.com/mlange-42/beecs)
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/beecs)
 
-Work-in-progress re-implementation of the [BEEHAVE](https://beehave-model.net) model
-in [Go](https://go.dev) using the [Arche](https://github.com/mlange-42/arche) Entity Component System (ECS).
+Re-implementation of the [BEEHAVE](https://beehave-model.net) model
+in [Go](https://go.dev) using the [Ark](https://github.com/mlange-42/ark) Entity Component System (ECS).
 
 All the hard work to develop, parameterize and validate the original BEEHAVE model was done by Dr. Matthias Becher and co-workers.
 I was not involved in that development in any way, and just re-implement the model following its ODD Protocol and the NetLogo code.
 
-Beecs is currently at a state where it implements BEEHAVE's basic colony and foraging models.
-Colony dynamics already mimic BEEHAVE quite well, but there are still differences that need to be addressed. See the [tests](https://github.com/mlange-42/beecs/tree/main/_tests).
+Beecs currently implements BEEHAVE's basic colony and foraging models.
+Colony dynamics mimic BEEHAVE almost perfectly. See the [tests](https://github.com/mlange-42/beecs/tree/main/_tests) for a comparison between both implementations.
 
 ## Usage
 

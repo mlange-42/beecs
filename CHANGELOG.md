@@ -1,9 +1,9 @@
-## [[unpublished]](https://github.com/mlange-42/beecs/compare/v0.5.0...main)
+## [[v0.6.0]](https://github.com/mlange-42/beecs/compare/v0.5.0...v0.6.0)
 
 ### Breaking changes
 
 - Renames misspelled parameter `EnergyContent.Scurose` to `Sucrose` (#85)
-- Upgrades to Ark v0.8.0 (ECS world is pointer instead of value) (#94)
+- Upgrades to Ark v0.8.3 (ECS world is pointer instead of value) (#94)
 
 ### Other
 
